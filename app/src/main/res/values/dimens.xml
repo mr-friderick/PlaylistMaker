@@ -4,4 +4,5 @@
     <dimen name="main_screen_icon_padding">8dp</dimen>
     <dimen name="main_screen_button_text_size">22sp</dimen>
     <dimen name="setting_screen_text_size">16sp</dimen>
+    <dimen name="main_button_marginHorizontal">20dp</dimen>
 </resources>
