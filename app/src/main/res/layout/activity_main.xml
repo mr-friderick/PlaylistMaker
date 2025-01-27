@@ -49,7 +49,7 @@
             android:textColor="@color/black"
             android:foreground="?attr/selectableItemBackground"
             app:cornerRadius="@dimen/main_screen_button_radius"
-            app:icon="@drawable/ic_library"
+            app:icon="@drawable/ic_media"
             app:iconGravity="textStart"
             app:iconPadding="@dimen/main_screen_icon_padding"
             app:iconTint="@color/black"
