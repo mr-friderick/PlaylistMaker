@@ -3,15 +3,13 @@
     <!--  General colors  -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="dark_mode_background">#1A1B22</color>
 
     <!--  Screen colors  -->
-    <color name="screen_background">@color/white</color>
-    <color name="main_screen_background">#3772E7</color>
-    <color name="setting_screen_background">#3772E7</color>
+    <color name="screen_background">@color/dark_mode_background</color>
+    <color name="main_screen_background">@color/dark_mode_background</color>
 
     <!--  Text colors  -->
-    <color name="text">@color/black</color>
+    <color name="text">@color/white</color>
 
     <!--  Icon colors  -->
     <color name="setting_icon_black">#1A1B22</color>
