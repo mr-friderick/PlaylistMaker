@@ -23,4 +23,7 @@
     <color name="track_on">#9FBBF3</color>
     <color name="track_off">#E6E8EB</color>
 
+    <!--  Other colors  -->
+    <color name="search_background">@color/track_off</color>
+
 </resources>
