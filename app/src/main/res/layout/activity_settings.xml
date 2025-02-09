@@ -25,18 +25,21 @@
         />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/share"
         android:drawableEnd="@drawable/ic_share"
         android:text="@string/text_share"
         style="@style/settings_view_style"
         />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/support"
         android:drawableEnd="@drawable/ic_support"
         android:text="@string/text_support"
         style="@style/settings_view_style"
         />
 
     <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/agreement"
         android:drawableEnd="@drawable/ic_arrow_forward"
         android:text="@string/text_agreement"
         style="@style/settings_view_style"
