@@ -4,7 +4,7 @@
     android:id="@+id/screen_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_screen_background"
+    android:background="@color/bg_main_screen"
     android:orientation="vertical">
 
     <Toolbar
@@ -12,33 +12,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:title="@string/main_screen_title"
-        android:titleTextAppearance="@style/main_toolbar_style"
+        android:title="@string/main_title"
+        android:titleTextAppearance="@style/toolbar_main"
         />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/search"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/text_search"
+        android:text="@string/main_button_search"
         app:icon="@drawable/ic_search"
-        style="@style/main_button_style"
+        style="@style/button_main"
         />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/media"
         android:layout_marginBottom="16dp"
-        android:text="@string/text_media"
+        android:text="@string/main_button_media"
         app:icon="@drawable/ic_media"
-        style="@style/main_button_style"
+        style="@style/button_main"
         />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/settings"
         android:layout_marginBottom="28dp"
-        android:text="@string/text_settings"
+        android:text="@string/main_button_settings"
         app:icon="@drawable/ic_settings"
-        style="@style/main_button_style"
+        style="@style/button_main"
         />
-
 </LinearLayout>

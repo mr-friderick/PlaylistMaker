@@ -4,45 +4,45 @@
     android:id="@+id/screen_settings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/screen_background"
+    android:background="@color/bg_screen_default"
     android:orientation="vertical">
 
     <Toolbar
         android:id="@+id/settings_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:title="@string/text_settings"
+        android:title="@string/main_button_settings"
         android:navigationIcon="@drawable/ic_arrow"
-        android:titleTextAppearance="@style/settings_toolbar_style"
+        android:titleTextAppearance="@style/toolbar_settings"
         />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:gravity="center_vertical"
-        android:text="@string/text_dark_mode"
+        android:text="@string/settings_option_dark_mode"
         app:thumbTint="@color/thumb_selector"
         app:trackTint="@color/track_selector"
-        style="@style/settings_view_style"
+        style="@style/view_settings"
         />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/share"
         android:drawableEnd="@drawable/ic_share"
-        android:text="@string/text_share"
-        style="@style/settings_view_style"
+        android:text="@string/settings_option_share"
+        style="@style/view_settings"
         />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/support"
         android:drawableEnd="@drawable/ic_support"
-        android:text="@string/text_support"
-        style="@style/settings_view_style"
+        android:text="@string/settings_option_support"
+        style="@style/view_settings"
         />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/agreement"
         android:drawableEnd="@drawable/ic_arrow_forward"
-        android:text="@string/text_agreement"
-        style="@style/settings_view_style"
+        android:text="@string/settings_option_agreement"
+        style="@style/view_settings"
         />
     
 </LinearLayout>

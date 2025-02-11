@@ -20,52 +20,20 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private var inputText = INPUT_SEARCH_TEXT_DEF
+    private lateinit var editText: EditText
+    private lateinit var buttonClear: ImageView
+    private lateinit var toolbar: Toolbar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.screen_search)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        setupWindowInsets()
 
-        val editText = findViewById<EditText>(R.id.search_edit_text)
-        val clearButton = findViewById<ImageView>(R.id.search_clear_icon)
-
-        if (savedInstanceState != null) {
-            inputText = savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF)
-            editText.setText(inputText)
-        }
-
-        findViewById<Toolbar>(R.id.search_back).setNavigationOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            intent.putExtra(INPUT_SEARCH_TEXT, inputText)
-            startActivity(intent)
-            finish()
-        }
-
-        val simpleTextWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                // empty
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                inputText = s.toString()
-            }
-        }
-        editText.addTextChangedListener(simpleTextWatcher)
-        editText.requestFocus()
-
-        clearButton.setOnClickListener {
-            editText.setText("")
-            editText.clearFocus()
-        }
+        initScreenView()
+        setListeners()
+        processInstanceState(savedInstanceState)
+        setFocusScreen()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -75,8 +43,62 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        findViewById<EditText>(R.id.search_edit_text)
-            .setText(savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF))
+        editText.setText(savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF))
+    }
+
+    private fun setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.screen_search)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+    }
+
+    private fun initScreenView() {
+        editText    = findViewById(R.id.search_edit_text)
+        buttonClear = findViewById(R.id.search_clear_icon)
+        toolbar     = findViewById(R.id.search_back)
+    }
+
+    private fun setListeners() {
+        editText.addTextChangedListener(simpleTextWatcher())
+
+        buttonClear.setOnClickListener {
+            editText.setText("")
+            editText.clearFocus()
+        }
+
+        toolbar.setNavigationOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra(INPUT_SEARCH_TEXT, inputText)
+            startActivity(intent)
+            finish()
+        }
+    }
+
+    private fun processInstanceState(savedInstanceState: Bundle?) {
+        if (savedInstanceState != null) {
+            inputText = savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF)
+            editText.setText(inputText)
+        }
+    }
+
+    private fun setFocusScreen() {
+        editText.requestFocus()
+    }
+
+    private fun simpleTextWatcher(): TextWatcher = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // empty
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            buttonClear.visibility = clearButtonVisibility(s)
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            inputText = s.toString()
+        }
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {

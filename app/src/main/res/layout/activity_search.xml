@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/screen_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/screen_background"
+    android:background="@color/bg_screen_default"
     android:orientation="vertical">
 
     <Toolbar
         android:id="@+id/search_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:title="@string/text_search"
+        android:title="@string/main_button_search"
         android:navigationIcon="@drawable/ic_arrow"
-        android:titleTextAppearance="@style/settings_toolbar_style"
+        android:titleTextAppearance="@style/toolbar_settings"
         />
 
     <LinearLayout
@@ -33,10 +32,10 @@
             android:layout_height="36dp"
             android:layout_weight="1"
             android:inputType="text"
-            android:hint="@string/text_search"
+            android:hint="@string/main_button_search"
             android:maxLines="1"
-            android:textColor="@color/text"
-            android:textColorHint="@color/text_search"
+            android:textColor="@color/txt_default"
+            android:textColorHint="@color/txt_search"
             android:drawableStart="@drawable/ic_mini_search"
             android:drawablePadding="8dp"
             android:paddingStart="12dp"

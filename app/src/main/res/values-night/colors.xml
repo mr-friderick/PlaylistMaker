@@ -5,27 +5,27 @@
     <color name="white">#FFFFFFFF</color>
 
     <!--  Screen colors  -->
-    <color name="screen_background">@color/dark_mode_background</color>
-    <color name="main_screen_background">@color/dark_mode_background</color>
+    <color name="bg_screen_default">@color/bg_dark_mode</color>
+    <color name="bg_main_screen">@color/bg_dark_mode</color>
 
     <!--  Layout colors  -->
-    <color name="layout_search_color">@color/white</color>
+    <color name="bg_layout_search">@color/white</color>
 
     <!--  Text colors  -->
-    <color name="text">@color/white</color>
-    <color name="text_search">@color/black</color>
+    <color name="txt_default">@color/white</color>
+    <color name="txt_search">@color/black</color>
 
     <!--  Icon colors  -->
-    <color name="setting_icon_black">@color/white</color>
-    <color name="setting_icon_gray">#AEAFB4</color>
-    <color name="main_icon_color">#1A1B22</color>
+    <color name="ic_settings_black">@color/white</color>
+    <color name="ic_settings_gray">#AEAFB4</color>
+    <color name="ic_main_default">#1A1B22</color>
 
     <!--  Switch colors  -->
-    <color name="thumb_on">#3772E7</color>
-    <color name="track_on">#9FBBF3</color>
-    <color name="track_off">#E6E8EB</color>
+    <color name="switch_thumb_on">#3772E7</color>
+    <color name="switch_track_on">#9FBBF3</color>
+    <color name="switch_track_off">#E6E8EB</color>
 
     <!--  Other colors  -->
-    <color name="search_background">@color/white</color>
+    <color name="bg_search_field">@color/white</color>
 
 </resources>

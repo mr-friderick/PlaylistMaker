@@ -1,18 +1,21 @@
 <resources>
+    <!--  For layout activity_main -->
     <string name="app_name">Playlist Maker</string>
-    <string name="main_screen_title">Playlist maker</string>
-    <string name="text_search">Поиск</string>
-    <string name="text_media">Медиатека</string>
-    <string name="text_settings">Настройки</string>
-    <string name="text_dark_mode">Темная тема</string>
-    <string name="text_share">Поделиться приложением</string>
-    <string name="text_support">Написать в поддержку</string>
-    <string name="text_agreement">Пользовательское соглашение</string>
+    <string name="main_title">Playlist maker</string>
+    <string name="main_button_search">Поиск</string>
+    <string name="main_button_media">Медиатека</string>
+    <string name="main_button_settings">Настройки</string>
 
-    <!--  Для активити настроек  -->
-    <string name="text_for_share">https://practicum.yandex.ru/android-developer/</string>
-    <string name="email_for_support">mr.friderick@ya.ru</string>
-    <string name="subject_for_support">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
-    <string name="text_for_support">Спасибо разработчикам и разработчицам за крутое приложение!</string>
-    <string name="link_for_agreement">https://yandex.ru/legal/practicum_offer/</string>
+    <!--  For layout activity_settings -->
+    <string name="settings_option_dark_mode">Темная тема</string>
+    <string name="settings_option_share">Поделиться приложением</string>
+    <string name="settings_option_support">Написать в поддержку</string>
+    <string name="settings_option_agreement">Пользовательское соглашение</string>
+
+    <!--  For activity SettingsActivity -->
+    <string name="settings_share_link">https://practicum.yandex.ru/android-developer/</string>
+    <string name="settings_support_email">mr.friderick@ya.ru</string>
+    <string name="settings_support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="settings_support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="settings_agreement_link">https://yandex.ru/legal/practicum_offer/</string>
 </resources>
