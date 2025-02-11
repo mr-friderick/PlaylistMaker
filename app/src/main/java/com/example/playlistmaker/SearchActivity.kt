@@ -61,7 +61,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setListeners() {
-        editText.addTextChangedListener(simpleTextWatcher())
+        editText.addTextChangedListener(TextWatcher())
 
         buttonClear.setOnClickListener {
             editText.setText("")
@@ -87,7 +87,7 @@ class SearchActivity : AppCompatActivity() {
         editText.requestFocus()
     }
 
-    private fun simpleTextWatcher(): TextWatcher = object : TextWatcher {
+    private fun TextWatcher(): TextWatcher = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             // empty
         }
