@@ -14,6 +14,7 @@
 
     <!--  For activity SettingsActivity -->
     <string name="settings_share_link">https://practicum.yandex.ru/android-developer/</string>
+    <string name="settings_share_title">Поделиться через</string>
     <string name="settings_support_email">mr.friderick@ya.ru</string>
     <string name="settings_support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="settings_support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>

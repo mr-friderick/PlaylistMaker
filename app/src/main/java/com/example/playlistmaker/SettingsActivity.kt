@@ -54,7 +54,7 @@ class SettingsActivity : AppCompatActivity() {
                 type   = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_link))
             }
-            startActivity(Intent.createChooser(intent, "Поделиться через"))
+            startActivity(Intent.createChooser(intent, getString(R.string.settings_share_title)))
         }
 
         buttonSupport.setOnClickListener {

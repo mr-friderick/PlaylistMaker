@@ -21,6 +21,7 @@
     <color name="ic_main_default">#1A1B22</color>
     <color name="ic_settings_black">#1A1B22</color>
     <color name="ic_settings_gray">#AEAFB4</color>
+    <color name="ic_search_blue">#3772E7</color>
 
     <!--  Switch colors  -->
     <color name="switch_thumb_on">#3772E7</color>
