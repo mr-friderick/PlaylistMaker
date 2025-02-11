@@ -14,6 +14,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
 class SearchActivity : AppCompatActivity() {
+    companion object {
+        const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
+        const val INPUT_SEARCH_TEXT_DEF = ""
+    }
+
+    private var inputText = INPUT_SEARCH_TEXT_DEF
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -24,13 +31,20 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
 
-        findViewById<Toolbar>(R.id.search_back).setNavigationOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-
         val editText = findViewById<EditText>(R.id.search_edit_text)
         val clearButton = findViewById<ImageView>(R.id.search_clear_icon)
+
+        if (savedInstanceState != null) {
+            inputText = savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF)
+            editText.setText(inputText)
+        }
+
+        findViewById<Toolbar>(R.id.search_back).setNavigationOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra(INPUT_SEARCH_TEXT, inputText)
+            startActivity(intent)
+            finish()
+        }
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -42,7 +56,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(s: Editable?) {
-                // empty
+                inputText = s.toString()
             }
         }
         editText.addTextChangedListener(simpleTextWatcher)
@@ -50,8 +64,19 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             editText.setText("")
+            editText.clearFocus()
         }
+    }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(INPUT_SEARCH_TEXT, inputText)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        findViewById<EditText>(R.id.search_edit_text)
+            .setText(savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF))
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {

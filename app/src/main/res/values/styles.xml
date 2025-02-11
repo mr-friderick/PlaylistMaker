@@ -11,16 +11,18 @@
         <item name="fontFamily">@font/ys_display_medium</item>
     </style>
 
-    <style name="main_button_style">
+    <style name="main_button_style" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_marginHorizontal">@dimen/main_button_marginHorizontal</item>
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:textSize">@dimen/main_screen_button_text_size</item>
+        <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
         <item name="android:textFontWeight">500</item>
+        <item name="android:letterSpacing">0</item>
         <item name="android:foreground">?attr/selectableItemBackground</item>
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
@@ -28,9 +30,10 @@
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">@dimen/main_screen_icon_padding</item>
         <item name="iconTint">@color/black</item>
+
     </style>
     
-    <style name="settings_view_style" >
+    <style name="settings_view_style">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingHorizontal">16dp</item>

@@ -10,8 +10,12 @@
     <color name="main_screen_background">#3772E7</color>
     <color name="setting_screen_background">#3772E7</color>
 
+    <!--  Layout colors  -->
+    <color name="layout_search_color">@color/track_off</color>
+
     <!--  Text colors  -->
     <color name="text">@color/black</color>
+    <color name="text_search">@color/setting_icon_gray</color>
 
     <!--  Icon colors  -->
     <color name="setting_icon_black">#1A1B22</color>

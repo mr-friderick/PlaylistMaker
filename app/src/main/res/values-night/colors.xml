@@ -8,11 +8,15 @@
     <color name="screen_background">@color/dark_mode_background</color>
     <color name="main_screen_background">@color/dark_mode_background</color>
 
+    <!--  Layout colors  -->
+    <color name="layout_search_color">@color/white</color>
+
     <!--  Text colors  -->
     <color name="text">@color/white</color>
+    <color name="text_search">@color/black</color>
 
     <!--  Icon colors  -->
-    <color name="setting_icon_black">#1A1B22</color>
+    <color name="setting_icon_black">@color/white</color>
     <color name="setting_icon_gray">#AEAFB4</color>
     <color name="main_icon_color">#1A1B22</color>
 

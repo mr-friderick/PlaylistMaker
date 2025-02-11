@@ -36,6 +36,7 @@
             android:hint="@string/text_search"
             android:maxLines="1"
             android:textColor="@color/text"
+            android:textColorHint="@color/text_search"
             android:drawableStart="@drawable/ic_mini_search"
             android:drawablePadding="8dp"
             android:paddingStart="12dp"
