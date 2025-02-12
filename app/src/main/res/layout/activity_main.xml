@@ -4,7 +4,7 @@
     android:id="@+id/screen_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/main_screen_background"
+    android:background="@color/bg_main_screen"
     android:orientation="vertical">
 
     <Toolbar
@@ -12,66 +12,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
-        android:title="@string/main_screen_title"
-        android:titleTextAppearance="@style/main_toolbar_style"
+        android:title="@string/main_title"
+        android:titleTextAppearance="@style/toolbar_main"
         />
 
-        <Button
-            android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="16dp"
-            android:layout_marginHorizontal="@dimen/main_button_marginHorizontal"
-            android:backgroundTint="@color/white"
-            android:text="@string/text_search"
-            android:textSize="@dimen/main_screen_button_text_size"
-            android:textColor="@color/black"
-            android:foreground="?attr/selectableItemBackground"
-            app:cornerRadius="@dimen/main_screen_button_radius"
-            app:icon="@drawable/ic_search"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/main_screen_icon_padding"
-            app:iconTint="@color/black"
-            />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/search"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/main_button_search"
+        app:icon="@drawable/ic_search"
+        style="@style/button_main"
+        />
 
-        <Button
-            android:id="@+id/media"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginBottom="16dp"
-            android:layout_marginHorizontal="@dimen/main_button_marginHorizontal"
-            android:backgroundTint="@color/white"
-            android:text="@string/text_media"
-            android:textSize="@dimen/main_screen_button_text_size"
-            android:textColor="@color/black"
-            android:foreground="?attr/selectableItemBackground"
-            app:cornerRadius="@dimen/main_screen_button_radius"
-            app:icon="@drawable/ic_media"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/main_screen_icon_padding"
-            app:iconTint="@color/black"
-            />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/media"
+        android:layout_marginBottom="16dp"
+        android:text="@string/main_button_media"
+        app:icon="@drawable/ic_media"
+        style="@style/button_main"
+        />
 
-        <Button
-            android:id="@+id/settings"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_marginHorizontal="@dimen/main_button_marginHorizontal"
-            android:layout_marginBottom="28dp"
-            android:backgroundTint="@color/white"
-            android:text="@string/text_settings"
-            android:textSize="@dimen/main_screen_button_text_size"
-            android:textColor="@color/black"
-            android:foreground="?attr/selectableItemBackground"
-            app:cornerRadius="@dimen/main_screen_button_radius"
-            app:icon="@drawable/ic_settings"
-            app:iconGravity="textStart"
-            app:iconPadding="@dimen/main_screen_icon_padding"
-            app:iconTint="@color/black"
-            />
-
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/settings"
+        android:layout_marginBottom="28dp"
+        android:text="@string/main_button_settings"
+        app:icon="@drawable/ic_settings"
+        style="@style/button_main"
+        />
 </LinearLayout>

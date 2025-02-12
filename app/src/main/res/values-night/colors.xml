@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  General colors  -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!--  Screen colors  -->
+    <color name="bg_screen_default">@color/bg_dark_mode</color>
+    <color name="bg_main_screen">@color/bg_dark_mode</color>
+
+    <!--  Layout colors  -->
+    <color name="bg_layout_search">@color/white</color>
+
+    <!--  Text colors  -->
+    <color name="txt_default">@color/white</color>
+    <color name="txt_search">@color/black</color>
+
+    <!--  Icon colors  -->
+    <color name="ic_settings_black">@color/white</color>
+    <color name="ic_settings_gray">#AEAFB4</color>
+    <color name="ic_main_default">#1A1B22</color>
+
+    <!--  Switch colors  -->
+    <color name="switch_thumb_on">#3772E7</color>
+    <color name="switch_track_on">#9FBBF3</color>
+    <color name="switch_track_off">#E6E8EB</color>
+
+    <!--  Other colors  -->
+    <color name="bg_search_field">@color/white</color>
+
+</resources>

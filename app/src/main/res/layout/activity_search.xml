@@ -1,10 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/screen_search"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    android:background="@color/bg_screen_default"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <Toolbar
+        android:id="@+id/search_back"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:title="@string/main_button_search"
+        android:navigationIcon="@drawable/ic_arrow"
+        android:titleTextAppearance="@style/toolbar_settings"
+        />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/layout_search_background"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginTop="8dp">
+
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:inputType="text"
+            android:hint="@string/main_button_search"
+            android:maxLines="1"
+            android:textColor="@color/txt_default"
+            android:textColorHint="@color/txt_search"
+            android:drawableStart="@drawable/ic_mini_search"
+            android:drawablePadding="8dp"
+            android:paddingStart="12dp"
+            android:background="@android:color/transparent"
+            android:textCursorDrawable="@drawable/ic_cursor"
+            />
+
+        <ImageView
+            android:id="@+id/search_clear_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:paddingEnd="10dp"
+            android:src="@drawable/ic_drop_input"
+            android:visibility="gone"
+            />
+    </FrameLayout>
+
+</LinearLayout>

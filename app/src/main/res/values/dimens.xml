@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="main_screen_button_radius">16dp</dimen>
-    <dimen name="main_screen_icon_padding">8dp</dimen>
-    <dimen name="main_screen_button_text_size">22sp</dimen>
-    <dimen name="setting_screen_text_size">16sp</dimen>
-    <dimen name="main_button_marginHorizontal">20dp</dimen>
+    <dimen name="radius_main_button">16dp</dimen>
+    <dimen name="padding_main_ic">8dp</dimen>
+    <dimen name="txt_size_main_button">22sp</dimen>
+    <dimen name="txt_size_settings_screen">16sp</dimen>
+    <dimen name="margin_main_button_horizontal">20dp</dimen>
 </resources>
