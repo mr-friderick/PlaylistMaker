@@ -56,9 +56,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initScreenView() {
-        editText    = findViewById(R.id.search_edit_text)
+        editText = findViewById(R.id.search_edit_text)
         buttonClear = findViewById(R.id.search_clear_icon)
-        toolbar     = findViewById(R.id.search_back)
+        toolbar = findViewById(R.id.search_back)
     }
 
     private fun setListeners() {

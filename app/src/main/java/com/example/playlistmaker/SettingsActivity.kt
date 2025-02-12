@@ -36,9 +36,9 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun initScreenView() {
-        toolbar         = findViewById(R.id.settings_back)
-        buttonShare     = findViewById(R.id.share)
-        buttonSupport   = findViewById(R.id.support)
+        toolbar = findViewById(R.id.settings_back)
+        buttonShare = findViewById(R.id.share)
+        buttonSupport = findViewById(R.id.support)
         buttonAgreement = findViewById(R.id.agreement)
     }
 
@@ -51,7 +51,7 @@ class SettingsActivity : AppCompatActivity() {
         buttonShare.setOnClickListener {
             val intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                type   = "text/plain"
+                type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.settings_share_link))
             }
             startActivity(Intent.createChooser(intent, getString(R.string.settings_share_title)))
@@ -59,12 +59,14 @@ class SettingsActivity : AppCompatActivity() {
 
         buttonSupport.setOnClickListener {
             val recipient = getString(R.string.settings_support_email)
-            val subject   = getString(R.string.settings_support_subject)
-            val body      = getString(R.string.settings_support_message)
+            val subject = getString(R.string.settings_support_subject)
+            val body = getString(R.string.settings_support_message)
 
             val intent = Intent().apply {
                 action = Intent.ACTION_SENDTO
-                data   = Uri.parse("mailto:$recipient?subject=${Uri.encode(subject)}&body=${Uri.encode(body)}")
+                data = Uri.parse(
+                    "mailto:$recipient?subject=${Uri.encode(subject)}&body=${Uri.encode(body)}"
+                )
             }
             startActivity(intent)
         }
@@ -72,7 +74,7 @@ class SettingsActivity : AppCompatActivity() {
         buttonAgreement.setOnClickListener {
             val intent = Intent().apply {
                 action = Intent.ACTION_VIEW
-                data   = Uri.parse(getString(R.string.settings_agreement_link))
+                data = Uri.parse(getString(R.string.settings_agreement_link))
             }
             startActivity(intent)
         }
