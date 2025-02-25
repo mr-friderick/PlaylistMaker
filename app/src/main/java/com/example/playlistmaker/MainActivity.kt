@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initScreenView() {
-        buttonSearch   = findViewById(R.id.search)
-        buttonMedia    = findViewById(R.id.media)
+        buttonSearch = findViewById(R.id.search)
+        buttonMedia = findViewById(R.id.media)
         buttonSettings = findViewById(R.id.settings)
     }
 
