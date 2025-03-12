@@ -13,31 +13,27 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:title="@string/main_title"
-        android:titleTextAppearance="@style/toolbar_main"
-        />
+        android:titleTextAppearance="@style/toolbar_main" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/search"
+        style="@style/button_main"
         android:layout_marginTop="24dp"
         android:layout_marginBottom="16dp"
         android:text="@string/main_button_search"
-        app:icon="@drawable/ic_search"
-        style="@style/button_main"
-        />
+        app:icon="@drawable/ic_search" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/media"
+        style="@style/button_main"
         android:layout_marginBottom="16dp"
         android:text="@string/main_button_media"
-        app:icon="@drawable/ic_media"
-        style="@style/button_main"
-        />
+        app:icon="@drawable/ic_media" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/settings"
+        style="@style/button_main"
         android:layout_marginBottom="28dp"
         android:text="@string/main_button_settings"
-        app:icon="@drawable/ic_settings"
-        style="@style/button_main"
-        />
+        app:icon="@drawable/ic_settings" />
 </LinearLayout>

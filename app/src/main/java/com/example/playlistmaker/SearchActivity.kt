@@ -30,9 +30,6 @@ class SearchActivity : AppCompatActivity() {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
         const val INPUT_SEARCH_TEXT_DEF = ""
         const val BASE_URL_SEARCH = "https://itunes.apple.com/"
-        const val NOT_FOUND_SEARCH = "notFound"
-        const val FAILURE_SEARCH = "failure"
-        const val GOOD_SEARCH = "good"
     }
 
     private var inputText = INPUT_SEARCH_TEXT_DEF
