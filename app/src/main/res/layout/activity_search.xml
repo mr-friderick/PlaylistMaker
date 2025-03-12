@@ -37,6 +37,8 @@
             android:paddingStart="12dp"
             android:background="@android:color/transparent"
             android:textCursorDrawable="@drawable/ic_cursor"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             />
 
         <ImageView
