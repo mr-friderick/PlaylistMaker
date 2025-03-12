@@ -5,4 +5,6 @@
     <dimen name="txt_size_main_button">22sp</dimen>
     <dimen name="txt_size_settings_screen">16sp</dimen>
     <dimen name="margin_main_button_horizontal">20dp</dimen>
+    <dimen name="track_poster">45dp</dimen>
+    <dimen name="track_artist">11sp</dimen>
 </resources>

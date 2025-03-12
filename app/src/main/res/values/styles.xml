@@ -44,4 +44,13 @@
         <item name="android:elevation">0dp</item>
         <item name="elevation">0dp</item>
     </style>
+
+    <style name="text_view_track">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:maxLines">1</item>
+    </style>
 </resources>
