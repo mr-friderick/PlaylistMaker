@@ -5,12 +5,15 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.Placeholder
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -27,6 +30,9 @@ class SearchActivity : AppCompatActivity() {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
         const val INPUT_SEARCH_TEXT_DEF = ""
         const val BASE_URL_SEARCH = "https://itunes.apple.com/"
+        const val NOT_FOUND_SEARCH = "notFound"
+        const val FAILURE_SEARCH = "failure"
+        const val GOOD_SEARCH = "good"
     }
 
     private var inputText = INPUT_SEARCH_TEXT_DEF
@@ -34,6 +40,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var buttonClear: ImageView
     private lateinit var toolbar: Toolbar
     private lateinit var recyclerView: RecyclerView
+    private lateinit var notFoundPlaceholder:  LinearLayout
+    private lateinit var failurePlaceholder: LinearLayout
 
     private val apiService = Retrofit.Builder()
         .baseUrl(BASE_URL_SEARCH)
@@ -51,8 +59,6 @@ class SearchActivity : AppCompatActivity() {
         setListeners()
         processInstanceState(savedInstanceState)
         setFocusScreen()
-        //createRecyclerView()
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -78,6 +84,8 @@ class SearchActivity : AppCompatActivity() {
         buttonClear = findViewById(R.id.search_clear_icon)
         toolbar = findViewById(R.id.search_back)
         recyclerView = findViewById(R.id.search_recycler_view)
+        notFoundPlaceholder = findViewById(R.id.search_not_found_placeholder)
+        failurePlaceholder = findViewById(R.id.search_failure_placeholder)
     }
 
     private fun setListeners() {
@@ -92,6 +100,8 @@ class SearchActivity : AppCompatActivity() {
         }
         
         buttonClear.setOnClickListener {
+            createRecyclerView(arrayListOf())
+            switchVisibilityView(SearchStatus.GOOD)
             editText.setText("")
             editText.clearFocus()
         }
@@ -110,15 +120,42 @@ class SearchActivity : AppCompatActivity() {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                     if (response.isSuccessful) {
                         val songs = response.body()!!.results
-                        createRecyclerView(songs)
+                        if (songs.isNotEmpty()) {
+                            switchVisibilityView(SearchStatus.GOOD)
+                            createRecyclerView(songs)
+                        } else {
+                           switchVisibilityView(SearchStatus.NOT_FOUND)
+                        }
+
+                    } else {
+                        switchVisibilityView(SearchStatus.FAILURE)
                     }
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    Log.e("SONG_SEARCH", "${t.message}")
+                    switchVisibilityView(SearchStatus.FAILURE)
                 }
-
             })
+    }
+
+    private fun switchVisibilityView(status: SearchStatus) {
+        when (status) {
+            SearchStatus.GOOD -> {
+                recyclerView.visibility = View.VISIBLE
+                notFoundPlaceholder.visibility = View.GONE
+                failurePlaceholder.visibility = View.GONE
+            }
+            SearchStatus.NOT_FOUND -> {
+                recyclerView.visibility = View.GONE
+                notFoundPlaceholder.visibility = View.VISIBLE
+                failurePlaceholder.visibility = View.GONE
+            }
+            else -> {
+                recyclerView.visibility = View.GONE
+                notFoundPlaceholder.visibility = View.GONE
+                failurePlaceholder.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun processInstanceState(savedInstanceState: Bundle?) {
@@ -135,41 +172,6 @@ class SearchActivity : AppCompatActivity() {
     private fun createRecyclerView(tracksList: ArrayList<Track>) {
         val trackAdapter = TrackAdapter(tracksList)
         recyclerView.adapter = trackAdapter
-    }
-
-    private fun tracksList(): ArrayList<Track> {
-        return arrayListOf(
-            Track(
-                trackName = "Smells Like Teen Spirit",
-                artistName = "Nirvana",
-                trackTimeMillis = "5:01",
-                artworkUrl100 = "https://is5-ssl.mzstatic.com/image/thumb/Music115/v4/7b/58/c2/7b58c21a-2b51-2bb2-e59a-9bb9b96ad8c3/00602567924166.rgb.jpg/100x100bb.jpg"
-            ),
-            Track(
-                trackName = "Billie Jean",
-                artistName = "Michael Jackson",
-                trackTimeMillis = "4:35",
-                artworkUrl100 = "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/3d/9d/38/3d9d3811-71f0-3a0e-1ada-3004e56ff852/827969428726.jpg/100x100bb.jpg"
-            ),
-            Track(
-                trackName = "Stayin' Alive",
-                artistName = "Bee Gees",
-                trackTimeMillis = "4:10",
-                artworkUrl100 = "https://is4-ssl.mzstatic.com/image/thumb/Music115/v4/1f/80/1f/1f801fc1-8c0f-ea3e-d3e5-387c6619619e/16UMGIM86640.rgb.jpg/100x100bb.jpg"
-            ),
-            Track(
-                trackName = "Whole Lotta Love",
-                artistName = "Led Zeppelin",
-                trackTimeMillis = "5:33",
-                artworkUrl100 = "https://is2-ssl.mzstatic.com/image/thumb/Music62/v4/7e/17/e3/7e17e33f-2efa-2a36-e916-7f808576cf6b/mzm.fyigqcbs.jpg/100x100bb.jpg"
-            ),
-            Track(
-                trackName = "Sweet Child O'Mine",
-                artistName = "Guns N' Roses",
-                trackTimeMillis = "5:03",
-                artworkUrl100 = "https://is5-ssl.mzstatic.com/image/thumb/Music125/v4/a0/4d/c4/a04dc484-03cc-02aa-fa82-5334fcb4bc16/18UMGIM24878.rgb.jpg/100x100bb.jpg "
-            )
-        )
     }
 
     private fun TextWatcher(): TextWatcher = object : TextWatcher {

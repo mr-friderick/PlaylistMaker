@@ -12,6 +12,10 @@
     <string name="settings_option_support">Написать в поддержку</string>
     <string name="settings_option_agreement">Пользовательское соглашение</string>
 
+    <!--  For layout activity_search -->
+    <string name="search_not_found_text">Ничего не нашлось</string>
+    <string name="search_failure_text">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
+
     <!--  For activity SettingsActivity -->
     <string name="settings_share_link">https://practicum.yandex.ru/android-developer/</string>
     <string name="settings_share_title">Поделиться через</string>
