@@ -11,38 +11,33 @@
         android:id="@+id/settings_back"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:title="@string/main_button_settings"
         android:navigationIcon="@drawable/ic_arrow"
-        android:titleTextAppearance="@style/toolbar_settings"
-        />
+        android:title="@string/main_button_settings"
+        android:titleTextAppearance="@style/toolbar_settings" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        style="@style/view_settings"
         android:gravity="center_vertical"
         android:text="@string/settings_option_dark_mode"
         app:thumbTint="@color/thumb_selector"
-        app:trackTint="@color/track_selector"
-        style="@style/view_settings"
-        />
+        app:trackTint="@color/track_selector" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/share"
-        android:drawableEnd="@drawable/ic_share"
-        android:text="@string/settings_option_share"
         style="@style/view_settings"
-        />
+        android:drawableEnd="@drawable/ic_share"
+        android:text="@string/settings_option_share" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/support"
-        android:drawableEnd="@drawable/ic_support"
-        android:text="@string/settings_option_support"
         style="@style/view_settings"
-        />
+        android:drawableEnd="@drawable/ic_support"
+        android:text="@string/settings_option_support" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/agreement"
-        android:drawableEnd="@drawable/ic_arrow_forward"
-        android:text="@string/settings_option_agreement"
         style="@style/view_settings"
-        />
-    
+        android:drawableEnd="@drawable/ic_arrow_forward"
+        android:text="@string/settings_option_agreement" />
+
 </LinearLayout>
