@@ -182,6 +182,7 @@ class SearchActivity : AppCompatActivity() {
             val currentText = s.toString()
             if (currentText.isEmpty()) {
                 createRecyclerView(arrayListOf())
+                switchVisibilityView(SearchStatus.GOOD)
             }
             inputText = currentText
         }
