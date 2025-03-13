@@ -15,6 +15,7 @@
     <!--  For layout activity_search -->
     <string name="search_not_found_text">Ничего не нашлось</string>
     <string name="search_failure_text">Проблемы со связью\n\nЗагрузка не удалась. Проверьте\nподключение к интернету</string>
+    <string name="search_button_refresh_text">Обновить</string>
 
     <!--  For activity SettingsActivity -->
     <string name="settings_share_link">https://practicum.yandex.ru/android-developer/</string>

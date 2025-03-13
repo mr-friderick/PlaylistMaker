@@ -64,4 +64,16 @@
         <item name="android:elevation">0dp</item>
         <item name="android:gravity">center</item>
     </style>
+
+    <style name="button_search_refresh">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/txt_button_refresh</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:backgroundTint">@color/button_refresh</item>
+    </style>
 </resources>

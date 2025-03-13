@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
@@ -13,11 +12,11 @@ import android.widget.LinearLayout
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.Placeholder
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,6 +34,7 @@ class SearchActivity : AppCompatActivity() {
     private var inputText = INPUT_SEARCH_TEXT_DEF
     private lateinit var editText: EditText
     private lateinit var buttonClear: ImageView
+    private lateinit var buttonRefresh: MaterialButton
     private lateinit var toolbar: Toolbar
     private lateinit var recyclerView: RecyclerView
     private lateinit var notFoundPlaceholder:  LinearLayout
@@ -79,6 +79,7 @@ class SearchActivity : AppCompatActivity() {
     private fun initScreenView() {
         editText = findViewById(R.id.search_edit_text)
         buttonClear = findViewById(R.id.search_clear_icon)
+        buttonRefresh = findViewById(R.id.button_refresh)
         toolbar = findViewById(R.id.search_back)
         recyclerView = findViewById(R.id.search_recycler_view)
         notFoundPlaceholder = findViewById(R.id.search_not_found_placeholder)
@@ -91,7 +92,6 @@ class SearchActivity : AppCompatActivity() {
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchSongs(editText.text.toString())
-                true
             }
             false
         }
@@ -101,6 +101,10 @@ class SearchActivity : AppCompatActivity() {
             switchVisibilityView(SearchStatus.GOOD)
             editText.setText("")
             editText.clearFocus()
+        }
+
+        buttonRefresh.setOnClickListener {
+            searchSongs(editText.text.toString())
         }
 
         toolbar.setNavigationOnClickListener {
@@ -116,7 +120,7 @@ class SearchActivity : AppCompatActivity() {
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                     if (response.isSuccessful) {
-                        val songs = response.body()!!.results
+                        val songs = response.body()?.results ?: arrayListOf()
                         if (songs.isNotEmpty()) {
                             switchVisibilityView(SearchStatus.GOOD)
                             createRecyclerView(songs)
