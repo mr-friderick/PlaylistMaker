@@ -20,8 +20,6 @@ import com.google.android.material.button.MaterialButton
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
@@ -40,11 +38,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var notFoundPlaceholder:  LinearLayout
     private lateinit var failurePlaceholder: LinearLayout
 
-    private val apiService = Retrofit.Builder()
-        .baseUrl(BASE_URL_SEARCH)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-        .create<ItunesAPI>()
+    private val apiService = RetrofitFactory.create(BASE_URL_SEARCH).create<ItunesAPI>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -185,7 +179,11 @@ class SearchActivity : AppCompatActivity() {
         }
 
         override fun afterTextChanged(s: Editable?) {
-            inputText = s.toString()
+            val currentText = s.toString()
+            if (currentText.isEmpty()) {
+                createRecyclerView(arrayListOf())
+            }
+            inputText = currentText
         }
     }
 }

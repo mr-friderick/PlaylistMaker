@@ -35,7 +35,7 @@
             android:maxLines="1"
             android:paddingStart="12dp"
             android:singleLine="true"
-            android:textColor="@color/txt_default"
+            android:textColor="@color/bg_dark_mode"
             android:textColorHint="@color/txt_search"
             android:textCursorDrawable="@drawable/ic_cursor" />
 
