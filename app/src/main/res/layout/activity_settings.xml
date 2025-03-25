@@ -16,6 +16,7 @@
         android:titleTextAppearance="@style/toolbar_settings" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/theme_switcher"
         style="@style/view_settings"
         android:gravity="center_vertical"
         android:text="@string/settings_option_dark_mode"
