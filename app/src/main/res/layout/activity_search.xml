@@ -51,6 +51,36 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/search_history"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:gravity="top|center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            style="@style/text_search_placeholder"
+            android:textFontWeight="500"
+            android:text="@string/search_history_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/search_history_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="13dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_clear_history"
+            style="@style/button_search_refresh"
+            android:layout_marginTop="38dp"
+            android:text="@string/search_clear_history_text" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/search_not_found_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -101,6 +131,7 @@
         android:layout_marginStart="13dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="20dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:visibility="gone"/>
 
 </LinearLayout>

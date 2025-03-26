@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -27,16 +28,25 @@ class SearchActivity : AppCompatActivity() {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
         const val INPUT_SEARCH_TEXT_DEF = ""
         const val BASE_URL_SEARCH = "https://itunes.apple.com/"
+
+        enum class CurrentView {
+            HISTORY, TRACKS, NOT_FOUND, NOT_CONNECTION
+        }
     }
 
     private var inputText = INPUT_SEARCH_TEXT_DEF
     private lateinit var editText: EditText
     private lateinit var buttonClear: ImageView
     private lateinit var buttonRefresh: MaterialButton
+    private lateinit var buttonClearHistory: MaterialButton
     private lateinit var toolbar: Toolbar
     private lateinit var recyclerView: RecyclerView
-    private lateinit var notFoundPlaceholder:  LinearLayout
+    private lateinit var historyRecyclerView: RecyclerView
+    private lateinit var historyView: LinearLayout
+    private lateinit var notFoundPlaceholder: LinearLayout
     private lateinit var failurePlaceholder: LinearLayout
+    private lateinit var sharedPrefs: SharedPreferences
+    private lateinit var searchHistory: SearchHistory
 
     private val apiService = RetrofitFactory.create(BASE_URL_SEARCH).create<ItunesAPI>()
 
@@ -46,10 +56,11 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         setupWindowInsets()
 
-        initScreenView()
+        initVariables()
         setListeners()
         processInstanceState(savedInstanceState)
         setFocusScreen()
+        defineCurrentView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -70,14 +81,20 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun initScreenView() {
+    private fun initVariables() {
         editText = findViewById(R.id.search_edit_text)
         buttonClear = findViewById(R.id.search_clear_icon)
         buttonRefresh = findViewById(R.id.button_refresh)
+        buttonClearHistory = findViewById(R.id.button_clear_history)
         toolbar = findViewById(R.id.search_back)
+        historyView = findViewById(R.id.search_history)
         recyclerView = findViewById(R.id.search_recycler_view)
+        historyRecyclerView = findViewById(R.id.search_history_recycler_view)
         notFoundPlaceholder = findViewById(R.id.search_not_found_placeholder)
         failurePlaceholder = findViewById(R.id.search_failure_placeholder)
+
+        sharedPrefs = getSharedPreferences(SearchHistory.HISTORY_PREFERENCES, MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPrefs)
     }
 
     private fun setListeners() {
@@ -92,13 +109,19 @@ class SearchActivity : AppCompatActivity() {
         
         buttonClear.setOnClickListener {
             createRecyclerView(arrayListOf())
-            switchVisibilityView(SearchStatus.GOOD)
+            switchVisibilityView(CurrentView.TRACKS)
             editText.setText("")
             editText.clearFocus()
         }
 
         buttonRefresh.setOnClickListener {
             searchSongs(editText.text.toString())
+        }
+
+        buttonClearHistory.setOnClickListener {
+            // TODO Переделать на очистку истории
+            searchHistory.safe()
+            switchVisibilityView(CurrentView.TRACKS)
         }
 
         toolbar.setNavigationOnClickListener {
@@ -114,38 +137,47 @@ class SearchActivity : AppCompatActivity() {
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
                     if (response.isSuccessful) {
-                        val songs = response.body()?.results ?: arrayListOf()
-                        if (songs.isNotEmpty()) {
-                            switchVisibilityView(SearchStatus.GOOD)
-                            createRecyclerView(songs)
+                        val tracks = response.body()?.results ?: arrayListOf()
+                        if (tracks.isNotEmpty()) {
+                            switchVisibilityView(CurrentView.TRACKS)
+                            createRecyclerView(tracks)
                         } else {
-                           switchVisibilityView(SearchStatus.NOT_FOUND)
+                           switchVisibilityView(CurrentView.NOT_FOUND)
                         }
 
                     } else {
-                        switchVisibilityView(SearchStatus.FAILURE)
+                        switchVisibilityView(CurrentView.NOT_CONNECTION)
                     }
                 }
 
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    switchVisibilityView(SearchStatus.FAILURE)
+                    switchVisibilityView(CurrentView.NOT_CONNECTION)
                 }
             })
     }
 
-    private fun switchVisibilityView(status: SearchStatus) {
+    private fun switchVisibilityView(status: CurrentView) {
         when (status) {
-            SearchStatus.GOOD -> {
+            CurrentView.HISTORY -> {
+                historyView.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+                notFoundPlaceholder.visibility = View.GONE
+                failurePlaceholder.visibility = View.GONE
+            }
+            CurrentView.TRACKS -> {
+                historyView.visibility = View.GONE
                 recyclerView.visibility = View.VISIBLE
                 notFoundPlaceholder.visibility = View.GONE
                 failurePlaceholder.visibility = View.GONE
             }
-            SearchStatus.NOT_FOUND -> {
+            CurrentView.NOT_FOUND -> {
+                historyView.visibility = View.GONE
                 recyclerView.visibility = View.GONE
                 notFoundPlaceholder.visibility = View.VISIBLE
                 failurePlaceholder.visibility = View.GONE
             }
             else -> {
+                historyView.visibility = View.GONE
                 recyclerView.visibility = View.GONE
                 notFoundPlaceholder.visibility = View.GONE
                 failurePlaceholder.visibility = View.VISIBLE
@@ -164,8 +196,18 @@ class SearchActivity : AppCompatActivity() {
         editText.requestFocus()
     }
 
+    private fun defineCurrentView() {
+        // TODO Переделать на корректное определение текущей View
+        switchVisibilityView(CurrentView.TRACKS)
+    }
+
     private fun createRecyclerView(tracksList: ArrayList<Track>) {
-        val trackAdapter = TrackAdapter(tracksList)
+        val trackAdapter = TrackAdapter(tracksList) { track ->
+            searchHistory.add(track)
+            // TODO Убрать это
+            historyRecyclerView.adapter = TrackAdapter(searchHistory.trackList()) {}
+            switchVisibilityView(CurrentView.HISTORY)
+        }
         recyclerView.adapter = trackAdapter
     }
 
@@ -182,7 +224,7 @@ class SearchActivity : AppCompatActivity() {
             val currentText = s.toString()
             if (currentText.isEmpty()) {
                 createRecyclerView(arrayListOf())
-                switchVisibilityView(SearchStatus.GOOD)
+                switchVisibilityView(CurrentView.TRACKS)
             }
             inputText = currentText
         }
