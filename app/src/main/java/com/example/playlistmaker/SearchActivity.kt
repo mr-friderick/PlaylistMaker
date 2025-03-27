@@ -40,7 +40,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var buttonRefresh: MaterialButton
     private lateinit var buttonClearHistory: MaterialButton
     private lateinit var toolbar: Toolbar
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var tracksRecyclerView: RecyclerView
     private lateinit var historyRecyclerView: RecyclerView
     private lateinit var historyView: LinearLayout
     private lateinit var notFoundPlaceholder: LinearLayout
@@ -88,13 +88,15 @@ class SearchActivity : AppCompatActivity() {
         buttonClearHistory = findViewById(R.id.button_clear_history)
         toolbar = findViewById(R.id.search_back)
         historyView = findViewById(R.id.search_history)
-        recyclerView = findViewById(R.id.search_recycler_view)
+        tracksRecyclerView = findViewById(R.id.search_recycler_view)
         historyRecyclerView = findViewById(R.id.search_history_recycler_view)
         notFoundPlaceholder = findViewById(R.id.search_not_found_placeholder)
         failurePlaceholder = findViewById(R.id.search_failure_placeholder)
 
-        sharedPrefs = getSharedPreferences(SearchHistory.HISTORY_PREFERENCES, MODE_PRIVATE)
+        sharedPrefs = getSharedPreferences(SearchHistory.FILE_HISTORY_PREFERENCES, MODE_PRIVATE)
+
         searchHistory = SearchHistory(sharedPrefs)
+        historyRecyclerView.adapter = searchHistory.adapter()
     }
 
     private fun setListeners() {
@@ -106,9 +108,15 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
-        
+
+        editText.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && !searchHistory.empty()) {
+                switchVisibilityView(CurrentView.HISTORY)
+            } else switchVisibilityView(CurrentView.TRACKS)
+        }
+
         buttonClear.setOnClickListener {
-            createRecyclerView(arrayListOf())
+            createRecyclerView(tracksRecyclerView, arrayListOf())
             switchVisibilityView(CurrentView.TRACKS)
             editText.setText("")
             editText.clearFocus()
@@ -119,8 +127,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         buttonClearHistory.setOnClickListener {
-            // TODO Переделать на очистку истории
-            searchHistory.safe()
+            searchHistory.clear()
             switchVisibilityView(CurrentView.TRACKS)
         }
 
@@ -140,7 +147,7 @@ class SearchActivity : AppCompatActivity() {
                         val tracks = response.body()?.results ?: arrayListOf()
                         if (tracks.isNotEmpty()) {
                             switchVisibilityView(CurrentView.TRACKS)
-                            createRecyclerView(tracks)
+                            createRecyclerView(tracksRecyclerView, tracks)
                         } else {
                            switchVisibilityView(CurrentView.NOT_FOUND)
                         }
@@ -160,25 +167,26 @@ class SearchActivity : AppCompatActivity() {
         when (status) {
             CurrentView.HISTORY -> {
                 historyView.visibility = View.VISIBLE
-                recyclerView.visibility = View.GONE
+                tracksRecyclerView.visibility = View.GONE
                 notFoundPlaceholder.visibility = View.GONE
                 failurePlaceholder.visibility = View.GONE
             }
             CurrentView.TRACKS -> {
                 historyView.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
+                tracksRecyclerView.visibility = View.VISIBLE
                 notFoundPlaceholder.visibility = View.GONE
                 failurePlaceholder.visibility = View.GONE
             }
             CurrentView.NOT_FOUND -> {
                 historyView.visibility = View.GONE
-                recyclerView.visibility = View.GONE
+                tracksRecyclerView.visibility = View.GONE
                 notFoundPlaceholder.visibility = View.VISIBLE
                 failurePlaceholder.visibility = View.GONE
             }
+            // CurrentView.NOT_CONNECTION
             else -> {
                 historyView.visibility = View.GONE
-                recyclerView.visibility = View.GONE
+                tracksRecyclerView.visibility = View.GONE
                 notFoundPlaceholder.visibility = View.GONE
                 failurePlaceholder.visibility = View.VISIBLE
             }
@@ -197,33 +205,32 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun defineCurrentView() {
-        // TODO Переделать на корректное определение текущей View
-        switchVisibilityView(CurrentView.TRACKS)
+        if (!searchHistory.empty()) {
+            switchVisibilityView(CurrentView.HISTORY)
+        } else switchVisibilityView(CurrentView.TRACKS)
     }
 
-    private fun createRecyclerView(tracksList: ArrayList<Track>) {
+    private fun createRecyclerView(recyclerView: RecyclerView, tracksList: ArrayList<Track>) {
         val trackAdapter = TrackAdapter(tracksList) { track ->
             searchHistory.add(track)
-            // TODO Убрать это
-            historyRecyclerView.adapter = TrackAdapter(searchHistory.trackList()) {}
-            switchVisibilityView(CurrentView.HISTORY)
         }
         recyclerView.adapter = trackAdapter
     }
 
     private fun TextWatcher(): TextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            // empty
-        }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             buttonClear.isVisible = !s.isNullOrEmpty()
+            if (editText.hasFocus() && s?.isEmpty() == true) {
+                switchVisibilityView(CurrentView.HISTORY)
+            } else switchVisibilityView(CurrentView.TRACKS)
         }
 
         override fun afterTextChanged(s: Editable?) {
             val currentText = s.toString()
             if (currentText.isEmpty()) {
-                createRecyclerView(arrayListOf())
+                createRecyclerView(tracksRecyclerView, arrayListOf())
                 switchVisibilityView(CurrentView.TRACKS)
             }
             inputText = currentText

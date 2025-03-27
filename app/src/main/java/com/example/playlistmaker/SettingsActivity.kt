@@ -32,8 +32,7 @@ class SettingsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_settings)
         setupWindowInsets()
 
-        initScreenView()
-        initSharedPreferences()
+        initVariables()
         setupThemeSwitcher()
         setListeners()
     }
@@ -46,15 +45,13 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    private fun initScreenView() {
+    private fun initVariables() {
         toolbar = findViewById(R.id.settings_back)
         themeSwitcher = findViewById(R.id.theme_switcher)
         buttonShare = findViewById(R.id.share)
         buttonSupport = findViewById(R.id.support)
         buttonAgreement = findViewById(R.id.agreement)
-    }
 
-    private fun initSharedPreferences() {
         sharedPrefs = getSharedPreferences(SETTINGS_PREFERENCES, MODE_PRIVATE)
     }
 

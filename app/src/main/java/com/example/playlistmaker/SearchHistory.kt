@@ -8,43 +8,47 @@ import java.util.ArrayList
 class SearchHistory(private val sharedPrefs: SharedPreferences) {
 
     private val tracks: ArrayList<Track> = Gson().fromJson(
-        sharedPrefs.getString(TRACKS, ""),
+        sharedPrefs.getString(KEY_HISTORY_PREFERENCES, ""),
         object : TypeToken<List<Track>>() {}.type
     ) ?: arrayListOf()
+    private val adapter = TrackAdapter(trackList()) {}
 
     companion object {
-        const val HISTORY_PREFERENCES = "history_preferences"
-        const val TRACKS = "tracks"
-        const val MAX_SIZE = 10
+        const val FILE_HISTORY_PREFERENCES = "history_preferences"
+        const val KEY_HISTORY_PREFERENCES = "tracks"
+        const val TRACKS_MAX_SIZE = 10
     }
 
-    fun add(track: Track) {
-        tracks.removeIf { it.trackId == track.trackId }
-        if (tracks.size == MAX_SIZE) {
-            tracks.removeAt(0)
-        }
-        tracks.add(track)
-    }
+    private fun trackList() = ArrayList(tracks.reversed())
 
-    fun safe() {
+    private fun safe() {
         sharedPrefs.edit()
             .putString(
-                TRACKS,
+                KEY_HISTORY_PREFERENCES,
                 Gson().toJson(tracks)
             )
             .apply()
     }
 
-    fun read() {
-
+    fun add(track: Track) {
+        tracks.removeIf { it.trackId == track.trackId }
+        if (tracks.size == TRACKS_MAX_SIZE) {
+            tracks.removeAt(0)
+        }
+        tracks.add(track)
+        adapter.updateData(trackList())
+        safe()
     }
 
     fun clear() {
         tracks.clear()
+        adapter.updateData(trackList())
         sharedPrefs.edit()
-            .putString(TRACKS, "")
+            .putString(KEY_HISTORY_PREFERENCES, "")
             .apply()
     }
 
-    fun trackList() = ArrayList(tracks.reversed())
+    fun empty() = tracks.isEmpty()
+
+    fun adapter() = adapter
 }
