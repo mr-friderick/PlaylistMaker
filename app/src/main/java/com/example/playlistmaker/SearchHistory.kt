@@ -11,7 +11,6 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
         sharedPrefs.getString(KEY_HISTORY_PREFERENCES, ""),
         object : TypeToken<List<Track>>() {}.type
     ) ?: arrayListOf()
-    private val adapter = TrackAdapter(trackList()) {}
 
     companion object {
         const val FILE_HISTORY_PREFERENCES = "history_preferences"
@@ -19,9 +18,7 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
         const val TRACKS_MAX_SIZE = 10
     }
 
-    private fun trackList() = ArrayList(tracks.reversed())
-
-    private fun safe() {
+    private fun save() {
         sharedPrefs.edit()
             .putString(
                 KEY_HISTORY_PREFERENCES,
@@ -36,19 +33,17 @@ class SearchHistory(private val sharedPrefs: SharedPreferences) {
             tracks.removeAt(0)
         }
         tracks.add(track)
-        adapter.updateData(trackList())
-        safe()
+        save()
     }
 
     fun clear() {
         tracks.clear()
-        adapter.updateData(trackList())
         sharedPrefs.edit()
-            .putString(KEY_HISTORY_PREFERENCES, "")
+            .remove(KEY_HISTORY_PREFERENCES)
             .apply()
     }
 
     fun empty() = tracks.isEmpty()
 
-    fun adapter() = adapter
+    fun tracksList() = ArrayList(tracks.reversed())
 }

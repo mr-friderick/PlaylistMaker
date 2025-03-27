@@ -47,6 +47,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var failurePlaceholder: LinearLayout
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var searchHistory: SearchHistory
+    private lateinit var historyAdapter: TrackAdapter
 
     private val apiService = RetrofitFactory.create(BASE_URL_SEARCH).create<ItunesAPI>()
 
@@ -96,7 +97,8 @@ class SearchActivity : AppCompatActivity() {
         sharedPrefs = getSharedPreferences(SearchHistory.FILE_HISTORY_PREFERENCES, MODE_PRIVATE)
 
         searchHistory = SearchHistory(sharedPrefs)
-        historyRecyclerView.adapter = searchHistory.adapter()
+        historyAdapter = TrackAdapter(searchHistory.tracksList()) {}
+        historyRecyclerView.adapter = historyAdapter
     }
 
     private fun setListeners() {
@@ -128,6 +130,7 @@ class SearchActivity : AppCompatActivity() {
 
         buttonClearHistory.setOnClickListener {
             searchHistory.clear()
+            historyAdapter.updateData(searchHistory.tracksList())
             switchVisibilityView(CurrentView.TRACKS)
         }
 
@@ -213,6 +216,7 @@ class SearchActivity : AppCompatActivity() {
     private fun createRecyclerView(recyclerView: RecyclerView, tracksList: ArrayList<Track>) {
         val trackAdapter = TrackAdapter(tracksList) { track ->
             searchHistory.add(track)
+            historyAdapter.updateData(searchHistory.tracksList())
         }
         recyclerView.adapter = trackAdapter
     }
