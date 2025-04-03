@@ -20,7 +20,7 @@ class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     private val trackPoster: ImageView = itemView.findViewById(R.id.track_poster)
     private val trackName: MaterialTextView = itemView.findViewById(R.id.track_name)
     private val trackArtist: MaterialTextView = itemView.findViewById(R.id.track_artist)
-    private val trackTime: MaterialTextView = itemView.findViewById(R.id.track_time)
+    private val trackTime: MaterialTextView = itemView.findViewById(R.id.time)
 
     private fun formatTrackTime(trackTimeMillis: String): String {
         return try {

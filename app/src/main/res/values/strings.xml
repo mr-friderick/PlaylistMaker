@@ -19,6 +19,9 @@
     <string name="search_history_title">Вы искали</string>
     <string name="search_clear_history_text">Очистить историю</string>
 
+    <!--  For layout activity_audio_player -->
+
+
     <!--  For activity SettingsActivity -->
     <string name="settings_share_link">https://practicum.yandex.ru/android-developer/</string>
     <string name="settings_share_title">Поделиться через</string>
@@ -26,4 +29,5 @@
     <string name="settings_support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
     <string name="settings_support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="settings_agreement_link">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="description_back_button">Кнопка назад</string>
 </resources>

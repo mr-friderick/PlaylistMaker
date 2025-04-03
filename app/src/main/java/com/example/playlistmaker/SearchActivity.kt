@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
+import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -28,6 +29,7 @@ class SearchActivity : AppCompatActivity() {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
         const val INPUT_SEARCH_TEXT_DEF = ""
         const val BASE_URL_SEARCH = "https://itunes.apple.com/"
+        const val INTENT_EXTRA_TRACK = "track"
 
         enum class CurrentView {
             HISTORY, TRACKS, NOT_FOUND, NOT_CONNECTION
@@ -217,6 +219,10 @@ class SearchActivity : AppCompatActivity() {
         val trackAdapter = TrackAdapter(tracksList) { track ->
             searchHistory.add(track)
             historyAdapter.updateData(searchHistory.tracksList())
+
+            val intent = Intent(this, PlayerActivity::class.java)
+            intent.putExtra(INTENT_EXTRA_TRACK, Gson().toJson(track))
+            startActivity(intent)
         }
         recyclerView.adapter = trackAdapter
     }
