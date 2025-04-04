@@ -1,4 +1,12 @@
 <resources>
+    <!--  For activity SettingsActivity -->
+    <string name="settings_share_link">https://practicum.yandex.ru/android-developer/</string>
+    <string name="settings_share_title">Поделиться через</string>
+    <string name="settings_support_email">mr.friderick@ya.ru</string>
+    <string name="settings_support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="settings_support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="settings_agreement_link">https://yandex.ru/legal/practicum_offer/</string>
+
     <!--  For layout activity_main -->
     <string name="app_name">Playlist Maker</string>
     <string name="main_title">Playlist maker</string>
@@ -20,14 +28,13 @@
     <string name="search_clear_history_text">Очистить историю</string>
 
     <!--  For layout activity_audio_player -->
-
-
-    <!--  For activity SettingsActivity -->
-    <string name="settings_share_link">https://practicum.yandex.ru/android-developer/</string>
-    <string name="settings_share_title">Поделиться через</string>
-    <string name="settings_support_email">mr.friderick@ya.ru</string>
-    <string name="settings_support_subject">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
-    <string name="settings_support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
-    <string name="settings_agreement_link">https://yandex.ru/legal/practicum_offer/</string>
-    <string name="description_back_button">Кнопка назад</string>
+    <string name="description_button_back">Кнопка назад</string>
+    <string name="player_time_text">Длительность</string>
+    <string name="player_collection_text">Альбом</string>
+    <string name="player_release_text">Год</string>
+    <string name="player_genre_text">Жанр</string>
+    <string name="player_country_text">Стана</string>
+    <string name="description_button_add_playlist">Добавить в плейлист</string>
+    <string name="description_button_play">Воспроизвести/пауза</string>
+    <string name="description_button_add_favorite">Добавить в избранное</string>
 </resources>

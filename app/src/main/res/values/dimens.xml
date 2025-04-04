@@ -15,4 +15,11 @@
     <dimen name="dp28">28dp</dimen>
     <dimen name="dp17">17dp</dimen>
     <dimen name="dp39">39dp</dimen>
+    <dimen name="dp321">321dp</dimen>
+    <dimen name="dp48">48dp</dimen>
+    <dimen name="dp4">4dp</dimen>
+    <dimen name="dp36">36dp</dimen>
+    <dimen name="dp52">52dp</dimen>
+    <dimen name="dp54">54dp</dimen>
+    <dimen name="dp38">38dp</dimen>
 </resources>

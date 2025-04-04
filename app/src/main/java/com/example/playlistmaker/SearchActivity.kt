@@ -99,7 +99,9 @@ class SearchActivity : AppCompatActivity() {
         sharedPrefs = getSharedPreferences(SearchHistory.FILE_HISTORY_PREFERENCES, MODE_PRIVATE)
 
         searchHistory = SearchHistory(sharedPrefs)
-        historyAdapter = TrackAdapter(searchHistory.tracksList()) {}
+        historyAdapter = TrackAdapter(searchHistory.tracksList()) { track ->
+            startPlayerActivity(track)
+        }
         historyRecyclerView.adapter = historyAdapter
     }
 
@@ -142,6 +144,12 @@ class SearchActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+    }
+
+    private fun startPlayerActivity(track: Track) {
+        val intent = Intent(this, PlayerActivity::class.java)
+        intent.putExtra(INTENT_EXTRA_TRACK, Gson().toJson(track))
+        startActivity(intent)
     }
 
     private fun searchSongs(text: String) {
@@ -220,9 +228,7 @@ class SearchActivity : AppCompatActivity() {
             searchHistory.add(track)
             historyAdapter.updateData(searchHistory.tracksList())
 
-            val intent = Intent(this, PlayerActivity::class.java)
-            intent.putExtra(INTENT_EXTRA_TRACK, Gson().toJson(track))
-            startActivity(intent)
+            startPlayerActivity(track)
         }
         recyclerView.adapter = trackAdapter
     }

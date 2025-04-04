@@ -1,5 +1,9 @@
 package com.example.playlistmaker
 
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
 data class TrackResponse(val results: ArrayList<Track>)
 
 data class Track(
@@ -13,5 +17,19 @@ data class Track(
     val primaryGenreName: String,
     val country: String
 ) {
+    companion object {
+        const val DEFAULT_TIME = "00:00"
+    }
+
     fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
+
+    fun getReleaseYear() = releaseDate.substringBefore("-")
+
+    fun formatTrackTime(): String {
+        return kotlin.runCatching {
+            SimpleDateFormat("mm:ss", Locale.getDefault())
+                .format(Date(trackTimeMillis.toLong()))
+                .removePrefix("0")
+        }.getOrDefault(DEFAULT_TIME)
+    }
 }
