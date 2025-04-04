@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/screen_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/player_back"
+            android:layout_width="@dimen/dp48"
+            android:layout_height="@dimen/dp48"
+            android:layout_marginStart="@dimen/dp4"
+            android:layout_marginTop="@dimen/dp4"
+            android:background="@null"
+            android:contentDescription="@string/description_button_back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/track_poster"
+            android:layout_width="@dimen/dp321"
+            android:layout_height="@dimen/dp321"
+            android:layout_marginHorizontal="@dimen/dp24"
+            android:layout_marginTop="@dimen/dp30"
+            android:layout_marginBottom="@dimen/dp24"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@id/track_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/player_back"
+            app:shapeAppearanceOverlay="@style/image_track_poster"
+            app:srcCompat="@drawable/ic_track_placeholder" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/track_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp24"
+            android:layout_marginEnd="@dimen/dp24"
+            android:fontFamily="@font/ys_display_medium"
+            android:textColor="@color/txt_default"
+            android:textFontWeight="400"
+            android:textSize="@dimen/sp22"
+            app:layout_constraintBottom_toTopOf="@id/track_artist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/track_poster"
+            tools:text="Smells Like Teen Spirit" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/track_artist"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp24"
+            android:layout_marginTop="@dimen/dp12"
+            android:layout_marginEnd="@dimen/dp24"
+            android:fontFamily="@font/ys_display_medium"
+            android:textColor="@color/txt_default"
+            android:textFontWeight="400"
+            android:textSize="@dimen/sp14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/track_name"
+            tools:text="Nirvana" />
+
+        <ImageButton
+            android:id="@+id/button_add_playlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp54"
+            android:layout_marginStart="@dimen/dp24"
+            android:contentDescription="@string/description_button_add_playlist"
+            android:background="@drawable/round_button"
+            android:src="@drawable/ic_button_add_playlist"
+            app:layout_constraintEnd_toStartOf="@id/button_play"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/track_artist"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+
+        <ImageButton
+            android:id="@+id/button_play"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp38"
+            android:contentDescription="@string/description_button_play"
+            android:background="@drawable/round_button"
+            android:src="@drawable/ic_button_play"
+            app:layout_constraintEnd_toStartOf="@id/button_add_favorite"
+            app:layout_constraintStart_toEndOf="@id/button_add_playlist"
+            app:layout_constraintTop_toBottomOf="@id/track_artist"
+            app:layout_constraintBottom_toTopOf="@id/track_time_left" />
+
+        <ImageButton
+            android:id="@+id/button_add_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp54"
+            android:layout_marginEnd="@dimen/dp24"
+            android:contentDescription="@string/description_button_add_favorite"
+            android:background="@drawable/round_button"
+            android:src="@drawable/ic_button_favorite"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/button_play"
+            app:layout_constraintTop_toBottomOf="@id/track_artist" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/track_time_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp12"
+            android:layout_marginBottom="@dimen/dp17"
+            android:fontFamily="@font/ys_display_medium"
+            android:textColor="@color/txt_default"
+            android:textFontWeight="500"
+            android:textSize="@dimen/sp14"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/button_play"
+            tools:text="0:00" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.3" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/time"
+            android:layout_marginTop="@dimen/dp39"
+            android:text="@string/player_time_text"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/track_time_left"
+            style="@style/for_player_field_name"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/collection"
+            android:text="@string/player_collection_text"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/track_time"
+            style="@style/for_player_field_name" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/release"
+            android:text="@string/player_release_text"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/track_collection"
+            style="@style/for_player_field_name"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/genre"
+            android:text="@string/player_genre_text"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/track_release"
+            style="@style/for_player_field_name"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/country"
+            android:text="@string/player_country_text"
+            app:layout_constraintEnd_toStartOf="@id/guideline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/track_genre"
+            style="@style/for_player_field_name"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/track_time"
+            android:layout_marginTop="@dimen/dp39"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/track_time_left"
+            tools:text="0:00"
+            style="@style/for_player_field_values"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/track_collection"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/track_time"
+            tools:text="Smells Like Teen Spirit"
+            style="@style/for_player_field_values" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/track_release"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/track_collection"
+            tools:text="0000"
+            style="@style/for_player_field_values"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/track_genre"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/track_release"
+            tools:text="Rock"
+            style="@style/for_player_field_values"/>
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/track_country"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline"
+            app:layout_constraintTop_toBottomOf="@id/track_genre"
+            tools:text="USA"
+            style="@style/for_player_field_values"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
