@@ -24,8 +24,6 @@ class PlayerActivity:  AppCompatActivity() {
         private const val STATE_PLAYING = 2
         private const val STATE_PAUSED = 3
         private const val TIME_LEFT_DELAY = 300L
-
-        private const val DEFAULT_TIME_LEFT = "0:00"
     }
 
     private var playerState = STATE_DEFAULT
@@ -142,7 +140,7 @@ class PlayerActivity:  AppCompatActivity() {
             buttonPlay.setImageResource(R.drawable.ic_button_play)
             mainHandler.removeCallbacks(playRunnable)
 
-            trackTimeLeft.text = DEFAULT_TIME_LEFT
+            trackTimeLeft.text = getResources().getString(R.string.default_time_left);
         }
     }
 
