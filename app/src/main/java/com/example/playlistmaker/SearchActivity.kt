@@ -37,7 +37,7 @@ class SearchActivity : AppCompatActivity() {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
 
         enum class CurrentView {
-            HISTORY, SEARCH, TRACKS, NOT_FOUND, NOT_CONNECTION
+            DEFAULT, HISTORY, SEARCH, TRACKS, NOT_FOUND, NOT_CONNECTION
         }
     }
 
@@ -120,6 +120,7 @@ class SearchActivity : AppCompatActivity() {
         )
 
         viewsByState = mapOf(
+            CurrentView.DEFAULT to listOf(),
             CurrentView.HISTORY to listOf(historyView),
             CurrentView.SEARCH to listOf(searchProgressBar),
             CurrentView.TRACKS to listOf(tracksRecyclerView),
@@ -144,20 +145,20 @@ class SearchActivity : AppCompatActivity() {
 
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchSongs(editText.text.toString())
+                searchDebounce(false)
             }
             false
         }
 
-        editText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && !searchHistory.empty()) {
+        editText.setOnFocusChangeListener { _, _ ->
+            if (historyAllowed()) {
                 switchVisibilityView(CurrentView.HISTORY)
             } else switchVisibilityView(CurrentView.TRACKS)
         }
 
         buttonClear.setOnClickListener {
             createRecyclerView(tracksRecyclerView, arrayListOf())
-            switchVisibilityView(CurrentView.TRACKS)
+            switchVisibilityView(CurrentView.DEFAULT)
             editText.setText("")
             editText.clearFocus()
         }
@@ -200,9 +201,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchDebounce() {
+    private fun searchDebounce(needDelay: Boolean = true) {
         mainHandler.removeCallbacks(searchRunnable)
-        mainHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        if (needDelay) {
+            mainHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        } else mainHandler.post(searchRunnable)
     }
 
     private fun searchSongs(text: String) {
@@ -213,9 +216,9 @@ class SearchActivity : AppCompatActivity() {
         apiService.search(text)
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
-                    // Обработка случая когда был запущен поток поиска и сразу после очистили строку поиска
+                    // Обработка случая когда был запущен поток поиска и сразу после - очистили строку поиска
                     if (stopSearch) {
-                        if (editText.hasFocus() && editText.text.isEmpty()) {
+                        if (historyAllowed()) {
                             switchVisibilityView(CurrentView.HISTORY)
                         } else switchVisibilityView(CurrentView.TRACKS)
                         return
@@ -258,7 +261,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun defineCurrentView() {
-        if (!searchHistory.empty()) {
+        if (historyAllowed()) {
             switchVisibilityView(CurrentView.HISTORY)
         } else switchVisibilityView(CurrentView.TRACKS)
     }
@@ -282,17 +285,17 @@ class SearchActivity : AppCompatActivity() {
             val textEmpty = s?.isEmpty() == true
             stopSearch = textEmpty
 
-            if (editText.hasFocus() && textEmpty) {
+            if (historyAllowed()) {
                 switchVisibilityView(CurrentView.HISTORY)
             } else if (!textEmpty) {
                 searchDebounce()
-            } else {
-                switchVisibilityView(CurrentView.TRACKS)
-            }
+            } else switchVisibilityView(CurrentView.DEFAULT)
         }
 
         override fun afterTextChanged(s: Editable?) {
             inputText = s.toString()
         }
     }
+
+    private fun historyAllowed() = editText.hasFocus() && editText.text.isEmpty() && !searchHistory.empty()
 }
