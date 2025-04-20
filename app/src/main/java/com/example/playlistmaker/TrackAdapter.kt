@@ -20,6 +20,7 @@ class TrackAdapter(private val tracks: ArrayList<Track>, private val clickItem: 
 
     override fun getItemCount(): Int = tracks.size
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newData: List<Track>) {
         tracks.clear()
         tracks.addAll(newData)
