@@ -245,8 +245,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun switchVisibilityView(status: CurrentView) {
-        allDynamicView.forEach { it.visibility = View.GONE }
-        viewsByState[status]?.forEach { it.visibility = View.VISIBLE }
+        allDynamicView.forEach { it.isVisible = false }
+        viewsByState[status]?.forEach { it.isVisible = true }
     }
 
     private fun processInstanceState(savedInstanceState: Bundle?) {
