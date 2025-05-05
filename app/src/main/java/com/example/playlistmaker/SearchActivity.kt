@@ -3,6 +3,8 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -10,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.Toolbar
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -30,11 +33,18 @@ class SearchActivity : AppCompatActivity() {
         const val INPUT_SEARCH_TEXT_DEF = ""
         const val BASE_URL_SEARCH = "https://itunes.apple.com/"
         const val INTENT_EXTRA_TRACK = "track"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
 
         enum class CurrentView {
-            HISTORY, TRACKS, NOT_FOUND, NOT_CONNECTION
+            DEFAULT, HISTORY, SEARCH, TRACKS, NOT_FOUND, NOT_CONNECTION
         }
     }
+
+    private var isClickAllowed = true
+    private var stopSearch = false
+    private lateinit var allDynamicView: List<View>
+    private lateinit var viewsByState: Map<CurrentView, List<View>>
 
     private var inputText = INPUT_SEARCH_TEXT_DEF
     private lateinit var editText: EditText
@@ -47,9 +57,13 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyView: LinearLayout
     private lateinit var notFoundPlaceholder: LinearLayout
     private lateinit var failurePlaceholder: LinearLayout
+    private lateinit var searchProgressBar: ProgressBar
+
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var searchHistory: SearchHistory
     private lateinit var historyAdapter: TrackAdapter
+    private lateinit var mainHandler: Handler
+    private lateinit var searchRunnable: Runnable
 
     private val apiService = RetrofitFactory.create(BASE_URL_SEARCH).create<ItunesAPI>()
 
@@ -95,6 +109,24 @@ class SearchActivity : AppCompatActivity() {
         historyRecyclerView = findViewById(R.id.search_history_recycler_view)
         notFoundPlaceholder = findViewById(R.id.search_not_found_placeholder)
         failurePlaceholder = findViewById(R.id.search_failure_placeholder)
+        searchProgressBar = findViewById(R.id.search_progress_bar)
+
+        allDynamicView = listOf(
+            historyView,
+            searchProgressBar,
+            tracksRecyclerView,
+            notFoundPlaceholder,
+            failurePlaceholder,
+        )
+
+        viewsByState = mapOf(
+            CurrentView.DEFAULT to listOf(),
+            CurrentView.HISTORY to listOf(historyView),
+            CurrentView.SEARCH to listOf(searchProgressBar),
+            CurrentView.TRACKS to listOf(tracksRecyclerView),
+            CurrentView.NOT_FOUND to listOf(notFoundPlaceholder),
+            CurrentView.NOT_CONNECTION to listOf(failurePlaceholder)
+        )
 
         sharedPrefs = getSharedPreferences(SearchHistory.FILE_HISTORY_PREFERENCES, MODE_PRIVATE)
 
@@ -103,6 +135,9 @@ class SearchActivity : AppCompatActivity() {
             startPlayerActivity(track)
         }
         historyRecyclerView.adapter = historyAdapter
+
+        mainHandler = Handler(Looper.getMainLooper())
+        searchRunnable = Runnable { searchSongs(editText.text.toString()) }
     }
 
     private fun setListeners() {
@@ -110,20 +145,20 @@ class SearchActivity : AppCompatActivity() {
 
         editText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchSongs(editText.text.toString())
+                searchDebounce(false)
             }
             false
         }
 
-        editText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && !searchHistory.empty()) {
+        editText.setOnFocusChangeListener { _, _ ->
+            if (historyAllowed()) {
                 switchVisibilityView(CurrentView.HISTORY)
             } else switchVisibilityView(CurrentView.TRACKS)
         }
 
         buttonClear.setOnClickListener {
             createRecyclerView(tracksRecyclerView, arrayListOf())
-            switchVisibilityView(CurrentView.TRACKS)
+            switchVisibilityView(CurrentView.DEFAULT)
             editText.setText("")
             editText.clearFocus()
         }
@@ -146,16 +181,49 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            mainHandler.postDelayed(
+                { isClickAllowed = true },
+                CLICK_DEBOUNCE_DELAY
+            )
+        }
+        return current
+    }
+
     private fun startPlayerActivity(track: Track) {
-        val intent = Intent(this, PlayerActivity::class.java)
-        intent.putExtra(INTENT_EXTRA_TRACK, Gson().toJson(track))
-        startActivity(intent)
+        if (clickDebounce()) {
+            val intent = Intent(this, PlayerActivity::class.java)
+            intent.putExtra(INTENT_EXTRA_TRACK, Gson().toJson(track))
+            startActivity(intent)
+        }
+    }
+
+    private fun searchDebounce(needDelay: Boolean = true) {
+        mainHandler.removeCallbacks(searchRunnable)
+        if (needDelay) {
+            mainHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        } else mainHandler.post(searchRunnable)
     }
 
     private fun searchSongs(text: String) {
+        if (text.isEmpty()) return
+
+        switchVisibilityView(CurrentView.SEARCH)
+
         apiService.search(text)
             .enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
+                    // Обработка случая когда был запущен поток поиска и сразу после - очистили строку поиска
+                    if (stopSearch) {
+                        if (historyAllowed()) {
+                            switchVisibilityView(CurrentView.HISTORY)
+                        } else switchVisibilityView(CurrentView.TRACKS)
+                        return
+                    }
+
                     if (response.isSuccessful) {
                         val tracks = response.body()?.results ?: arrayListOf()
                         if (tracks.isNotEmpty()) {
@@ -177,33 +245,8 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun switchVisibilityView(status: CurrentView) {
-        when (status) {
-            CurrentView.HISTORY -> {
-                historyView.visibility = View.VISIBLE
-                tracksRecyclerView.visibility = View.GONE
-                notFoundPlaceholder.visibility = View.GONE
-                failurePlaceholder.visibility = View.GONE
-            }
-            CurrentView.TRACKS -> {
-                historyView.visibility = View.GONE
-                tracksRecyclerView.visibility = View.VISIBLE
-                notFoundPlaceholder.visibility = View.GONE
-                failurePlaceholder.visibility = View.GONE
-            }
-            CurrentView.NOT_FOUND -> {
-                historyView.visibility = View.GONE
-                tracksRecyclerView.visibility = View.GONE
-                notFoundPlaceholder.visibility = View.VISIBLE
-                failurePlaceholder.visibility = View.GONE
-            }
-            // CurrentView.NOT_CONNECTION
-            else -> {
-                historyView.visibility = View.GONE
-                tracksRecyclerView.visibility = View.GONE
-                notFoundPlaceholder.visibility = View.GONE
-                failurePlaceholder.visibility = View.VISIBLE
-            }
-        }
+        allDynamicView.forEach { it.isVisible = false }
+        viewsByState[status]?.forEach { it.isVisible = true }
     }
 
     private fun processInstanceState(savedInstanceState: Bundle?) {
@@ -218,7 +261,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun defineCurrentView() {
-        if (!searchHistory.empty()) {
+        if (historyAllowed()) {
             switchVisibilityView(CurrentView.HISTORY)
         } else switchVisibilityView(CurrentView.TRACKS)
     }
@@ -238,18 +281,21 @@ class SearchActivity : AppCompatActivity() {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             buttonClear.isVisible = !s.isNullOrEmpty()
-            if (editText.hasFocus() && s?.isEmpty() == true) {
+
+            val textEmpty = s?.isEmpty() == true
+            stopSearch = textEmpty
+
+            if (historyAllowed()) {
                 switchVisibilityView(CurrentView.HISTORY)
-            } else switchVisibilityView(CurrentView.TRACKS)
+            } else if (!textEmpty) {
+                searchDebounce()
+            } else switchVisibilityView(CurrentView.DEFAULT)
         }
 
         override fun afterTextChanged(s: Editable?) {
-            val currentText = s.toString()
-            if (currentText.isEmpty()) {
-                createRecyclerView(tracksRecyclerView, arrayListOf())
-                switchVisibilityView(CurrentView.TRACKS)
-            }
-            inputText = currentText
+            inputText = s.toString()
         }
     }
+
+    private fun historyAllowed() = editText.hasFocus() && editText.text.isEmpty() && !searchHistory.empty()
 }

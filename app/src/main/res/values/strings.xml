@@ -37,4 +37,5 @@
     <string name="description_button_add_playlist">Добавить в плейлист</string>
     <string name="description_button_play">Воспроизвести/пауза</string>
     <string name="description_button_add_favorite">Добавить в избранное</string>
+    <string name="default_time_left">0:00</string>
 </resources>
