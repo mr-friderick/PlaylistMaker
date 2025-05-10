@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.content.Intent
 import android.content.SharedPreferences
@@ -20,6 +20,17 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.MainActivity
+import com.example.playlistmaker.PlayerActivity
+import com.example.playlistmaker.R
+import com.example.playlistmaker.data.network.RetrofitFactory
+import com.example.playlistmaker.SearchHistory
+import com.example.playlistmaker.data.network.ItunesAPI
+import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.impl.TracksIntreractorImpl
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.models.TrackResponse
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import retrofit2.Call
@@ -31,7 +42,6 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
         const val INPUT_SEARCH_TEXT_DEF = ""
-        const val BASE_URL_SEARCH = "https://itunes.apple.com/"
         const val INTENT_EXTRA_TRACK = "track"
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
@@ -59,13 +69,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var failurePlaceholder: LinearLayout
     private lateinit var searchProgressBar: ProgressBar
 
+    private lateinit var tracksInteractor: TracksInteractor
     private lateinit var sharedPrefs: SharedPreferences
     private lateinit var searchHistory: SearchHistory
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var mainHandler: Handler
     private lateinit var searchRunnable: Runnable
-
-    private val apiService = RetrofitFactory.create(BASE_URL_SEARCH).create<ItunesAPI>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,6 +136,8 @@ class SearchActivity : AppCompatActivity() {
             CurrentView.NOT_FOUND to listOf(notFoundPlaceholder),
             CurrentView.NOT_CONNECTION to listOf(failurePlaceholder)
         )
+
+        tracksInteractor = Creator.provideTracksInteractor()
 
         sharedPrefs = getSharedPreferences(SearchHistory.FILE_HISTORY_PREFERENCES, MODE_PRIVATE)
 
@@ -213,35 +224,61 @@ class SearchActivity : AppCompatActivity() {
 
         switchVisibilityView(CurrentView.SEARCH)
 
-        apiService.search(text)
-            .enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
-                    // Обработка случая когда был запущен поток поиска и сразу после - очистили строку поиска
-                    if (stopSearch) {
-                        if (historyAllowed()) {
-                            switchVisibilityView(CurrentView.HISTORY)
-                        } else switchVisibilityView(CurrentView.TRACKS)
-                        return
-                    }
-
-                    if (response.isSuccessful) {
-                        val tracks = response.body()?.results ?: arrayListOf()
-                        if (tracks.isNotEmpty()) {
-                            switchVisibilityView(CurrentView.TRACKS)
-                            createRecyclerView(tracksRecyclerView, tracks)
-                        } else {
-                           switchVisibilityView(CurrentView.NOT_FOUND)
+        tracksInteractor.searchTracks(
+            text,
+            object : TracksInteractor.TracksConsumer {
+                override fun consume(foundTracks: ArrayList<Track>) {
+                    runOnUiThread {
+                        if (stopSearch) {
+                            if (historyAllowed()) {
+                                switchVisibilityView(CurrentView.HISTORY)
+                            } else switchVisibilityView(CurrentView.TRACKS)
+                            return@runOnUiThread
                         }
 
-                    } else {
-                        switchVisibilityView(CurrentView.NOT_CONNECTION)
+                        if (foundTracks.isNotEmpty()) {
+                            switchVisibilityView(CurrentView.TRACKS)
+                            createRecyclerView(tracksRecyclerView, foundTracks)
+                        } else {
+                            switchVisibilityView(CurrentView.NOT_FOUND)
+                        }
+                        // TODO Как обработать ошибку интернета?
+//                    } else {
+//                        switchVisibilityView(CurrentView.NOT_CONNECTION)
+//                    }
                     }
                 }
-
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    switchVisibilityView(CurrentView.NOT_CONNECTION)
-                }
-            })
+            }
+        )
+//        apiService.search(text)
+//            .enqueue(object : Callback<TrackResponse> {
+//                override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
+//                    // Обработка случая когда был запущен поток поиска и сразу после - очистили строку поиска
+//                    if (stopSearch) {
+//                        if (historyAllowed()) {
+//                            switchVisibilityView(CurrentView.HISTORY)
+//                        } else switchVisibilityView(CurrentView.TRACKS)
+//                        return
+//                    }
+//
+//                    if (response.isSuccessful) {
+//                        val tracks = response.body()?.results ?: arrayListOf()
+//                        if (tracks.isNotEmpty()) {
+//                            switchVisibilityView(CurrentView.TRACKS)
+//                            createRecyclerView(tracksRecyclerView, tracks)
+//                        } else {
+//                           switchVisibilityView(CurrentView.NOT_FOUND)
+//                        }
+//
+//                    } else {
+//                        switchVisibilityView(CurrentView.NOT_CONNECTION)
+//                    }
+//                }
+//
+//                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
+//                    switchVisibilityView(CurrentView.NOT_CONNECTION)
+//                }
+//            })
     }
 
     private fun switchVisibilityView(status: CurrentView) {

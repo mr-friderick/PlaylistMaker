@@ -1,8 +1,9 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.domain.models.Track
 
 class TrackAdapter(private val tracks: ArrayList<Track>, private val clickItem: (Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
