@@ -1,11 +1,5 @@
 package com.example.playlistmaker.domain.models
 
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-
-data class TrackResponse(val results: ArrayList<Track>)
-
 data class Track(
     val trackId: Int,
     val trackName: String,
@@ -18,19 +12,16 @@ data class Track(
     val country: String,
     val previewUrl: String
 ) {
-    companion object {
-        const val DEFAULT_TIME = "00:00"
-    }
-
     fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
 
     fun getReleaseYear() = releaseDate.substringBefore("-")
 
-    fun formatTrackTime(): String {
+    fun trackTimeToMillis(): Long {
         return kotlin.runCatching {
-            SimpleDateFormat("mm:ss", Locale.getDefault())
-                .format(Date(trackTimeMillis.toLong()))
-                .removePrefix("0")
-        }.getOrDefault(DEFAULT_TIME)
+            val parts = trackTimeMillis.split(":").map { it.toInt() }
+            val minutes = parts.getOrNull(0) ?: 0
+            val seconds = parts.getOrNull(1) ?: 0
+            (minutes * 60 + seconds) * 1000L
+        }.getOrDefault(0L)
     }
 }

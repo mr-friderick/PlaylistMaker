@@ -20,7 +20,7 @@ data class TrackDto(
         const val DEFAULT_TIME = "00:00"
     }
 
-    fun formatTrackTime(): String {
+    fun trackTimeToMMSS(): String {
         return kotlin.runCatching {
             SimpleDateFormat("mm:ss", Locale.getDefault())
                 .format(Date(trackTimeMillis))

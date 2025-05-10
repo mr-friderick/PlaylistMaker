@@ -1,7 +1,6 @@
 package com.example.playlistmaker.ui.search
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,18 +23,11 @@ import com.example.playlistmaker.Creator
 import com.example.playlistmaker.MainActivity
 import com.example.playlistmaker.PlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.SearchHistory
-import com.example.playlistmaker.data.network.ItunesAPI
+import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.domain.impl.TracksIntreractorImpl
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.domain.models.TrackResponse
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
     companion object {
@@ -69,8 +61,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchProgressBar: ProgressBar
 
     private lateinit var tracksInteractor: TracksInteractor
-    private lateinit var sharedPrefs: SharedPreferences
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var historyInteractor: HistoryInteractor
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var mainHandler: Handler
     private lateinit var searchRunnable: Runnable
@@ -88,19 +79,16 @@ class SearchActivity : AppCompatActivity() {
         defineCurrentView()
     }
 
-    // TODO ОКЕЙ
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_SEARCH_TEXT, inputText)
     }
 
-    // TODO ОКЕЙ
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         editText.setText(savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF))
     }
 
-    // TODO ОКЕЙ
     private fun setupWindowInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.screen_search)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -109,7 +97,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    // TODO BAD
     private fun initVariables() {
         editText = findViewById(R.id.search_edit_text)
         buttonClear = findViewById(R.id.search_clear_icon)
@@ -141,11 +128,9 @@ class SearchActivity : AppCompatActivity() {
         )
 
         tracksInteractor = Creator.provideTracksInteractor()
+        historyInteractor = Creator.provideHistoryInteractor(this)
 
-        sharedPrefs = getSharedPreferences(SearchHistory.FILE_HISTORY_PREFERENCES, MODE_PRIVATE)
-
-        searchHistory = SearchHistory(sharedPrefs)
-        historyAdapter = TrackAdapter(searchHistory.tracksList()) { track ->
+        historyAdapter = TrackAdapter(historyInteractor.read()) { track ->
             startPlayerActivity(track)
         }
         historyRecyclerView.adapter = historyAdapter
@@ -182,8 +167,8 @@ class SearchActivity : AppCompatActivity() {
         }
 
         buttonClearHistory.setOnClickListener {
-            searchHistory.clear()
-            historyAdapter.updateData(searchHistory.tracksList())
+            historyInteractor.clear()
+            historyAdapter.updateData(historyInteractor.read())
             switchVisibilityView(CurrentView.TRACKS)
         }
 
@@ -278,13 +263,15 @@ class SearchActivity : AppCompatActivity() {
     private fun defineCurrentView() {
         if (historyAllowed()) {
             switchVisibilityView(CurrentView.HISTORY)
-        } else switchVisibilityView(CurrentView.TRACKS)
+        } else {
+            switchVisibilityView(CurrentView.TRACKS)
+        }
     }
 
     private fun createRecyclerView(recyclerView: RecyclerView, tracksList: ArrayList<Track>) {
         val trackAdapter = TrackAdapter(tracksList) { track ->
-            searchHistory.add(track)
-            historyAdapter.updateData(searchHistory.tracksList())
+            historyInteractor.add(track)
+            historyAdapter.updateData(historyInteractor.read())
 
             startPlayerActivity(track)
         }
@@ -312,5 +299,5 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun historyAllowed() = editText.hasFocus() && editText.text.isEmpty() && !searchHistory.empty()
+    private fun historyAllowed() = editText.hasFocus() && editText.text.isEmpty() && !historyInteractor.isEmpty()
 }

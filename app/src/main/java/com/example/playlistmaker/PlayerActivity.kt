@@ -102,7 +102,7 @@ class PlayerActivity:  AppCompatActivity() {
 
         trackName.text = trackModel.trackName
         trackArtist.text = trackModel.artistName
-        trackTime.text = trackModel.formatTrackTime()
+        trackTime.text = trackModel.trackTimeMillis
         trackCollection.text = trackModel.collectionName
         trackRelease.text = trackModel.getReleaseYear()
         trackGenre.text = trackModel.primaryGenreName
