@@ -18,11 +18,6 @@ import com.google.android.material.textview.MaterialTextView
 import androidx.core.net.toUri
 
 class SettingsActivity : AppCompatActivity() {
-    companion object {
-        const val SETTINGS_PREFERENCES = "settings_preferences"
-        const val DARK_THEME = "dark_theme"
-    }
-
     private lateinit var toolbar: Toolbar
     private lateinit var themeSwitcher: SwitchMaterial
     private lateinit var buttonShare: MaterialTextView

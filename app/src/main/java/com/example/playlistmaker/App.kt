@@ -1,14 +1,12 @@
 package com.example.playlistmaker
 
 import android.app.Application
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.ui.settings.SettingsActivity
+import com.example.playlistmaker.domain.api.SettingsInteractor
 
 class App : Application() {
-
-    private val settingsSharedPrefs: SharedPreferences by lazy {
-        getSharedPreferences(SettingsActivity.SETTINGS_PREFERENCES, MODE_PRIVATE)
+    private val settingsInteractor: SettingsInteractor by lazy {
+        Creator.provideSettingInteractor(this)
     }
     private var darkTheme = false
 
@@ -20,7 +18,7 @@ class App : Application() {
     }
 
     private fun setupThemeStatus() {
-        darkTheme = settingsSharedPrefs.getBoolean(SettingsActivity.DARK_THEME, darkTheme)
+        darkTheme = settingsInteractor.read()
     }
 
     fun switchTheme(darkThemeEnabled: Boolean) {
@@ -32,8 +30,6 @@ class App : Application() {
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
-        settingsSharedPrefs.edit()
-            .putBoolean(SettingsActivity.DARK_THEME, darkThemeEnabled)
-            .apply()
+        settingsInteractor.save(darkThemeEnabled)
     }
 }
