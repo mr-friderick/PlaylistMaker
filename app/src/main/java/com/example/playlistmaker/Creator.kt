@@ -2,19 +2,25 @@ package com.example.playlistmaker
 
 import android.content.Context
 import com.example.playlistmaker.data.localstorage.HistoryRepositoryImpl
+import com.example.playlistmaker.data.localstorage.SettingsRepositoryImpl
 import com.example.playlistmaker.data.localstorage.SharedPrefHistoryStorage
+import com.example.playlistmaker.data.localstorage.SharedPrefSettingsStorage
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.network.TracksRepositoryImpl
 import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.api.HistoryRepository
+import com.example.playlistmaker.domain.api.SettingsInteractor
+import com.example.playlistmaker.domain.api.SettingsRepository
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.impl.HistoryInteractorImpl
+import com.example.playlistmaker.domain.impl.SettingsInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksIntreractorImpl
 import com.google.gson.Gson
 
 object Creator {
-    const val FILE_HISTORY_PREFERENCES = "history_preferences"
+    private const val FILE_HISTORY_PREFERENCES = "history_preferences"
+    private const val FILE_SETTINGS_PREFERENCES = "settings_preferences"
 
     // Search tracks --------------------------------------------
     private fun getTracksRepository(): TracksRepository {
@@ -33,5 +39,15 @@ object Creator {
 
     fun provideHistoryInteractor(context: Context): HistoryInteractor {
         return HistoryInteractorImpl(getHistoryRepository(context))
+    }
+
+    // Settings -------------------------------------------------
+    private fun getSettingsRepository(context: Context): SettingsRepository {
+        val sharedPrefs = context.getSharedPreferences(FILE_SETTINGS_PREFERENCES, Context.MODE_PRIVATE)
+        return SettingsRepositoryImpl(SharedPrefSettingsStorage(sharedPrefs))
+    }
+
+    fun provideSettingInteractor(context: Context): SettingsInteractor {
+        return SettingsInteractorImpl(getSettingsRepository(context))
     }
 }

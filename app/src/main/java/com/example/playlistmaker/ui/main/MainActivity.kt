@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.main
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,6 +6,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.ui.medialibrary.MediaActivity
+import com.example.playlistmaker.R
+import com.example.playlistmaker.ui.settings.SettingsActivity
 import com.example.playlistmaker.ui.search.SearchActivity
 import com.google.android.material.button.MaterialButton
 
@@ -21,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setupWindowInsets()
 
-        initScreenView()
+        initVariables()
         setListeners()
     }
 
@@ -33,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun initScreenView() {
+    private fun initVariables() {
         buttonSearch = findViewById(R.id.search)
         buttonMedia = findViewById(R.id.media)
         buttonSettings = findViewById(R.id.settings)

@@ -20,12 +20,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.MainActivity
-import com.example.playlistmaker.PlayerActivity
+import com.example.playlistmaker.ui.main.MainActivity
+import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.api.HistoryInteractor
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.search.TrackAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 

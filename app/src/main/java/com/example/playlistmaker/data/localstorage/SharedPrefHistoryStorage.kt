@@ -3,7 +3,6 @@ package com.example.playlistmaker.data.localstorage
 import android.content.SharedPreferences
 import com.example.playlistmaker.data.HistoryStorage
 import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import androidx.core.content.edit
