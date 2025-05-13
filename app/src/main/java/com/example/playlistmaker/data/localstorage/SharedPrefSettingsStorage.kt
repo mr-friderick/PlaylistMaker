@@ -7,10 +7,6 @@ import com.example.playlistmaker.data.SettingsStorage
 class SharedPrefSettingsStorage(
     private val sharedPrefs: SharedPreferences
 ): SettingsStorage {
-    companion object {
-        const val KEY_SETTINGS = "dark_theme"
-    }
-
     override fun save(state: Boolean) {
         sharedPrefs.edit {
             putBoolean(KEY_SETTINGS, state)
@@ -19,5 +15,9 @@ class SharedPrefSettingsStorage(
 
     override fun read(): Boolean {
         return sharedPrefs.getBoolean(KEY_SETTINGS, false)
+    }
+
+    companion object {
+        const val KEY_SETTINGS = "dark_theme"
     }
 }

@@ -21,14 +21,6 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity:  AppCompatActivity() {
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val TIME_LEFT_DELAY = 300L
-    }
-
     private var playerState = STATE_DEFAULT
 
     private lateinit var trackModel: Track
@@ -174,4 +166,11 @@ class PlayerActivity:  AppCompatActivity() {
         mainHandler.removeCallbacks(playRunnable)
     }
 
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val TIME_LEFT_DELAY = 300L
+    }
 }

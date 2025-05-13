@@ -11,15 +11,11 @@ class SharedPrefHistoryStorage(
     private val sharedPrefs: SharedPreferences,
     private val gson: Gson
 ): HistoryStorage {
-    companion object {
-        const val KEY_HISTORY = "tracks"
-    }
-
     override fun save(tracksDto: ArrayList<TrackDto>) {
         sharedPrefs.edit {
             putString(
                 KEY_HISTORY,
-                Gson().toJson(tracksDto)
+                gson.toJson(tracksDto)
             )
         }
     }
@@ -35,5 +31,9 @@ class SharedPrefHistoryStorage(
         sharedPrefs.edit {
             remove(KEY_HISTORY)
         }
+    }
+
+    companion object {
+        const val KEY_HISTORY = "tracks"
     }
 }

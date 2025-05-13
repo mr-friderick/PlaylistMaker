@@ -7,10 +7,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class RetrofitNetworkClient : NetworkClient {
-    companion object {
-        const val ITUNES_BASE_URL_SEARCH = "https://itunes.apple.com/"
-    }
-
     private val retrofit = Retrofit.Builder()
         .baseUrl(ITUNES_BASE_URL_SEARCH)
         .addConverterFactory(GsonConverterFactory.create())
@@ -30,5 +26,9 @@ class RetrofitNetworkClient : NetworkClient {
             else -> Response().apply { resultCode = HttpStatus.BAD_REQUEST }
         }
         return result
+    }
+
+    companion object {
+        const val ITUNES_BASE_URL_SEARCH = "https://itunes.apple.com/"
     }
 }

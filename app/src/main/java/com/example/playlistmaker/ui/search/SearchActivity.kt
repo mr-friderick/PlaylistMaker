@@ -31,18 +31,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
-    companion object {
-        const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
-        const val INPUT_SEARCH_TEXT_DEF = ""
-        const val INTENT_EXTRA_TRACK = "track"
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-
-        enum class CurrentView {
-            DEFAULT, HISTORY, SEARCH, TRACKS, NOT_FOUND, NOT_CONNECTION
-        }
-    }
-
     private var isClickAllowed = true
     private var stopSearch = false
     private lateinit var allDynamicView: List<View>
@@ -301,4 +289,16 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun historyAllowed() = editText.hasFocus() && editText.text.isEmpty() && !historyInteractor.isEmpty()
+
+    companion object {
+        const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
+        const val INPUT_SEARCH_TEXT_DEF = ""
+        const val INTENT_EXTRA_TRACK = "track"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+
+        enum class CurrentView {
+            DEFAULT, HISTORY, SEARCH, TRACKS, NOT_FOUND, NOT_CONNECTION
+        }
+    }
 }

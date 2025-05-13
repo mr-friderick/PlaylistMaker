@@ -5,10 +5,6 @@ import com.example.playlistmaker.domain.api.HistoryRepository
 import com.example.playlistmaker.domain.models.Track
 
 class HistoryInteractorImpl(private val repository: HistoryRepository): HistoryInteractor {
-    companion object {
-        private const val MAX_HISTORY_SIZE = 10
-    }
-
     override fun add(track: Track) {
         val currentHistory = repository.read()
         currentHistory.removeIf { it.trackId == track.trackId }
@@ -30,5 +26,9 @@ class HistoryInteractorImpl(private val repository: HistoryRepository): HistoryI
 
     override fun isEmpty(): Boolean {
         return repository.read().isEmpty()
+    }
+
+    companion object {
+        private const val MAX_HISTORY_SIZE = 10
     }
 }
