@@ -1,7 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.settings
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toolbar
@@ -9,22 +8,23 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.materialswitch.MaterialSwitch
+import com.example.playlistmaker.App
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.interactors.SettingsInteractor
+import com.example.playlistmaker.ui.main.MainActivity
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView
+import androidx.core.net.toUri
 
 class SettingsActivity : AppCompatActivity() {
-    companion object {
-        const val SETTINGS_PREFERENCES = "settings_preferences"
-        const val DARK_THEME = "dark_theme"
-    }
-
     private lateinit var toolbar: Toolbar
     private lateinit var themeSwitcher: SwitchMaterial
     private lateinit var buttonShare: MaterialTextView
     private lateinit var buttonSupport: MaterialTextView
     private lateinit var buttonAgreement: MaterialTextView
-    private lateinit var sharedPrefs: SharedPreferences
+
+    private lateinit var settingsInteractor: SettingsInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,11 +52,11 @@ class SettingsActivity : AppCompatActivity() {
         buttonSupport = findViewById(R.id.support)
         buttonAgreement = findViewById(R.id.agreement)
 
-        sharedPrefs = getSharedPreferences(SETTINGS_PREFERENCES, MODE_PRIVATE)
+        settingsInteractor = Creator.provideSettingInteractor(this)
     }
 
     private fun setupThemeSwitcher() {
-        themeSwitcher.isChecked = sharedPrefs.getBoolean(DARK_THEME, false)
+        themeSwitcher.isChecked = settingsInteractor.read()
     }
 
     private fun setListeners() {
@@ -66,9 +66,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         themeSwitcher.setOnCheckedChangeListener { _, checked ->
-            sharedPrefs.edit()
-                .putBoolean(DARK_THEME, checked)
-                .apply()
+            settingsInteractor.save(checked)
             (applicationContext as App).switchTheme(checked)
         }
 
@@ -88,9 +86,8 @@ class SettingsActivity : AppCompatActivity() {
 
             val intent = Intent().apply {
                 action = Intent.ACTION_SENDTO
-                data = Uri.parse(
-                    "mailto:$recipient?subject=${Uri.encode(subject)}&body=${Uri.encode(body)}"
-                )
+                data =
+                    "mailto:$recipient?subject=${Uri.encode(subject)}&body=${Uri.encode(body)}".toUri()
             }
             startActivity(intent)
         }
@@ -98,7 +95,7 @@ class SettingsActivity : AppCompatActivity() {
         buttonAgreement.setOnClickListener {
             val intent = Intent().apply {
                 action = Intent.ACTION_VIEW
-                data = Uri.parse(getString(R.string.settings_agreement_link))
+                data = getString(R.string.settings_agreement_link).toUri()
             }
             startActivity(intent)
         }

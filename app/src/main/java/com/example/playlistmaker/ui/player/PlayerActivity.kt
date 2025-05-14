@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.player
 
 import android.content.Intent
 import android.media.MediaPlayer
@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.search.SearchActivity
 import com.google.android.material.imageview.ShapeableImageView
 import com.google.android.material.textview.MaterialTextView
 import com.google.gson.Gson
@@ -18,14 +21,6 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class PlayerActivity:  AppCompatActivity() {
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-        private const val TIME_LEFT_DELAY = 300L
-    }
-
     private var playerState = STATE_DEFAULT
 
     private lateinit var trackModel: Track
@@ -100,7 +95,7 @@ class PlayerActivity:  AppCompatActivity() {
 
         trackName.text = trackModel.trackName
         trackArtist.text = trackModel.artistName
-        trackTime.text = trackModel.formatTrackTime()
+        trackTime.text = trackModel.trackTimeMillis
         trackCollection.text = trackModel.collectionName
         trackRelease.text = trackModel.getReleaseYear()
         trackGenre.text = trackModel.primaryGenreName
@@ -171,4 +166,11 @@ class PlayerActivity:  AppCompatActivity() {
         mainHandler.removeCallbacks(playRunnable)
     }
 
+    companion object {
+        private const val STATE_DEFAULT = 0
+        private const val STATE_PREPARED = 1
+        private const val STATE_PLAYING = 2
+        private const val STATE_PAUSED = 3
+        private const val TIME_LEFT_DELAY = 300L
+    }
 }

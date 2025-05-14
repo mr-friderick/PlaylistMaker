@@ -1,7 +1,6 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,27 +19,18 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.ui.main.MainActivity
+import com.example.playlistmaker.ui.player.PlayerActivity
+import com.example.playlistmaker.R
+import com.example.playlistmaker.domain.interactors.HistoryInteractor
+import com.example.playlistmaker.domain.interactors.TracksInteractor
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.search.TrackAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.create
 
 class SearchActivity : AppCompatActivity() {
-    companion object {
-        const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
-        const val INPUT_SEARCH_TEXT_DEF = ""
-        const val BASE_URL_SEARCH = "https://itunes.apple.com/"
-        const val INTENT_EXTRA_TRACK = "track"
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
-
-        enum class CurrentView {
-            DEFAULT, HISTORY, SEARCH, TRACKS, NOT_FOUND, NOT_CONNECTION
-        }
-    }
-
     private var isClickAllowed = true
     private var stopSearch = false
     private lateinit var allDynamicView: List<View>
@@ -59,13 +49,11 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var failurePlaceholder: LinearLayout
     private lateinit var searchProgressBar: ProgressBar
 
-    private lateinit var sharedPrefs: SharedPreferences
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var tracksInteractor: TracksInteractor
+    private lateinit var historyInteractor: HistoryInteractor
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var mainHandler: Handler
     private lateinit var searchRunnable: Runnable
-
-    private val apiService = RetrofitFactory.create(BASE_URL_SEARCH).create<ItunesAPI>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,10 +116,10 @@ class SearchActivity : AppCompatActivity() {
             CurrentView.NOT_CONNECTION to listOf(failurePlaceholder)
         )
 
-        sharedPrefs = getSharedPreferences(SearchHistory.FILE_HISTORY_PREFERENCES, MODE_PRIVATE)
+        tracksInteractor = Creator.provideTracksInteractor()
+        historyInteractor = Creator.provideHistoryInteractor(this)
 
-        searchHistory = SearchHistory(sharedPrefs)
-        historyAdapter = TrackAdapter(searchHistory.tracksList()) { track ->
+        historyAdapter = TrackAdapter(historyInteractor.read()) { track ->
             startPlayerActivity(track)
         }
         historyRecyclerView.adapter = historyAdapter
@@ -168,8 +156,8 @@ class SearchActivity : AppCompatActivity() {
         }
 
         buttonClearHistory.setOnClickListener {
-            searchHistory.clear()
-            historyAdapter.updateData(searchHistory.tracksList())
+            historyInteractor.clear()
+            historyAdapter.updateData(historyInteractor.read())
             switchVisibilityView(CurrentView.TRACKS)
         }
 
@@ -205,7 +193,9 @@ class SearchActivity : AppCompatActivity() {
         mainHandler.removeCallbacks(searchRunnable)
         if (needDelay) {
             mainHandler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-        } else mainHandler.post(searchRunnable)
+        } else {
+            mainHandler.post(searchRunnable)
+        }
     }
 
     private fun searchSongs(text: String) {
@@ -213,35 +203,34 @@ class SearchActivity : AppCompatActivity() {
 
         switchVisibilityView(CurrentView.SEARCH)
 
-        apiService.search(text)
-            .enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(call: Call<TrackResponse>, response: Response<TrackResponse>) {
-                    // Обработка случая когда был запущен поток поиска и сразу после - очистили строку поиска
-                    if (stopSearch) {
-                        if (historyAllowed()) {
-                            switchVisibilityView(CurrentView.HISTORY)
-                        } else switchVisibilityView(CurrentView.TRACKS)
-                        return
-                    }
-
-                    if (response.isSuccessful) {
-                        val tracks = response.body()?.results ?: arrayListOf()
-                        if (tracks.isNotEmpty()) {
-                            switchVisibilityView(CurrentView.TRACKS)
-                            createRecyclerView(tracksRecyclerView, tracks)
-                        } else {
-                           switchVisibilityView(CurrentView.NOT_FOUND)
+        tracksInteractor.searchTracks(
+            text,
+            object : TracksInteractor.TracksConsumer {
+                override fun consume(foundTracks: ArrayList<Track>, isError: Boolean) {
+                    runOnUiThread {
+                        if (stopSearch) {
+                            if (historyAllowed()) {
+                                switchVisibilityView(CurrentView.HISTORY)
+                            } else {
+                                switchVisibilityView(CurrentView.TRACKS)
+                            }
+                            return@runOnUiThread
                         }
 
-                    } else {
-                        switchVisibilityView(CurrentView.NOT_CONNECTION)
+                        if (foundTracks.isEmpty()) {
+                            if (isError) {
+                                switchVisibilityView(CurrentView.NOT_CONNECTION)
+                            } else {
+                                switchVisibilityView(CurrentView.NOT_FOUND)
+                            }
+                        } else {
+                            switchVisibilityView(CurrentView.TRACKS)
+                            createRecyclerView(tracksRecyclerView, foundTracks)
+                        }
                     }
                 }
-
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    switchVisibilityView(CurrentView.NOT_CONNECTION)
-                }
-            })
+            }
+        )
     }
 
     private fun switchVisibilityView(status: CurrentView) {
@@ -263,13 +252,15 @@ class SearchActivity : AppCompatActivity() {
     private fun defineCurrentView() {
         if (historyAllowed()) {
             switchVisibilityView(CurrentView.HISTORY)
-        } else switchVisibilityView(CurrentView.TRACKS)
+        } else {
+            switchVisibilityView(CurrentView.TRACKS)
+        }
     }
 
     private fun createRecyclerView(recyclerView: RecyclerView, tracksList: ArrayList<Track>) {
         val trackAdapter = TrackAdapter(tracksList) { track ->
-            searchHistory.add(track)
-            historyAdapter.updateData(searchHistory.tracksList())
+            historyInteractor.add(track)
+            historyAdapter.updateData(historyInteractor.read())
 
             startPlayerActivity(track)
         }
@@ -297,5 +288,17 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun historyAllowed() = editText.hasFocus() && editText.text.isEmpty() && !searchHistory.empty()
+    private fun historyAllowed() = editText.hasFocus() && editText.text.isEmpty() && !historyInteractor.isEmpty()
+
+    companion object {
+        const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
+        const val INPUT_SEARCH_TEXT_DEF = ""
+        const val INTENT_EXTRA_TRACK = "track"
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+
+        enum class CurrentView {
+            DEFAULT, HISTORY, SEARCH, TRACKS, NOT_FOUND, NOT_CONNECTION
+        }
+    }
 }
