@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.App
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.api.SettingsInteractor
+import com.example.playlistmaker.domain.interactors.SettingsInteractor
 import com.example.playlistmaker.ui.main.MainActivity
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textview.MaterialTextView

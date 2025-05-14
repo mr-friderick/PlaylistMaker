@@ -7,11 +7,11 @@ import com.example.playlistmaker.data.localstorage.SharedPrefHistoryStorage
 import com.example.playlistmaker.data.localstorage.SharedPrefSettingsStorage
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.network.TracksRepositoryImpl
-import com.example.playlistmaker.domain.api.HistoryInteractor
+import com.example.playlistmaker.domain.interactors.HistoryInteractor
 import com.example.playlistmaker.domain.api.HistoryRepository
-import com.example.playlistmaker.domain.api.SettingsInteractor
+import com.example.playlistmaker.domain.interactors.SettingsInteractor
 import com.example.playlistmaker.domain.api.SettingsRepository
-import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.interactors.TracksInteractor
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.impl.HistoryInteractorImpl
 import com.example.playlistmaker.domain.impl.SettingsInteractorImpl

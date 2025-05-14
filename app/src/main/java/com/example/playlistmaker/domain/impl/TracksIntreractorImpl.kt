@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain.impl
 
-import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.interactors.TracksInteractor
 import com.example.playlistmaker.domain.api.TracksRepository
 
 class TracksIntreractorImpl(private val repository: TracksRepository) : TracksInteractor {
