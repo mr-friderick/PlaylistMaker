@@ -1,7 +1,7 @@
-package com.example.playlistmaker.data.localstorage
+package com.example.playlistmaker.settings.data.impl
 
-import com.example.playlistmaker.data.SettingsStorage
-import com.example.playlistmaker.domain.api.SettingsRepository
+import com.example.playlistmaker.settings.data.SettingsStorage
+import com.example.playlistmaker.settings.domain.api.SettingsRepository
 
 class SettingsRepositoryImpl(private val settingsStorage: SettingsStorage): SettingsRepository {
     override fun save(state: Boolean) {

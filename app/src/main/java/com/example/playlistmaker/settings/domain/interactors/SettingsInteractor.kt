@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.interactors
+package com.example.playlistmaker.settings.domain.interactors
 
 interface SettingsInteractor {
     fun save(state: Boolean)

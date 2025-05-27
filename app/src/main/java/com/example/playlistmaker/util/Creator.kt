@@ -1,20 +1,20 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.util
 
 import android.content.Context
 import com.example.playlistmaker.data.localstorage.HistoryRepositoryImpl
-import com.example.playlistmaker.data.localstorage.SettingsRepositoryImpl
+import com.example.playlistmaker.settings.data.impl.SettingsRepositoryImpl
 import com.example.playlistmaker.data.localstorage.SharedPrefHistoryStorage
-import com.example.playlistmaker.data.localstorage.SharedPrefSettingsStorage
+import com.example.playlistmaker.settings.data.SharedPrefSettingsStorage
 import com.example.playlistmaker.data.network.RetrofitNetworkClient
 import com.example.playlistmaker.data.network.TracksRepositoryImpl
 import com.example.playlistmaker.domain.interactors.HistoryInteractor
 import com.example.playlistmaker.domain.api.HistoryRepository
-import com.example.playlistmaker.domain.interactors.SettingsInteractor
-import com.example.playlistmaker.domain.api.SettingsRepository
+import com.example.playlistmaker.settings.domain.interactors.SettingsInteractor
+import com.example.playlistmaker.settings.domain.api.SettingsRepository
 import com.example.playlistmaker.domain.interactors.TracksInteractor
 import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.impl.HistoryInteractorImpl
-import com.example.playlistmaker.domain.impl.SettingsInteractorImpl
+import com.example.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksIntreractorImpl
 import com.google.gson.Gson
 

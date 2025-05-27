@@ -1,8 +1,8 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.util
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
-import com.example.playlistmaker.domain.interactors.SettingsInteractor
+import com.example.playlistmaker.settings.domain.interactors.SettingsInteractor
 
 class App : Application() {
     private val settingsInteractor: SettingsInteractor by lazy {

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.settings.data
 
 interface SettingsStorage {
     fun save(state: Boolean)

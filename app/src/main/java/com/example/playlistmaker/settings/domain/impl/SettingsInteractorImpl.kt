@@ -1,7 +1,7 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.settings.domain.impl
 
-import com.example.playlistmaker.domain.interactors.SettingsInteractor
-import com.example.playlistmaker.domain.api.SettingsRepository
+import com.example.playlistmaker.settings.domain.interactors.SettingsInteractor
+import com.example.playlistmaker.settings.domain.api.SettingsRepository
 
 class SettingsInteractorImpl(private val repository: SettingsRepository): SettingsInteractor {
     override fun save(state: Boolean) {

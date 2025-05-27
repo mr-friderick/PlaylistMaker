@@ -1,8 +1,7 @@
-package com.example.playlistmaker.data.localstorage
+package com.example.playlistmaker.settings.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.example.playlistmaker.data.SettingsStorage
 
 class SharedPrefSettingsStorage(
     private val sharedPrefs: SharedPreferences

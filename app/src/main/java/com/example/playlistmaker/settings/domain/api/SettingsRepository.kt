@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.api
+package com.example.playlistmaker.settings.domain.api
 
 interface SettingsRepository {
     fun save(state: Boolean)
