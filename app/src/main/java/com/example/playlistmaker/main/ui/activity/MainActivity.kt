@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.main
+package com.example.playlistmaker.main.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,30 +6,28 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.ui.medialibrary.MediaActivity
-import com.example.playlistmaker.R
-import com.example.playlistmaker.ui.settings.SettingsActivity
 import com.example.playlistmaker.ui.search.SearchActivity
-import com.google.android.material.button.MaterialButton
+import com.example.playlistmaker.ui.settings.SettingsActivity
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var buttonSearch: MaterialButton
-    private lateinit var buttonMedia: MaterialButton
-    private lateinit var buttonSettings: MaterialButton
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
-        setupWindowInsets()
 
         initVariables()
+
+        setContentView(binding.root)
+        setupWindowInsets()
+
         setListeners()
     }
 
     private fun setupWindowInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.screen_main)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.screenMain) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -37,21 +35,19 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initVariables() {
-        buttonSearch = findViewById(R.id.search)
-        buttonMedia = findViewById(R.id.media)
-        buttonSettings = findViewById(R.id.settings)
+        binding = ActivityMainBinding.inflate(layoutInflater)
     }
 
     private fun setListeners() {
-        buttonSearch.setOnClickListener {
+        binding.search.setOnClickListener {
             startActivity(Intent(this, SearchActivity::class.java))
         }
 
-        buttonMedia.setOnClickListener {
+        binding.media.setOnClickListener {
             startActivity(Intent(this, MediaActivity::class.java))
         }
 
-        buttonSettings.setOnClickListener {
+        binding.settings.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
         }
     }

@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.ui.main.MainActivity
+import com.example.playlistmaker.main.ui.activity.MainActivity
 import com.example.playlistmaker.ui.player.PlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.interactors.HistoryInteractor
