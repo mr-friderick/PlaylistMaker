@@ -6,4 +6,5 @@ interface AudioPlayerInteractor {
     fun pause()
     fun release()
     fun getCurrentPosition(): Int
+    fun setOnCompletionListener(listener: () -> Unit)
 }

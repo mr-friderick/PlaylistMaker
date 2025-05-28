@@ -21,4 +21,10 @@ class AudioPlayerRepositoryImpl(private val audioPlayer: AudioPlayerClient): Aud
     }
 
     override fun getCurrentPosition() = audioPlayer.getCurrentPosition()
+
+    override fun setOnCompletionListener(listener: () -> Unit) {
+        audioPlayer.setOnCompletionListener { listener() }
+    }
+
+
 }

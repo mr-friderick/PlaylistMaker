@@ -65,7 +65,9 @@ class PlayerActivity:  AppCompatActivity() {
                 )!!
             )
         )[PlayerViewModel::class.java]
+
         viewModel.setTrack()
+        viewModel.setOnCompletionListenerForPlayer()
 
         mainHandler = Handler(Looper.getMainLooper())
         timerRunnable = Runnable {
@@ -77,10 +79,11 @@ class PlayerActivity:  AppCompatActivity() {
     }
 
     private fun observeLiveData() {
-        viewModel.playerStateLiveData.observe(this) { value ->
-            when(value) {
+        viewModel.playerStateLiveData.observe(this) { state ->
+            when(state) {
                 PlayerViewModel.STATE_DEFAULT -> {
                     binding.buttonPlay.isEnabled = false
+                    binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                 }
                 PlayerViewModel.STATE_PREPARED -> {
                     binding.buttonPlay.isEnabled = true
@@ -115,7 +118,7 @@ class PlayerActivity:  AppCompatActivity() {
             binding.trackTimeLeft.text = value
         }
 
-        viewModel.commandLiveData.observe(this) { command ->
+        viewModel.timerCommandLiveData.observe(this) { command ->
             when(command) {
                 PlayerCommand.StartTimer -> mainHandler.post(timerRunnable)
                 PlayerCommand.StopTimer -> mainHandler.removeCallbacks(timerRunnable)

@@ -22,7 +22,14 @@ class MediaPlayerController: AudioPlayerClient {
 
     override fun release() {
         mediaPlayer.release()
+        mediaPlayer.setOnCompletionListener {  }
     }
 
-    override fun getCurrentPosition() =  mediaPlayer.currentPosition
+    override fun getCurrentPosition() = mediaPlayer.currentPosition
+
+    override fun setOnCompletionListener(listener: () -> Unit) {
+        mediaPlayer.setOnCompletionListener {
+            listener.invoke()
+        }
+    }
 }

@@ -12,7 +12,7 @@ import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(private val jsonModel: String): ViewModel() {
+class PlayerViewModel(jsonModel: String): ViewModel() {
     private val playerInteractor = Creator.providePlayerInteractor()
     private val trackModel = Gson().fromJson(
         jsonModel,
@@ -28,8 +28,8 @@ class PlayerViewModel(private val jsonModel: String): ViewModel() {
     private val trackTimeLeft = MutableLiveData<String>()
     val trackTimeLeftLiveData: LiveData<String> = trackTimeLeft
 
-    private val command = MutableLiveData<PlayerCommand>()
-    val commandLiveData: LiveData<PlayerCommand> = command
+    private val timerCommand = MutableLiveData<PlayerCommand>()
+    val timerCommandLiveData: LiveData<PlayerCommand> = timerCommand
 
     fun playerControl() {
         when(playerState.value) {
@@ -55,26 +55,34 @@ class PlayerViewModel(private val jsonModel: String): ViewModel() {
         track.value = trackModel
     }
 
+    fun setOnCompletionListenerForPlayer() {
+        playerInteractor.setOnCompletionListener {
+            playerState.value = STATE_DEFAULT
+            timerCommand.value = PlayerCommand.StopTimer
+            trackTimeLeft.value = "0:00"
+        }
+    }
+
     fun prepareAudioPlayer() {
         playerInteractor.prepare(trackModel.previewUrl)
         playerState.value = STATE_PREPARED
     }
 
-    private fun playAudioPlayer() {
+    fun playAudioPlayer() {
         playerInteractor.play()
         playerState.value = STATE_PLAYING
+        timerCommand.value = PlayerCommand.StartTimer
     }
 
     fun pauseAudioPlayer() {
         playerInteractor.pause()
         playerState.value = STATE_PAUSED
-        command.value = PlayerCommand.StopTimer
+        timerCommand.value = PlayerCommand.StopTimer
     }
 
     fun releaseAudioPlayer() {
         playerInteractor.release()
         playerState.value = STATE_DEFAULT
-        command.value = PlayerCommand.StopTimer
     }
 
     companion object {
@@ -82,7 +90,6 @@ class PlayerViewModel(private val jsonModel: String): ViewModel() {
         const val STATE_PREPARED = 1
         const val STATE_PLAYING = 2
         const val STATE_PAUSED = 3
-        private const val TIME_LEFT_DELAY = 300L
 
         fun getViewModelFactory(jsonModel: String): ViewModelProvider.Factory = viewModelFactory {
             initializer {
