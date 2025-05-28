@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.search
+package com.example.playlistmaker.search.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -21,12 +21,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.main.ui.activity.MainActivity
-import com.example.playlistmaker.ui.player.PlayerActivity
+import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.R
 import com.example.playlistmaker.domain.interactors.HistoryInteractor
 import com.example.playlistmaker.domain.interactors.TracksInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.search.TrackAdapter
+import com.example.playlistmaker.search.ui.view_model.TrackAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 

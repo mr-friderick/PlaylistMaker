@@ -16,6 +16,11 @@ import com.example.playlistmaker.domain.api.TracksRepository
 import com.example.playlistmaker.domain.impl.HistoryInteractorImpl
 import com.example.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.example.playlistmaker.domain.impl.TracksIntreractorImpl
+import com.example.playlistmaker.player.data.MediaPlayerController
+import com.example.playlistmaker.player.data.impl.AudioPlayerRepositoryImpl
+import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
+import com.example.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
+import com.example.playlistmaker.player.domain.interactors.AudioPlayerInteractor
 import com.google.gson.Gson
 
 object Creator {
@@ -50,4 +55,14 @@ object Creator {
     fun provideSettingInteractor(context: Context): SettingsInteractor {
         return SettingsInteractorImpl(getSettingsRepository(context))
     }
+
+    // Player
+    private fun getAudioPlayerRepository(): AudioPlayerRepository {
+        return AudioPlayerRepositoryImpl(MediaPlayerController())
+    }
+
+    fun providePlayerInteractor(): AudioPlayerInteractor {
+        return AudioPlayerInteractorImpl(getAudioPlayerRepository())
+    }
+
 }

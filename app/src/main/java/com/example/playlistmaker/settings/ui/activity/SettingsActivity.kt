@@ -18,7 +18,7 @@ import com.example.playlistmaker.util.App
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
     private lateinit var viewModel: SettingsViewModel
-    private lateinit var dataForIntent: MutableMap<String, String>
+    private var dataForIntent: MutableMap<String, String> = mutableMapOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
