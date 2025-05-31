@@ -3,8 +3,8 @@ package com.example.playlistmaker.data.network
 import com.example.playlistmaker.data.NetworkClient
 import com.example.playlistmaker.data.dto.TracksSearchRequest
 import com.example.playlistmaker.data.dto.TracksSearchResponse
-import com.example.playlistmaker.domain.api.TracksRepository
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.search.domain.api.TracksRepository
+import com.example.playlistmaker.search.domain.models.Track
 
 class TracksRepositoryImpl(private val networkClient: NetworkClient): TracksRepository {
     override fun searchTracks(expression: String): Pair<ArrayList<Track>, Boolean> {

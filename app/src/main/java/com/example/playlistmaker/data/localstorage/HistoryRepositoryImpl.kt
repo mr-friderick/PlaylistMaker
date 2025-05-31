@@ -2,8 +2,8 @@ package com.example.playlistmaker.data.localstorage
 
 import com.example.playlistmaker.data.HistoryStorage
 import com.example.playlistmaker.data.dto.TrackDto
-import com.example.playlistmaker.domain.api.HistoryRepository
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.search.domain.api.HistoryRepository
+import com.example.playlistmaker.search.domain.models.Track
 
 class HistoryRepositoryImpl(private val historyStorage: HistoryStorage): HistoryRepository {
     override fun save(tracks: ArrayList<Track>) {

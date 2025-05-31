@@ -23,31 +23,35 @@ import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.main.ui.activity.MainActivity
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.interactors.HistoryInteractor
-import com.example.playlistmaker.domain.interactors.TracksInteractor
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.search.domain.interactors.HistoryInteractor
+import com.example.playlistmaker.search.domain.interactors.TracksInteractor
+import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.view_model.TrackAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
+    private lateinit var binding: ActivitySearchBinding
+
     private var isClickAllowed = true
     private var stopSearch = false
     private lateinit var allDynamicView: List<View>
     private lateinit var viewsByState: Map<CurrentView, List<View>>
 
     private var inputText = INPUT_SEARCH_TEXT_DEF
-    private lateinit var editText: EditText
-    private lateinit var buttonClear: ImageView
-    private lateinit var buttonRefresh: MaterialButton
-    private lateinit var buttonClearHistory: MaterialButton
-    private lateinit var toolbar: Toolbar
-    private lateinit var tracksRecyclerView: RecyclerView
-    private lateinit var historyRecyclerView: RecyclerView
-    private lateinit var historyView: LinearLayout
-    private lateinit var notFoundPlaceholder: LinearLayout
-    private lateinit var failurePlaceholder: LinearLayout
-    private lateinit var searchProgressBar: ProgressBar
+
+//    private lateinit var editText: EditText
+//    private lateinit var buttonClear: ImageView
+//    private lateinit var buttonRefresh: MaterialButton
+//    private lateinit var buttonClearHistory: MaterialButton
+//    private lateinit var toolbar: Toolbar
+//    private lateinit var tracksRecyclerView: RecyclerView
+//    private lateinit var historyRecyclerView: RecyclerView
+//    private lateinit var historyView: LinearLayout
+//    private lateinit var notFoundPlaceholder: LinearLayout
+//    private lateinit var failurePlaceholder: LinearLayout
+//    private lateinit var searchProgressBar: ProgressBar
 
     private lateinit var tracksInteractor: TracksInteractor
     private lateinit var historyInteractor: HistoryInteractor
@@ -75,7 +79,7 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        editText.setText(savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF))
+        binding.searchEditText.setText(savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF))
     }
 
     private fun setupWindowInsets() {
@@ -87,33 +91,35 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initVariables() {
-        editText = findViewById(R.id.search_edit_text)
-        buttonClear = findViewById(R.id.search_clear_icon)
-        buttonRefresh = findViewById(R.id.button_refresh)
-        buttonClearHistory = findViewById(R.id.button_clear_history)
-        toolbar = findViewById(R.id.search_back)
-        historyView = findViewById(R.id.search_history)
-        tracksRecyclerView = findViewById(R.id.search_recycler_view)
-        historyRecyclerView = findViewById(R.id.search_history_recycler_view)
-        notFoundPlaceholder = findViewById(R.id.search_not_found_placeholder)
-        failurePlaceholder = findViewById(R.id.search_failure_placeholder)
-        searchProgressBar = findViewById(R.id.search_progress_bar)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+
+//        editText = findViewById(R.id.search_edit_text)
+//        buttonClear = findViewById(R.id.search_clear_icon)
+//        buttonRefresh = findViewById(R.id.button_refresh)
+//        buttonClearHistory = findViewById(R.id.button_clear_history)
+//        toolbar = findViewById(R.id.search_back)
+//        historyView = findViewById(R.id.search_history)
+//        tracksRecyclerView = findViewById(R.id.search_recycler_view)
+//        historyRecyclerView = findViewById(R.id.search_history_recycler_view)
+//        notFoundPlaceholder = findViewById(R.id.search_not_found_placeholder)
+//        failurePlaceholder = findViewById(R.id.search_failure_placeholder)
+//        searchProgressBar = findViewById(R.id.search_progress_bar)
 
         allDynamicView = listOf(
-            historyView,
-            searchProgressBar,
-            tracksRecyclerView,
-            notFoundPlaceholder,
-            failurePlaceholder,
+            binding.searchHistory,
+            binding.searchProgressBar,
+            binding.searchRecyclerView,
+            binding.searchNotFoundPlaceholder,
+            binding.searchFailurePlaceholder,
         )
 
         viewsByState = mapOf(
             CurrentView.DEFAULT to listOf(),
-            CurrentView.HISTORY to listOf(historyView),
-            CurrentView.SEARCH to listOf(searchProgressBar),
-            CurrentView.TRACKS to listOf(tracksRecyclerView),
-            CurrentView.NOT_FOUND to listOf(notFoundPlaceholder),
-            CurrentView.NOT_CONNECTION to listOf(failurePlaceholder)
+            CurrentView.HISTORY to listOf(binding.searchHistory),
+            CurrentView.SEARCH to listOf(binding.searchProgressBar),
+            CurrentView.TRACKS to listOf(binding.searchRecyclerView),
+            CurrentView.NOT_FOUND to listOf(binding.searchNotFoundPlaceholder),
+            CurrentView.NOT_CONNECTION to listOf(binding.searchFailurePlaceholder)
         )
 
         tracksInteractor = Creator.provideTracksInteractor()
@@ -122,46 +128,46 @@ class SearchActivity : AppCompatActivity() {
         historyAdapter = TrackAdapter(historyInteractor.read()) { track ->
             startPlayerActivity(track)
         }
-        historyRecyclerView.adapter = historyAdapter
+        binding.searchHistoryRecyclerView.adapter = historyAdapter
 
         mainHandler = Handler(Looper.getMainLooper())
-        searchRunnable = Runnable { searchSongs(editText.text.toString()) }
+        searchRunnable = Runnable { searchSongs(binding.searchEditText.text.toString()) }
     }
 
     private fun setListeners() {
-        editText.addTextChangedListener(TextWatcher())
+        binding.searchEditText.addTextChangedListener(TextWatcher())
 
-        editText.setOnEditorActionListener { _, actionId, _ ->
+        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchDebounce(false)
             }
             false
         }
 
-        editText.setOnFocusChangeListener { _, _ ->
+        binding.searchEditText.setOnFocusChangeListener { _, _ ->
             if (historyAllowed()) {
                 switchVisibilityView(CurrentView.HISTORY)
             } else switchVisibilityView(CurrentView.TRACKS)
         }
 
-        buttonClear.setOnClickListener {
-            createRecyclerView(tracksRecyclerView, arrayListOf())
+        binding.searchClearIcon.setOnClickListener {
+            createRecyclerView(binding.searchRecyclerView, arrayListOf())
             switchVisibilityView(CurrentView.DEFAULT)
-            editText.setText("")
-            editText.clearFocus()
+            binding.searchEditText.setText("")
+            binding.searchEditText.clearFocus()
         }
 
-        buttonRefresh.setOnClickListener {
-            searchSongs(editText.text.toString())
+        binding.buttonRefresh.setOnClickListener {
+            searchSongs(binding.searchEditText.text.toString())
         }
 
-        buttonClearHistory.setOnClickListener {
+        binding.buttonClearHistory.setOnClickListener {
             historyInteractor.clear()
             historyAdapter.updateData(historyInteractor.read())
             switchVisibilityView(CurrentView.TRACKS)
         }
 
-        toolbar.setNavigationOnClickListener {
+        binding.searchBack.setNavigationOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             intent.putExtra(INPUT_SEARCH_TEXT, inputText)
             startActivity(intent)
@@ -225,7 +231,7 @@ class SearchActivity : AppCompatActivity() {
                             }
                         } else {
                             switchVisibilityView(CurrentView.TRACKS)
-                            createRecyclerView(tracksRecyclerView, foundTracks)
+                            createRecyclerView(binding.searchRecyclerView, foundTracks)
                         }
                     }
                 }
@@ -241,12 +247,12 @@ class SearchActivity : AppCompatActivity() {
     private fun processInstanceState(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
             inputText = savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF)
-            editText.setText(inputText)
+            binding.searchEditText.setText(inputText)
         }
     }
 
     private fun setFocusScreen() {
-        editText.requestFocus()
+        binding.searchEditText.requestFocus()
     }
 
     private fun defineCurrentView() {
@@ -271,7 +277,7 @@ class SearchActivity : AppCompatActivity() {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            buttonClear.isVisible = !s.isNullOrEmpty()
+            binding.searchClearIcon.isVisible = !s.isNullOrEmpty()
 
             val textEmpty = s?.isEmpty() == true
             stopSearch = textEmpty
@@ -288,7 +294,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun historyAllowed() = editText.hasFocus() && editText.text.isEmpty() && !historyInteractor.isEmpty()
+    private fun historyAllowed() = binding.searchEditText.hasFocus() && binding.searchEditText.text.isEmpty() && !historyInteractor.isEmpty()
 
     companion object {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"

@@ -3,7 +3,7 @@ package com.example.playlistmaker.search.ui.view_model
 import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.search.domain.models.Track
 
 class TrackAdapter(private val tracks: ArrayList<Track>, private val clickItem: (Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
