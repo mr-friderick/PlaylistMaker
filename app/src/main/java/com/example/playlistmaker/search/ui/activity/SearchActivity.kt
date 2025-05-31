@@ -30,6 +30,7 @@ import com.example.playlistmaker.search.domain.interactors.TracksInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.example.playlistmaker.search.ui.view_model.TrackAdapter
+import com.example.playlistmaker.settings.ui.view_model.SearchViewState
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 
@@ -39,8 +40,8 @@ class SearchActivity : AppCompatActivity() {
 
     private var isClickAllowed = true
     private var stopSearch = false
-    private lateinit var allDynamicView: List<View>
-    private lateinit var viewsByState: Map<CurrentView, List<View>>
+//    private lateinit var allDynamicView: List<View>
+//    private lateinit var viewsByState: Map<CurrentView, List<View>>
 
     private var inputText = INPUT_SEARCH_TEXT_DEF
 
@@ -56,7 +57,7 @@ class SearchActivity : AppCompatActivity() {
 //    private lateinit var failurePlaceholder: LinearLayout
 //    private lateinit var searchProgressBar: ProgressBar
 
-    private lateinit var tracksInteractor: TracksInteractor
+//    private lateinit var tracksInteractor: TracksInteractor
 //    private lateinit var historyInteractor: HistoryInteractor
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var mainHandler: Handler
@@ -115,24 +116,24 @@ class SearchActivity : AppCompatActivity() {
 //        failurePlaceholder = findViewById(R.id.search_failure_placeholder)
 //        searchProgressBar = findViewById(R.id.search_progress_bar)
 
-        allDynamicView = listOf(
-            binding.searchHistory,
-            binding.searchProgressBar,
-            binding.searchRecyclerView,
-            binding.searchNotFoundPlaceholder,
-            binding.searchFailurePlaceholder,
-        )
+//        allDynamicView = listOf(
+//            binding.searchHistory,
+//            binding.searchProgressBar,
+//            binding.searchRecyclerView,
+//            binding.searchNotFoundPlaceholder,
+//            binding.searchFailurePlaceholder,
+//        )
+//
+//        viewsByState = mapOf(
+//            CurrentView.DEFAULT to listOf(),
+//            CurrentView.HISTORY to listOf(binding.searchHistory),
+//            CurrentView.SEARCH to listOf(binding.searchProgressBar),
+//            CurrentView.TRACKS to listOf(binding.searchRecyclerView),
+//            CurrentView.NOT_FOUND to listOf(binding.searchNotFoundPlaceholder),
+//            CurrentView.NOT_CONNECTION to listOf(binding.searchFailurePlaceholder)
+//        )
 
-        viewsByState = mapOf(
-            CurrentView.DEFAULT to listOf(),
-            CurrentView.HISTORY to listOf(binding.searchHistory),
-            CurrentView.SEARCH to listOf(binding.searchProgressBar),
-            CurrentView.TRACKS to listOf(binding.searchRecyclerView),
-            CurrentView.NOT_FOUND to listOf(binding.searchNotFoundPlaceholder),
-            CurrentView.NOT_CONNECTION to listOf(binding.searchFailurePlaceholder)
-        )
-
-        tracksInteractor = Creator.provideTracksInteractor()
+//        tracksInteractor = Creator.provideTracksInteractor()
 //        historyInteractor = Creator.provideHistoryInteractor(this)
 
         mainHandler = Handler(Looper.getMainLooper())
@@ -145,6 +146,14 @@ class SearchActivity : AppCompatActivity() {
                 startPlayerActivity(track)
             }
             binding.searchHistoryRecyclerView.adapter = historyAdapter
+        }
+
+        viewModel.stateLiveData.observe(this) { state ->
+            binding.searchHistory.isVisible = state is SearchViewState.History
+            binding.searchProgressBar.isVisible = state is SearchViewState.Loading
+            binding.searchRecyclerView.isVisible = state is SearchViewState.Content
+            binding.searchNotFoundPlaceholder.isVisible = state is SearchViewState.NotFound
+            binding.searchFailurePlaceholder.isVisible = state is SearchViewState.Error
         }
     }
 
@@ -160,13 +169,15 @@ class SearchActivity : AppCompatActivity() {
 
         binding.searchEditText.setOnFocusChangeListener { _, _ ->
             if (historyAllowed()) {
-                switchVisibilityView(CurrentView.HISTORY)
-            } else switchVisibilityView(CurrentView.TRACKS)
+                //switchVisibilityView(CurrentView.HISTORY)
+            } else {
+                //switchVisibilityView(CurrentView.TRACKS)
+            }
         }
 
         binding.searchClearIcon.setOnClickListener {
             createRecyclerView(binding.searchRecyclerView, arrayListOf())
-            switchVisibilityView(CurrentView.DEFAULT)
+            //switchVisibilityView(CurrentView.DEFAULT)
             binding.searchEditText.setText("")
             binding.searchEditText.clearFocus()
         }
@@ -178,7 +189,7 @@ class SearchActivity : AppCompatActivity() {
         binding.buttonClearHistory.setOnClickListener {
             viewModel.clearHistory()
             //historyAdapter.updateData(historyInteractor.read())
-            switchVisibilityView(CurrentView.TRACKS)
+            //switchVisibilityView(CurrentView.TRACKS)
         }
 
         binding.searchBack.setNavigationOnClickListener {
@@ -221,7 +232,7 @@ class SearchActivity : AppCompatActivity() {
     private fun searchSongs(text: String) {
         if (text.isEmpty()) return
 
-        switchVisibilityView(CurrentView.SEARCH)
+        //switchVisibilityView(CurrentView.SEARCH)
 
         tracksInteractor.searchTracks(
             text,
@@ -230,21 +241,21 @@ class SearchActivity : AppCompatActivity() {
                     runOnUiThread {
                         if (stopSearch) {
                             if (historyAllowed()) {
-                                switchVisibilityView(CurrentView.HISTORY)
+                                //switchVisibilityView(CurrentView.HISTORY)
                             } else {
-                                switchVisibilityView(CurrentView.TRACKS)
+                                //switchVisibilityView(CurrentView.TRACKS)
                             }
                             return@runOnUiThread
                         }
 
                         if (foundTracks.isEmpty()) {
                             if (isError) {
-                                switchVisibilityView(CurrentView.NOT_CONNECTION)
+                                //switchVisibilityView(CurrentView.NOT_CONNECTION)
                             } else {
-                                switchVisibilityView(CurrentView.NOT_FOUND)
+                                //switchVisibilityView(CurrentView.NOT_FOUND)
                             }
                         } else {
-                            switchVisibilityView(CurrentView.TRACKS)
+                            //switchVisibilityView(CurrentView.TRACKS)
                             createRecyclerView(binding.searchRecyclerView, foundTracks)
                         }
                     }
@@ -253,10 +264,10 @@ class SearchActivity : AppCompatActivity() {
         )
     }
 
-    private fun switchVisibilityView(status: CurrentView) {
-        allDynamicView.forEach { it.isVisible = false }
-        viewsByState[status]?.forEach { it.isVisible = true }
-    }
+//    private fun switchVisibilityView(status: CurrentView) {
+//        allDynamicView.forEach { it.isVisible = false }
+//        viewsByState[status]?.forEach { it.isVisible = true }
+//    }
 
     private fun processInstanceState(savedInstanceState: Bundle?) {
         if (savedInstanceState != null) {
@@ -271,9 +282,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun defineCurrentView() {
         if (historyAllowed()) {
-            switchVisibilityView(CurrentView.HISTORY)
+            //switchVisibilityView(CurrentView.HISTORY)
         } else {
-            switchVisibilityView(CurrentView.TRACKS)
+            //switchVisibilityView(CurrentView.TRACKS)
         }
     }
 
@@ -295,10 +306,10 @@ class SearchActivity : AppCompatActivity() {
             stopSearch = textEmpty
 
             if (historyAllowed()) {
-                switchVisibilityView(CurrentView.HISTORY)
+                //switchVisibilityView(CurrentView.HISTORY)
             } else if (!textEmpty) {
                 searchDebounce()
-            } else switchVisibilityView(CurrentView.DEFAULT)
+            } else //switchVisibilityView(CurrentView.DEFAULT)
         }
 
         override fun afterTextChanged(s: Editable?) {

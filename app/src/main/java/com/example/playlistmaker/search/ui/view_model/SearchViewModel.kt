@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.search.domain.interactors.HistoryInteractor
 import com.example.playlistmaker.search.domain.interactors.TracksInteractor
 import com.example.playlistmaker.search.domain.models.Track
+import com.example.playlistmaker.settings.ui.view_model.SearchViewState
 import com.example.playlistmaker.util.Creator
 
 class SearchViewModel(
@@ -19,6 +20,9 @@ class SearchViewModel(
 
     private val history = MutableLiveData(historyInteractor.read())
     val historyLiveData: LiveData<ArrayList<Track>> = history
+
+    private val state = MutableLiveData<SearchViewState>(SearchViewState.Default)
+    val stateLiveData: LiveData<SearchViewState> = state
 
     fun clearHistory() {
         historyInteractor.clear()
