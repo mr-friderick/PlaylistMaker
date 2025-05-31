@@ -21,25 +21,73 @@ class SearchViewModel(
     private val history = MutableLiveData(historyInteractor.read())
     val historyLiveData: LiveData<ArrayList<Track>> = history
 
+    private val tracks = MutableLiveData<ArrayList<Track>>()
+    val tracksLiveData: LiveData<ArrayList<Track>> = tracks
+
     private val state = MutableLiveData<SearchViewState>(SearchViewState.Default)
     val stateLiveData: LiveData<SearchViewState> = state
 
     fun clearHistory() {
         historyInteractor.clear()
-        history.value = historyInteractor.read()
+        history.postValue(historyInteractor.read())
+        setDefaultState()
     }
 
     fun addTrackInHistory(track: Track) {
         historyInteractor.add(track)
-        history.value = historyInteractor.read()
+        history.postValue(historyInteractor.read())
     }
 
     fun historyIsEmpty(): Boolean {
         return historyInteractor.isEmpty()
     }
 
-    fun searchTracks() {
+    fun setDefaultState() {
+        state.postValue(SearchViewState.Default)
+    }
 
+    fun setHistoryState() {
+        state.postValue(SearchViewState.History)
+    }
+
+    fun setLoadingState() {
+        state.postValue(SearchViewState.Loading)
+    }
+
+    fun setContentState() {
+        state.postValue(SearchViewState.Content)
+    }
+
+    fun setNotFoundState() {
+        state.postValue(SearchViewState.NotFound)
+    }
+
+    fun setErrorState() {
+        state.postValue(SearchViewState.Error)
+    }
+
+    fun searchTracks(expression: String) {
+        if (expression.isEmpty()) return
+
+        setLoadingState()
+
+        tracksInteractor.searchTracks(
+            expression,
+            object : TracksInteractor.TracksConsumer {
+                override fun consume(foundTracks: ArrayList<Track>, isError: Boolean) {
+                    if (foundTracks.isEmpty()) {
+                        if (isError) {
+                            setErrorState()
+                        } else {
+                            setNotFoundState()
+                        }
+                    } else {
+                        setContentState()
+                        tracks.postValue(foundTracks)
+                    }
+                }
+            }
+        )
     }
 
     companion object {

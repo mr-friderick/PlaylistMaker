@@ -1,7 +1,7 @@
-package com.example.playlistmaker.data.localstorage
+package com.example.playlistmaker.search.data.localstorage
 
-import com.example.playlistmaker.data.HistoryStorage
-import com.example.playlistmaker.data.dto.TrackDto
+import com.example.playlistmaker.search.data.HistoryStorage
+import com.example.playlistmaker.search.data.dto.TrackDto
 import com.example.playlistmaker.search.domain.api.HistoryRepository
 import com.example.playlistmaker.search.domain.models.Track
 

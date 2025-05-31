@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data.network
+package com.example.playlistmaker.search.data.network
 
 object HttpStatus {
     const val OK = 200
