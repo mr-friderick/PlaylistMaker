@@ -4,11 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.util.Creator
 
-class SettingsViewModel(application: Application): AndroidViewModel(application) {
+class SettingsViewModel: ViewModel() {
 
-    private val settingsInteractor = Creator.provideSettingInteractor(getApplication())
+    private val settingsInteractor = Creator.provideSettingInteractor()
 
     private val theme = MutableLiveData(false)
     val themeLiveData: LiveData<Boolean> = theme

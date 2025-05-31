@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -13,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.example.playlistmaker.player.ui.view_model.PlayerCommand
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.example.playlistmaker.player.ui.view_model.PlayerViewState
 import com.example.playlistmaker.search.ui.activity.SearchActivity
@@ -69,7 +67,6 @@ class PlayerActivity:  AppCompatActivity() {
             )
         )[PlayerViewModel::class.java]
 
-//        viewModel.setTrack()
         viewModel.setOnCompletionListenerForPlayer()
 
         mainHandler = Handler(Looper.getMainLooper())

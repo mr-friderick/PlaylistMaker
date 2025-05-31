@@ -72,7 +72,7 @@ class SearchActivity : AppCompatActivity() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(
             this,
-            SearchViewModel.getViewModelFactory(applicationContext)
+            SearchViewModel.getViewModelFactory()
         )[SearchViewModel::class.java]
 
         mainHandler = Handler(Looper.getMainLooper())

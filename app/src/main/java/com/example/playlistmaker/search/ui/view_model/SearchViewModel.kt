@@ -90,10 +90,10 @@ class SearchViewModel(
     }
 
     companion object {
-        fun getViewModelFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
+        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val tracksInteractor = Creator.provideTracksInteractor()
-                val historyInteractor = Creator.provideHistoryInteractor(context)
+                val historyInteractor = Creator.provideHistoryInteractor()
                 SearchViewModel(tracksInteractor, historyInteractor)
             }
         }
