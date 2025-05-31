@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.ui.view_model
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,24 +16,16 @@ class SearchViewModel(
     private val historyInteractor: HistoryInteractor
 ): ViewModel() {
 
-    private val history = MutableLiveData(historyInteractor.read())
-    val historyLiveData: LiveData<ArrayList<Track>> = history
-
-    private val tracks = MutableLiveData<ArrayList<Track>>()
-    val tracksLiveData: LiveData<ArrayList<Track>> = tracks
-
     private val state = MutableLiveData<SearchViewState>(SearchViewState.Default)
     val stateLiveData: LiveData<SearchViewState> = state
 
     fun clearHistory() {
         historyInteractor.clear()
-        history.postValue(historyInteractor.read())
-        setDefaultState()
+        state.postValue(SearchViewState.Default)
     }
 
     fun addTrackInHistory(track: Track) {
         historyInteractor.add(track)
-        history.postValue(historyInteractor.read())
     }
 
     fun historyIsEmpty(): Boolean {
@@ -46,29 +37,13 @@ class SearchViewModel(
     }
 
     fun setHistoryState() {
-        state.postValue(SearchViewState.History)
-    }
-
-    fun setLoadingState() {
-        state.postValue(SearchViewState.Loading)
-    }
-
-    fun setContentState() {
-        state.postValue(SearchViewState.Content)
-    }
-
-    fun setNotFoundState() {
-        state.postValue(SearchViewState.NotFound)
-    }
-
-    fun setErrorState() {
-        state.postValue(SearchViewState.Error)
+        state.postValue(SearchViewState.History(historyInteractor.read()))
     }
 
     fun searchTracks(expression: String) {
         if (expression.isEmpty()) return
 
-        setLoadingState()
+        state.postValue(SearchViewState.Loading)
 
         tracksInteractor.searchTracks(
             expression,
@@ -76,13 +51,12 @@ class SearchViewModel(
                 override fun consume(foundTracks: ArrayList<Track>, isError: Boolean) {
                     if (foundTracks.isEmpty()) {
                         if (isError) {
-                            setErrorState()
+                            state.postValue(SearchViewState.Error)
                         } else {
-                            setNotFoundState()
+                            state.postValue(SearchViewState.NotFound)
                         }
                     } else {
-                        setContentState()
-                        tracks.postValue(foundTracks)
+                        state.postValue(SearchViewState.Content(foundTracks))
                     }
                 }
             }

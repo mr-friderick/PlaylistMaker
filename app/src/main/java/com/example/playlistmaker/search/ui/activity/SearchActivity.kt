@@ -4,22 +4,21 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.main.ui.activity.MainActivity
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
-import com.example.playlistmaker.search.ui.view_model.TrackAdapter
 import com.example.playlistmaker.search.ui.view_model.SearchViewState
+import com.example.playlistmaker.search.ui.view_model.TrackAdapter
 import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
@@ -27,10 +26,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var viewModel: SearchViewModel
 
     private var isClickAllowed = true
-
     private var inputText = INPUT_SEARCH_TEXT_DEF
 
     private lateinit var historyAdapter: TrackAdapter
+
     private lateinit var mainHandler: Handler
     private lateinit var searchRunnable: Runnable
 
@@ -80,28 +79,61 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun observeLiveData() {
-        viewModel.historyLiveData.observe(this) { tracks ->
-            historyAdapter = TrackAdapter(tracks) { track ->
-                startPlayerActivity(track)
-            }
-            binding.searchHistoryRecyclerView.adapter = historyAdapter
-        }
-
-        viewModel.tracksLiveData.observe(this) { tracks ->
-            createRecyclerView(tracks)
-        }
-
         viewModel.stateLiveData.observe(this) { state ->
-            binding.searchHistory.isVisible = state is SearchViewState.History
-            binding.searchProgressBar.isVisible = state is SearchViewState.Loading
-            binding.searchRecyclerView.isVisible = state is SearchViewState.Content
-            binding.searchNotFoundPlaceholder.isVisible = state is SearchViewState.NotFound
-            binding.searchFailurePlaceholder.isVisible = state is SearchViewState.Error
+            hideAllDynamicView()
+            when(state) {
+                SearchViewState.Default -> {}
+                is SearchViewState.History -> {
+                    historyAdapter = TrackAdapter(state.historyTracks) { track ->
+                        startPlayerActivity(track)
+                    }
+                    binding.searchHistoryRecyclerView.adapter = historyAdapter
+                    binding.searchHistory.isVisible = true
+                }
+                SearchViewState.Loading -> {
+                    binding.searchProgressBar.isVisible = true
+                }
+                is SearchViewState.Content -> {
+                    createRecyclerView(state.contentTracks)
+                    binding.searchRecyclerView.isVisible = true
+                }
+                SearchViewState.NotFound -> {
+                    binding.searchNotFoundPlaceholder.isVisible = true
+                }
+                SearchViewState.Error -> {
+                    binding.searchFailurePlaceholder.isVisible = true
+                }
+            }
         }
     }
 
+    private fun hideAllDynamicView() {
+        binding.searchHistory.isVisible = false
+        binding.searchProgressBar.isVisible = false
+        binding.searchRecyclerView.isVisible = false
+        binding.searchNotFoundPlaceholder.isVisible = false
+        binding.searchFailurePlaceholder.isVisible = false
+    }
+
     private fun setListeners() {
-        binding.searchEditText.addTextChangedListener(TextWatcher())
+        binding.searchEditText.addTextChangedListener(
+            onTextChanged = { text, _, _, _ ->
+                binding.searchClearIcon.isVisible = !text.isNullOrEmpty()
+
+                val textEmpty = text?.isEmpty() == true
+
+                if (historyAllowed()) {
+                    viewModel.setHistoryState()
+                } else if (!textEmpty) {
+                    searchDebounce()
+                } else {
+                    viewModel.setDefaultState()
+                }
+            },
+            afterTextChanged = { text ->
+                inputText = text.toString()
+            }
+        )
 
         binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -186,7 +218,7 @@ class SearchActivity : AppCompatActivity() {
         if (historyAllowed()) {
             viewModel.setHistoryState()
         } else {
-            viewModel.setContentState()
+            viewModel.setDefaultState()
         }
     }
 
@@ -196,28 +228,6 @@ class SearchActivity : AppCompatActivity() {
             startPlayerActivity(track)
         }
         binding.searchRecyclerView.adapter = trackAdapter
-    }
-
-    private fun TextWatcher(): TextWatcher = object : TextWatcher {
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            binding.searchClearIcon.isVisible = !s.isNullOrEmpty()
-
-            val textEmpty = s?.isEmpty() == true
-
-            if (historyAllowed()) {
-                viewModel.setHistoryState()
-            } else if (!textEmpty) {
-                searchDebounce()
-            } else {
-                viewModel.setDefaultState()
-            }
-        }
-
-        override fun afterTextChanged(s: Editable?) {
-            inputText = s.toString()
-        }
     }
 
     private fun historyAllowed(): Boolean {
