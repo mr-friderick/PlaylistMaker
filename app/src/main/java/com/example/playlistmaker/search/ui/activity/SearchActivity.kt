@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.util.Creator
 import com.example.playlistmaker.main.ui.activity.MainActivity
@@ -27,12 +28,14 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.search.domain.interactors.HistoryInteractor
 import com.example.playlistmaker.search.domain.interactors.TracksInteractor
 import com.example.playlistmaker.search.domain.models.Track
+import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.example.playlistmaker.search.ui.view_model.TrackAdapter
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySearchBinding
+    private lateinit var viewModel: SearchViewModel
 
     private var isClickAllowed = true
     private var stopSearch = false
@@ -54,7 +57,7 @@ class SearchActivity : AppCompatActivity() {
 //    private lateinit var searchProgressBar: ProgressBar
 
     private lateinit var tracksInteractor: TracksInteractor
-    private lateinit var historyInteractor: HistoryInteractor
+//    private lateinit var historyInteractor: HistoryInteractor
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var mainHandler: Handler
     private lateinit var searchRunnable: Runnable
@@ -62,10 +65,13 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_search)
-        setupWindowInsets()
 
         initVariables()
+
+        setContentView(binding.root)
+        setupWindowInsets()
+
+        observeLiveData()
         setListeners()
         processInstanceState(savedInstanceState)
         setFocusScreen()
@@ -83,7 +89,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun setupWindowInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.screen_search)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.screenSearch) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -92,6 +98,10 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initVariables() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
+        viewModel = ViewModelProvider(
+            this,
+            SearchViewModel.getViewModelFactory(applicationContext)
+        )[SearchViewModel::class.java]
 
 //        editText = findViewById(R.id.search_edit_text)
 //        buttonClear = findViewById(R.id.search_clear_icon)
@@ -123,15 +133,19 @@ class SearchActivity : AppCompatActivity() {
         )
 
         tracksInteractor = Creator.provideTracksInteractor()
-        historyInteractor = Creator.provideHistoryInteractor(this)
-
-        historyAdapter = TrackAdapter(historyInteractor.read()) { track ->
-            startPlayerActivity(track)
-        }
-        binding.searchHistoryRecyclerView.adapter = historyAdapter
+//        historyInteractor = Creator.provideHistoryInteractor(this)
 
         mainHandler = Handler(Looper.getMainLooper())
         searchRunnable = Runnable { searchSongs(binding.searchEditText.text.toString()) }
+    }
+
+    private fun observeLiveData() {
+        viewModel.historyLiveData.observe(this) { tracks ->
+            historyAdapter = TrackAdapter(tracks) { track ->
+                startPlayerActivity(track)
+            }
+            binding.searchHistoryRecyclerView.adapter = historyAdapter
+        }
     }
 
     private fun setListeners() {
@@ -162,8 +176,8 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.buttonClearHistory.setOnClickListener {
-            historyInteractor.clear()
-            historyAdapter.updateData(historyInteractor.read())
+            viewModel.clearHistory()
+            //historyAdapter.updateData(historyInteractor.read())
             switchVisibilityView(CurrentView.TRACKS)
         }
 
@@ -265,9 +279,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun createRecyclerView(recyclerView: RecyclerView, tracksList: ArrayList<Track>) {
         val trackAdapter = TrackAdapter(tracksList) { track ->
-            historyInteractor.add(track)
-            historyAdapter.updateData(historyInteractor.read())
-
+            viewModel.addTrackInHistory(track)
             startPlayerActivity(track)
         }
         recyclerView.adapter = trackAdapter
@@ -294,7 +306,7 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun historyAllowed() = binding.searchEditText.hasFocus() && binding.searchEditText.text.isEmpty() && !historyInteractor.isEmpty()
+    private fun historyAllowed() = binding.searchEditText.hasFocus() && binding.searchEditText.text.isEmpty() && !viewModel.historyIsEmpty()
 
     companion object {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
