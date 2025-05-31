@@ -1,4 +1,4 @@
-package com.example.playlistmaker.settings.ui.view_model
+package com.example.playlistmaker.search.ui.view_model
 
 sealed class SearchViewState {
     object Default: SearchViewState()

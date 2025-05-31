@@ -19,7 +19,7 @@ import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.example.playlistmaker.search.ui.view_model.TrackAdapter
-import com.example.playlistmaker.settings.ui.view_model.SearchViewState
+import com.example.playlistmaker.search.ui.view_model.SearchViewState
 import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {

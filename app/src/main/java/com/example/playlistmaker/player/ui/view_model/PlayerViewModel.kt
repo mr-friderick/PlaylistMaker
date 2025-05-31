@@ -19,78 +19,67 @@ class PlayerViewModel(jsonModel: String): ViewModel() {
         Track::class.java
     )
 
-    private val playerState = MutableLiveData(STATE_DEFAULT)
-    val playerStateLiveData: LiveData<Int> = playerState
-
-    private val track = MutableLiveData<Track>()
-    val trackLiveData: LiveData<Track> = track
-
-    private val trackTimeLeft = MutableLiveData<String>()
-    val trackTimeLeftLiveData: LiveData<String> = trackTimeLeft
-
-    private val timerCommand = MutableLiveData<PlayerCommand>()
-    val timerCommandLiveData: LiveData<PlayerCommand> = timerCommand
+    private val playerState = MutableLiveData<PlayerViewState>(PlayerViewState.Default(trackModel))
+    val playerStateLiveData: LiveData<PlayerViewState> = playerState
 
     fun playerControl() {
         when(playerState.value) {
-            STATE_PLAYING -> {
+            is PlayerViewState.Default, null -> {
+                prepareAudioPlayer()
+            }
+            is PlayerViewState.Playing -> {
                 pauseAudioPlayer()
             }
-            STATE_PREPARED, STATE_PAUSED -> {
+            is PlayerViewState.Prepared, is PlayerViewState.Paused, is PlayerViewState.Complite -> {
                 playAudioPlayer()
             }
         }
     }
 
     fun updateTime() {
-        val formattedTrackTimeLeft = SimpleDateFormat(
-            "m:ss",
-            Locale.getDefault()
-        ).format(playerInteractor.getCurrentPosition())
-
-        trackTimeLeft.value = formattedTrackTimeLeft
-    }
-
-    fun setTrack() {
-        track.value = trackModel
+        val formattedTrackTimeLeft = getFormattedTime()
+        val currentState = playerState.value
+        playerState.value = when(currentState) {
+            is PlayerViewState.Default, is PlayerViewState.Complite, is PlayerViewState.Prepared, null -> currentState
+            is PlayerViewState.Playing -> currentState.copy(trackTime = formattedTrackTimeLeft)
+            is PlayerViewState.Paused ->  currentState.copy(trackTime = formattedTrackTimeLeft)
+        }
     }
 
     fun setOnCompletionListenerForPlayer() {
         playerInteractor.setOnCompletionListener {
-            playerState.value = STATE_DEFAULT
-            timerCommand.value = PlayerCommand.StopTimer
-            trackTimeLeft.value = "0:00"
+            playerState.value = PlayerViewState.Complite()
         }
     }
 
     fun prepareAudioPlayer() {
         playerInteractor.prepare(trackModel.previewUrl)
-        playerState.value = STATE_PREPARED
+        playerState.value = PlayerViewState.Prepared()
     }
 
     fun playAudioPlayer() {
         playerInteractor.play()
-        playerState.value = STATE_PLAYING
-        timerCommand.value = PlayerCommand.StartTimer
+        playerState.value = PlayerViewState.Playing(getFormattedTime())
     }
 
     fun pauseAudioPlayer() {
         playerInteractor.pause()
-        playerState.value = STATE_PAUSED
-        timerCommand.value = PlayerCommand.StopTimer
+        playerState.value = PlayerViewState.Paused(getFormattedTime())
     }
 
     fun releaseAudioPlayer() {
         playerInteractor.release()
-        playerState.value = STATE_DEFAULT
+        playerState.value = PlayerViewState.Default(trackModel)
+    }
+
+    private fun getFormattedTime(): String {
+        return SimpleDateFormat(
+            "m:ss",
+            Locale.getDefault()
+        ).format(playerInteractor.getCurrentPosition())
     }
 
     companion object {
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
-
         fun getViewModelFactory(jsonModel: String): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 PlayerViewModel(jsonModel)

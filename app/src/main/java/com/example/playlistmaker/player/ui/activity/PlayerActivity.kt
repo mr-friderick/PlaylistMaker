@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -14,6 +15,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.ui.view_model.PlayerCommand
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
+import com.example.playlistmaker.player.ui.view_model.PlayerViewState
 import com.example.playlistmaker.search.ui.activity.SearchActivity
 
 class PlayerActivity:  AppCompatActivity() {
@@ -34,6 +36,7 @@ class PlayerActivity:  AppCompatActivity() {
 
         observeLiveData()
         setListeners()
+
         preparePlayer()
     }
 
@@ -66,62 +69,55 @@ class PlayerActivity:  AppCompatActivity() {
             )
         )[PlayerViewModel::class.java]
 
-        viewModel.setTrack()
+//        viewModel.setTrack()
         viewModel.setOnCompletionListenerForPlayer()
 
         mainHandler = Handler(Looper.getMainLooper())
         timerRunnable = Runnable {
             viewModel.updateTime()
-            if (viewModel.playerStateLiveData.value == PlayerViewModel.STATE_PLAYING) {
-                mainHandler.postDelayed(timerRunnable, TIME_LEFT_DELAY)
-            }
         }
     }
 
     private fun observeLiveData() {
         viewModel.playerStateLiveData.observe(this) { state ->
             when(state) {
-                PlayerViewModel.STATE_DEFAULT -> {
+                is PlayerViewState.Default -> {
                     binding.buttonPlay.isEnabled = false
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
+
+                    binding.trackName.text = state.trackModel.trackName
+                    binding.trackArtist.text = state.trackModel.artistName
+                    binding.trackTime.text = state.trackModel.trackTimeMillis
+                    binding.trackCollection.text = state.trackModel.collectionName
+                    binding.trackRelease.text = state.trackModel.getReleaseYear()
+                    binding.trackGenre.text = state.trackModel.primaryGenreName
+                    binding.trackCountry.text = state.trackModel.country
+
+                    Glide.with(binding.trackPoster)
+                        .load(state.trackModel.getCoverArtwork())
+                        .placeholder(R.drawable.ic_track_placeholder)
+                        .into(binding.trackPoster)
                 }
-                PlayerViewModel.STATE_PREPARED -> {
+                is PlayerViewState.Prepared -> {
                     binding.buttonPlay.isEnabled = true
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
-                    binding.trackTimeLeft.text = getResources().getString(R.string.default_time_left);
+                    binding.trackTimeLeft.text = state.trackTime;
                 }
-                PlayerViewModel.STATE_PLAYING -> {
+                is PlayerViewState.Playing -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_pause)
+                    binding.trackTimeLeft.text = state.trackTime;
+                    mainHandler.postDelayed(timerRunnable, TIME_LEFT_DELAY)
                 }
-                PlayerViewModel.STATE_PAUSED -> {
+                is PlayerViewState.Paused -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
+                    binding.trackTimeLeft.text = state.trackTime;
+                    mainHandler.removeCallbacks(timerRunnable)
                 }
-            }
-        }
-
-        viewModel.trackLiveData.observe(this) { track ->
-            binding.trackName.text = track.trackName
-            binding.trackArtist.text = track.artistName
-            binding.trackTime.text = track.trackTimeMillis
-            binding.trackCollection.text = track.collectionName
-            binding.trackRelease.text = track.getReleaseYear()
-            binding.trackGenre.text = track.primaryGenreName
-            binding.trackCountry.text = track.country
-
-            Glide.with(binding.trackPoster)
-                .load(track.getCoverArtwork())
-                .placeholder(R.drawable.ic_track_placeholder)
-                .into(binding.trackPoster)
-        }
-
-        viewModel.trackTimeLeftLiveData.observe(this) { value ->
-            binding.trackTimeLeft.text = value
-        }
-
-        viewModel.timerCommandLiveData.observe(this) { command ->
-            when(command) {
-                PlayerCommand.StartTimer -> mainHandler.post(timerRunnable)
-                PlayerCommand.StopTimer -> mainHandler.removeCallbacks(timerRunnable)
+                is PlayerViewState.Complite -> {
+                    binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
+                    binding.trackTimeLeft.text = state.trackTime;
+                    mainHandler.removeCallbacks(timerRunnable)
+                }
             }
         }
     }
@@ -138,10 +134,12 @@ class PlayerActivity:  AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        viewModel.prepareAudioPlayer()
+        mainHandler.postDelayed({ viewModel.prepareAudioPlayer() }, PREPARE_DELAY)
+
     }
 
     companion object {
+        private const val PREPARE_DELAY = 200L
         private const val TIME_LEFT_DELAY = 300L
     }
 }
