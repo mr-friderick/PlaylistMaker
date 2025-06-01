@@ -33,7 +33,7 @@
     <string name="player_collection_text">Альбом</string>
     <string name="player_release_text">Год</string>
     <string name="player_genre_text">Жанр</string>
-    <string name="player_country_text">Стана</string>
+    <string name="player_country_text">Страна</string>
     <string name="description_button_add_playlist">Добавить в плейлист</string>
     <string name="description_button_play">Воспроизвести/пауза</string>
     <string name="description_button_add_favorite">Добавить в избранное</string>
