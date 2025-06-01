@@ -22,4 +22,6 @@
     <dimen name="dp52">52dp</dimen>
     <dimen name="dp54">54dp</dimen>
     <dimen name="dp38">38dp</dimen>
+    <dimen name="dp10">10dp</dimen>
+    <dimen name="dp50">50dp</dimen>
 </resources>

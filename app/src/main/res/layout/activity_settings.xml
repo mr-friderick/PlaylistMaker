@@ -18,7 +18,11 @@
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/theme_switcher"
         style="@style/view_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:paddingHorizontal="@dimen/dp16"
+        android:paddingVertical="@dimen/dp20"
         android:text="@string/settings_option_dark_mode"
         app:thumbTint="@color/thumb_selector"
         app:trackTint="@color/track_selector" />
@@ -26,19 +30,31 @@
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/share"
         style="@style/view_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:drawableEnd="@drawable/ic_share"
+        android:paddingHorizontal="@dimen/dp16"
+        android:paddingVertical="@dimen/dp20"
         android:text="@string/settings_option_share" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/support"
         style="@style/view_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:drawableEnd="@drawable/ic_support"
+        android:paddingHorizontal="@dimen/dp16"
+        android:paddingVertical="@dimen/dp20"
         android:text="@string/settings_option_support" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/agreement"
         style="@style/view_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:drawableEnd="@drawable/ic_arrow_forward"
+        android:paddingHorizontal="@dimen/dp16"
+        android:paddingVertical="@dimen/dp20"
         android:text="@string/settings_option_agreement" />
 
 </LinearLayout>
