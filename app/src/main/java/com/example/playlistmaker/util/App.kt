@@ -6,13 +6,14 @@ import com.example.playlistmaker.settings.domain.interactors.SettingsInteractor
 
 class App : Application() {
     private val settingsInteractor: SettingsInteractor by lazy {
-        Creator.initApplication(this)
         Creator.provideSettingInteractor()
     }
     private var darkTheme = false
 
     override fun onCreate() {
         super.onCreate()
+
+        Creator.initApplication(this)
 
         setupThemeStatus()
         switchTheme(darkTheme)
