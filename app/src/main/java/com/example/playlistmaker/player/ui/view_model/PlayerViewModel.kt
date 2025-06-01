@@ -40,7 +40,8 @@ class PlayerViewModel(jsonModel: String): ViewModel() {
         val formattedTrackTimeLeft = getFormattedTime()
         val currentState = playerState.value
         playerState.value = when(currentState) {
-            is PlayerViewState.Default, is PlayerViewState.Complite, is PlayerViewState.Prepared, null -> currentState
+            is PlayerViewState.Default, is PlayerViewState.Complite, null -> currentState
+            is PlayerViewState.Prepared -> currentState.copy(trackTime = formattedTrackTimeLeft)
             is PlayerViewState.Playing -> currentState.copy(trackTime = formattedTrackTimeLeft)
             is PlayerViewState.Paused ->  currentState.copy(trackTime = formattedTrackTimeLeft)
         }
@@ -54,7 +55,7 @@ class PlayerViewModel(jsonModel: String): ViewModel() {
 
     fun prepareAudioPlayer() {
         playerInteractor.prepare(trackModel.previewUrl)
-        playerState.value = PlayerViewState.Prepared()
+        playerState.value = PlayerViewState.Prepared(getFormattedTime())
     }
 
     fun playAudioPlayer() {
@@ -72,7 +73,7 @@ class PlayerViewModel(jsonModel: String): ViewModel() {
         playerState.value = PlayerViewState.Default(trackModel)
     }
 
-    private fun getFormattedTime(): String {
+    fun getFormattedTime(): String {
         return SimpleDateFormat(
             "m:ss",
             Locale.getDefault()

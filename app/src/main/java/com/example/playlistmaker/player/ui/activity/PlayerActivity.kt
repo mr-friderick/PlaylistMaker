@@ -67,8 +67,6 @@ class PlayerActivity:  AppCompatActivity() {
             )
         )[PlayerViewModel::class.java]
 
-        viewModel.setOnCompletionListenerForPlayer()
-
         mainHandler = Handler(Looper.getMainLooper())
         timerRunnable = Runnable {
             viewModel.updateTime()
@@ -131,7 +129,12 @@ class PlayerActivity:  AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        mainHandler.postDelayed({ viewModel.prepareAudioPlayer() }, PREPARE_DELAY)
+        mainHandler.postDelayed( {
+                viewModel.prepareAudioPlayer()
+                viewModel.setOnCompletionListenerForPlayer()
+            },
+            PREPARE_DELAY
+        )
 
     }
 
