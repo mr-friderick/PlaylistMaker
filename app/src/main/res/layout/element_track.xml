@@ -36,19 +36,24 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/track_name"
             style="@style/text_view_track"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:ellipsize="end"
             android:textColor="@color/txt_default"
             android:textSize="@dimen/sp16"
             tools:text="Smells Like Teen Spirit" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/track_artist"
                 style="@style/text_view_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:drawableEnd="@drawable/ic_ellipse"
                 android:drawablePadding="5dp"
                 android:ellipsize="end"
@@ -59,6 +64,8 @@
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/time"
                 style="@style/text_view_track"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:textColor="@color/txt_track_author"
                 android:textSize="@dimen/sp11"

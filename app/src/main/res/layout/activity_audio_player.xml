@@ -74,15 +74,15 @@
             android:id="@+id/button_add_playlist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp54"
             android:layout_marginStart="@dimen/dp24"
-            android:contentDescription="@string/description_button_add_playlist"
+            android:layout_marginTop="@dimen/dp54"
             android:background="@drawable/round_button"
+            android:contentDescription="@string/description_button_add_playlist"
             android:src="@drawable/ic_button_add_playlist"
             app:layout_constraintEnd_toStartOf="@id/button_play"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_artist"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+            app:layout_constraintTop_toBottomOf="@id/track_artist" />
 
         <ImageButton
             android:id="@+id/button_play"
@@ -104,8 +104,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp54"
             android:layout_marginEnd="@dimen/dp24"
-            android:contentDescription="@string/description_button_add_favorite"
             android:background="@drawable/round_button"
+            android:contentDescription="@string/description_button_add_favorite"
             android:src="@drawable/ic_button_favorite"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/button_play"
@@ -118,10 +118,10 @@
             android:layout_marginTop="@dimen/dp12"
             android:layout_marginBottom="@dimen/dp17"
             android:fontFamily="@font/ys_display_medium"
+            android:text="@string/default_time_left"
             android:textColor="@color/txt_default"
             android:textFontWeight="500"
             android:textSize="@dimen/sp14"
-            android:text="@string/default_time_left"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/button_play" />
@@ -135,85 +135,128 @@
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/time"
+            style="@style/for_player_field_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp16"
             android:layout_marginTop="@dimen/dp39"
+            android:layout_marginBottom="@dimen/dp17"
             android:text="@string/player_time_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_time_left"
-            style="@style/for_player_field_name"/>
+            app:layout_constraintTop_toBottomOf="@id/track_time_left" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/collection"
+            style="@style/for_player_field_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginTop="@dimen/dp17"
+            android:layout_marginBottom="@dimen/dp17"
             android:text="@string/player_collection_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_time"
-            style="@style/for_player_field_name" />
+            app:layout_constraintTop_toBottomOf="@id/track_time" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/release"
+            style="@style/for_player_field_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginTop="@dimen/dp17"
+            android:layout_marginBottom="@dimen/dp17"
             android:text="@string/player_release_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_collection"
-            style="@style/for_player_field_name"/>
+            app:layout_constraintTop_toBottomOf="@id/track_collection" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/genre"
+            style="@style/for_player_field_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginTop="@dimen/dp17"
+            android:layout_marginBottom="@dimen/dp17"
             android:text="@string/player_genre_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_release"
-            style="@style/for_player_field_name"/>
+            app:layout_constraintTop_toBottomOf="@id/track_release" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/country"
+            style="@style/for_player_field_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp16"
+            android:layout_marginTop="@dimen/dp17"
+            android:layout_marginBottom="@dimen/dp17"
             android:text="@string/player_country_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_genre"
-            style="@style/for_player_field_name"/>
+            app:layout_constraintTop_toBottomOf="@id/track_genre" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/track_time"
+            style="@style/for_player_field_values"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp39"
+            android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/track_time_left"
-            tools:text="0:00"
-            style="@style/for_player_field_values"/>
+            tools:text="0:00" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/track_collection"
+            style="@style/for_player_field_values"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp17"
+            android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/track_time"
-            tools:text="Smells Like Teen Spirit"
-            style="@style/for_player_field_values" />
+            tools:text="Smells Like Teen Spirit" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/track_release"
+            style="@style/for_player_field_values"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp17"
+            android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/track_collection"
-            tools:text="0000"
-            style="@style/for_player_field_values"/>
+            tools:text="0000" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/track_genre"
+            style="@style/for_player_field_values"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp17"
+            android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/track_release"
-            tools:text="Rock"
-            style="@style/for_player_field_values"/>
+            tools:text="Rock" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/track_country"
+            style="@style/for_player_field_values"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp17"
+            android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
             app:layout_constraintTop_toBottomOf="@id/track_genre"
-            tools:text="USA"
-            style="@style/for_player_field_values"/>
+            tools:text="USA" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

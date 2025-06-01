@@ -18,8 +18,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginHorizontal="@dimen/dp16"
+        android:layout_marginTop="@dimen/dp8"
         android:background="@drawable/layout_search_background">
 
         <EditText
@@ -28,12 +28,12 @@
             android:layout_height="36dp"
             android:background="@android:color/transparent"
             android:drawableStart="@drawable/ic_mini_search"
-            android:drawablePadding="8dp"
+            android:drawablePadding="@dimen/dp8"
             android:hint="@string/main_button_search"
             android:imeOptions="actionDone"
             android:inputType="text"
             android:maxLines="1"
-            android:paddingStart="12dp"
+            android:paddingStart="@dimen/dp12"
             android:singleLine="true"
             android:textColor="@color/bg_dark_mode"
             android:textColorHint="@color/txt_search"
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
-            android:paddingEnd="10dp"
+            android:paddingEnd="@dimen/dp10"
             android:src="@drawable/ic_drop_input"
             android:visibility="gone" />
 
@@ -54,20 +54,22 @@
         android:id="@+id/search_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="@dimen/dp50"
         android:gravity="top|center"
         android:orientation="vertical"
         android:visibility="gone">
 
         <TextView
             style="@style/text_search_placeholder"
-            android:textFontWeight="500"
-            android:text="@string/search_history_title" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/search_history_title"
+            android:textFontWeight="500" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp">
+            android:layout_marginTop="@dimen/dp28">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/search_history_recycler_view"
@@ -77,18 +79,20 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="24dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/button_clear_history"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/button_clear_history"
                 style="@style/button_search_refresh"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/search_clear_history_text"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 
@@ -108,6 +112,8 @@
 
         <TextView
             style="@style/text_search_placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/search_not_found_text" />
     </LinearLayout>
 
@@ -127,11 +133,15 @@
 
         <TextView
             style="@style/text_search_placeholder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/search_failure_text" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button_refresh"
             style="@style/button_search_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/search_button_refresh_text" />
     </LinearLayout>
@@ -140,10 +150,10 @@
         android:id="@+id/search_progress_bar"
         android:layout_width="44dp"
         android:layout_height="44dp"
-        android:layout_marginTop="148dp"
         android:layout_gravity="center"
+        android:layout_marginTop="148dp"
         android:indeterminateTint="@color/progress_bar_search"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/search_recycler_view"
@@ -152,6 +162,6 @@
         android:layout_marginStart="13dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="20dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 </LinearLayout>
