@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.ui.view_model
 
-import android.annotation.SuppressLint
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.search.domain.models.Track
@@ -20,11 +19,4 @@ class TrackAdapter(private val tracks: ArrayList<Track>, private val clickItem: 
     }
 
     override fun getItemCount(): Int = tracks.size
-
-    @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newData: List<Track>) {
-        tracks.clear()
-        tracks.addAll(newData)
-        notifyDataSetChanged()
-    }
 }

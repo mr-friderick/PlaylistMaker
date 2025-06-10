@@ -11,6 +11,7 @@ class SharedPrefHistoryStorage(
     private val sharedPrefs: SharedPreferences,
     private val gson: Gson
 ): HistoryStorage {
+
     override fun save(tracksDto: ArrayList<TrackDto>) {
         sharedPrefs.edit {
             putString(

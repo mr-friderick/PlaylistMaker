@@ -1,16 +1,18 @@
 package com.example.playlistmaker.player.data
 
-import android.media.MediaPlayer
 import kotlin.math.max
 
-class MediaPlayerController: AudioPlayerClient {
-    private var mediaPlayer = MediaPlayer()
+class MediaPlayerController(
+    private var mediaPlayerFactory: MediaPlayerFactory
+): AudioPlayerClient {
+
+    private var mediaPlayer = mediaPlayerFactory.create()
     private var isRelease = false
     private var currentPosition = 0
 
     override fun prepare(url: String) {
         if (isRelease) {
-            mediaPlayer = MediaPlayer()
+            mediaPlayer = mediaPlayerFactory.create()
             isRelease = false
         }
         mediaPlayer.apply {

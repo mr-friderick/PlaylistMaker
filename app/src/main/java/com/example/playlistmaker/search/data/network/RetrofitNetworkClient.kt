@@ -3,16 +3,10 @@ package com.example.playlistmaker.search.data.network
 import com.example.playlistmaker.search.data.NetworkClient
 import com.example.playlistmaker.search.data.dto.Response
 import com.example.playlistmaker.search.data.dto.TracksSearchRequest
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitNetworkClient : NetworkClient {
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(ITUNES_BASE_URL_SEARCH)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-
-    private val iTunesService = retrofit.create(ItunesAPI::class.java)
+class RetrofitNetworkClient(
+    private val iTunesService: ItunesAPI
+) : NetworkClient {
 
     override fun doRequest(dto: Any): Response {
         val result = when(dto) {
@@ -26,9 +20,5 @@ class RetrofitNetworkClient : NetworkClient {
             else -> Response().apply { resultCode = HttpStatus.BAD_REQUEST }
         }
         return result
-    }
-
-    companion object {
-        const val ITUNES_BASE_URL_SEARCH = "https://itunes.apple.com/"
     }
 }

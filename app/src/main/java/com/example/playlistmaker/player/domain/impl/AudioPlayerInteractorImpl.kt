@@ -3,7 +3,10 @@ package com.example.playlistmaker.player.domain.impl
 import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
 import com.example.playlistmaker.player.domain.interactors.AudioPlayerInteractor
 
-class AudioPlayerInteractorImpl(private val repository: AudioPlayerRepository): AudioPlayerInteractor {
+class AudioPlayerInteractorImpl(
+    private val repository: AudioPlayerRepository
+): AudioPlayerInteractor {
+
     override fun prepare(url: String) {
         repository.prepare(url)
     }

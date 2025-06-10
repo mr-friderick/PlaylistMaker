@@ -4,7 +4,10 @@ import com.example.playlistmaker.search.domain.interactors.HistoryInteractor
 import com.example.playlistmaker.search.domain.api.HistoryRepository
 import com.example.playlistmaker.search.domain.models.Track
 
-class HistoryInteractorImpl(private val repository: HistoryRepository): HistoryInteractor {
+class HistoryInteractorImpl(
+    private val repository: HistoryRepository
+): HistoryInteractor {
+
     override fun add(track: Track) {
         val currentHistory = repository.read()
         currentHistory.removeIf { it.trackId == track.trackId }
