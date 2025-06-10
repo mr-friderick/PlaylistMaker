@@ -3,18 +3,20 @@ package com.example.playlistmaker.player.ui.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.player.domain.interactors.AudioPlayerInteractor
 import com.example.playlistmaker.search.domain.models.Track
-import com.example.playlistmaker.util.Creator
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerViewModel(jsonModel: String): ViewModel() {
-    private val playerInteractor = Creator.providePlayerInteractor()
-    private val trackModel = Gson().fromJson(
+class PlayerViewModel(
+    private val playerInteractor: AudioPlayerInteractor,
+    gson: Gson,
+    jsonModel: String
+): ViewModel() {
+
+    //private val playerInteractor = Creator.providePlayerInteractor()
+    private val trackModel = gson.fromJson(
         jsonModel,
         Track::class.java
     )
@@ -80,11 +82,11 @@ class PlayerViewModel(jsonModel: String): ViewModel() {
         ).format(playerInteractor.getCurrentPosition())
     }
 
-    companion object {
-        fun getViewModelFactory(jsonModel: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(jsonModel)
-            }
-        }
-    }
+//    companion object {
+//        fun getViewModelFactory(jsonModel: String): ViewModelProvider.Factory = viewModelFactory {
+//            initializer {
+//                PlayerViewModel(jsonModel)
+//            }
+//        }
+//    }
 }

@@ -23,6 +23,9 @@ class App : Application() {
             modules(dataModule, repositoryModule, interactorModule, viewModelModule)
         }
 
+        // TODO УБРАТЬ!!!
+        Creator.initApplication(this)
+
         setupThemeStatus()
         switchTheme(darkTheme)
     }

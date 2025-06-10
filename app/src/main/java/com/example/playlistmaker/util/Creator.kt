@@ -30,9 +30,10 @@ object Creator {
 
     private lateinit var application: Application
 
-//    fun initApplication(application: Application) {
-//        this.application = application
-//    }
+    // TODO УБРАТЬ!!!
+    fun initApplication(application: Application) {
+        this.application = application
+    }
 
     // Search tracks --------------------------------------------
     private fun getTracksRepository(): TracksRepository {
@@ -63,13 +64,13 @@ object Creator {
 //        return SettingsInteractorImpl(getSettingsRepository())
 //    }
 
-    // Player
-    private fun getAudioPlayerRepository(): AudioPlayerRepository {
-        return AudioPlayerRepositoryImpl(MediaPlayerController())
-    }
-
-    fun providePlayerInteractor(): AudioPlayerInteractor {
-        return AudioPlayerInteractorImpl(getAudioPlayerRepository())
-    }
+//    // Player
+//    private fun getAudioPlayerRepository(): AudioPlayerRepository {
+//        return AudioPlayerRepositoryImpl(MediaPlayerController())
+//    }
+//
+//    fun providePlayerInteractor(): AudioPlayerInteractor {
+//        return AudioPlayerInteractorImpl(getAudioPlayerRepository())
+//    }
 
 }

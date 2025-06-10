@@ -8,20 +8,24 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.example.playlistmaker.player.ui.view_model.PlayerViewState
 import com.example.playlistmaker.search.ui.activity.SearchActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class PlayerActivity:  AppCompatActivity() {
+    private val viewModel by viewModel<PlayerViewModel> {
+        parametersOf(intent.getStringExtra(SearchActivity.INTENT_EXTRA_TRACK)!!)
+    }
+
     private lateinit var mainHandler: Handler
     private lateinit var timerRunnable: Runnable
 
     private lateinit var binding: ActivityAudioPlayerBinding
-    private lateinit var viewModel: PlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,13 +63,6 @@ class PlayerActivity:  AppCompatActivity() {
 
     private fun initVariables() {
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory(
-                intent.getStringExtra(SearchActivity.INTENT_EXTRA_TRACK
-                )!!
-            )
-        )[PlayerViewModel::class.java]
 
         mainHandler = Handler(Looper.getMainLooper())
         timerRunnable = Runnable {
