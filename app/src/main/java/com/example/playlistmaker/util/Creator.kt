@@ -30,9 +30,9 @@ object Creator {
 
     private lateinit var application: Application
 
-    fun initApplication(application: Application) {
-        this.application = application
-    }
+//    fun initApplication(application: Application) {
+//        this.application = application
+//    }
 
     // Search tracks --------------------------------------------
     private fun getTracksRepository(): TracksRepository {
@@ -53,15 +53,15 @@ object Creator {
         return HistoryInteractorImpl(getHistoryRepository())
     }
 
-    // Settings -------------------------------------------------
-    private fun getSettingsRepository(): SettingsRepository {
-        val sharedPrefs = application.getSharedPreferences(FILE_SETTINGS_PREFERENCES, Context.MODE_PRIVATE)
-        return SettingsRepositoryImpl(SharedPrefSettingsStorage(sharedPrefs))
-    }
-
-    fun provideSettingInteractor(): SettingsInteractor {
-        return SettingsInteractorImpl(getSettingsRepository())
-    }
+//    // Settings -------------------------------------------------
+//    private fun getSettingsRepository(): SettingsRepository {
+//        val sharedPrefs = application.getSharedPreferences(FILE_SETTINGS_PREFERENCES, Context.MODE_PRIVATE)
+//        return SettingsRepositoryImpl(SharedPrefSettingsStorage(sharedPrefs))
+//    }
+//
+//    fun provideSettingInteractor(): SettingsInteractor {
+//        return SettingsInteractorImpl(getSettingsRepository())
+//    }
 
     // Player
     private fun getAudioPlayerRepository(): AudioPlayerRepository {
