@@ -18,6 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
 class PlayerActivity:  AppCompatActivity() {
+
     private val viewModel by viewModel<PlayerViewModel> {
         parametersOf(intent.getStringExtra(SearchActivity.INTENT_EXTRA_TRACK)!!)
     }

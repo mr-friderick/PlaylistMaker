@@ -16,6 +16,7 @@ import com.example.playlistmaker.util.App
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
+
     private val viewModel by viewModel<SettingsViewModel>()
 
     private lateinit var binding: ActivitySettingsBinding

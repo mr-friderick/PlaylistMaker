@@ -5,7 +5,10 @@ import com.example.playlistmaker.search.data.dto.TrackDto
 import com.example.playlistmaker.search.domain.api.HistoryRepository
 import com.example.playlistmaker.search.domain.models.Track
 
-class HistoryRepositoryImpl(private val historyStorage: HistoryStorage): HistoryRepository {
+class HistoryRepositoryImpl(
+    private val historyStorage: HistoryStorage
+): HistoryRepository {
+
     override fun save(tracks: ArrayList<Track>) {
         historyStorage.save(
             tracks.map {

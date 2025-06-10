@@ -15,7 +15,6 @@ class PlayerViewModel(
     jsonModel: String
 ): ViewModel() {
 
-    //private val playerInteractor = Creator.providePlayerInteractor()
     private val trackModel = gson.fromJson(
         jsonModel,
         Track::class.java
@@ -75,18 +74,10 @@ class PlayerViewModel(
         playerState.value = PlayerViewState.Default(trackModel)
     }
 
-    fun getFormattedTime(): String {
+    private fun getFormattedTime(): String {
         return SimpleDateFormat(
             "m:ss",
             Locale.getDefault()
         ).format(playerInteractor.getCurrentPosition())
     }
-
-//    companion object {
-//        fun getViewModelFactory(jsonModel: String): ViewModelProvider.Factory = viewModelFactory {
-//            initializer {
-//                PlayerViewModel(jsonModel)
-//            }
-//        }
-//    }
 }

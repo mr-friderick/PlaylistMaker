@@ -11,7 +11,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.main.ui.activity.MainActivity
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
@@ -20,10 +19,12 @@ import com.example.playlistmaker.search.ui.view_model.SearchViewModel
 import com.example.playlistmaker.search.ui.view_model.SearchViewState
 import com.example.playlistmaker.search.ui.view_model.TrackAdapter
 import com.google.gson.Gson
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
+    private val viewModel by viewModel<SearchViewModel>()
+
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
 
     private var isClickAllowed = true
     private var inputText = INPUT_SEARCH_TEXT_DEF
@@ -69,10 +70,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initVariables() {
         binding = ActivitySearchBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getViewModelFactory()
-        )[SearchViewModel::class.java]
 
         mainHandler = Handler(Looper.getMainLooper())
         searchRunnable = Runnable { viewModel.searchTracks(binding.searchEditText.text.toString()) }
@@ -135,18 +132,20 @@ class SearchActivity : AppCompatActivity() {
             }
         )
 
-        binding.searchEditText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchDebounce(false)
+        binding.searchEditText.apply {
+            setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    searchDebounce(false)
+                }
+                false
             }
-            false
-        }
 
-        binding.searchEditText.setOnFocusChangeListener { _, _ ->
-            if (historyAllowed()) {
-                viewModel.setHistoryState()
-            } else {
-                viewModel.setDefaultState()
+            setOnFocusChangeListener { _, _ ->
+                if (historyAllowed()) {
+                    viewModel.setHistoryState()
+                } else {
+                    viewModel.setDefaultState()
+                }
             }
         }
 

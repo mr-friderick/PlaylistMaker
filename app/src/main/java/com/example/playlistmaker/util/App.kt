@@ -12,6 +12,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
 class App : Application() {
+
     private val settingsInteractor by inject<SettingsInteractor>()
     private var darkTheme = false
 
@@ -22,9 +23,6 @@ class App : Application() {
             androidContext(this@App)
             modules(dataModule, repositoryModule, interactorModule, viewModelModule)
         }
-
-        // TODO УБРАТЬ!!!
-        Creator.initApplication(this)
 
         setupThemeStatus()
         switchTheme(darkTheme)
