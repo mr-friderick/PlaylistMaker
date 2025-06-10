@@ -12,7 +12,7 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
 
-    single<SettingsRepository> {
+    factory<SettingsRepository> {
         SettingsRepositoryImpl(get())
     }
 
@@ -20,11 +20,11 @@ val repositoryModule = module {
         AudioPlayerRepositoryImpl(get())
     }
 
-    single<HistoryRepository> {
+    factory<HistoryRepository> {
         HistoryRepositoryImpl(get())
     }
 
-    single<TracksRepository> {
+    factory<TracksRepository> {
         TracksRepositoryImpl(get())
     }
 

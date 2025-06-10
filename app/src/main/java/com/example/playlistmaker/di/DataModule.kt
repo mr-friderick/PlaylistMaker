@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.playlistmaker.player.data.AudioPlayerClient
 import com.example.playlistmaker.player.data.MediaPlayerController
 import com.example.playlistmaker.player.data.MediaPlayerFactory
+import com.example.playlistmaker.player.data.MediaPlayerFactoryImpl
 import com.example.playlistmaker.search.data.HistoryStorage
 import com.example.playlistmaker.search.data.NetworkClient
 import com.example.playlistmaker.search.data.localstorage.SharedPrefHistoryStorage
@@ -42,8 +43,8 @@ val dataModule = module {
         androidContext().getSharedPreferences(FILE_PREFERENCES, Context.MODE_PRIVATE)
     }
 
-    factory {
-        MediaPlayerFactory()
+    factory<MediaPlayerFactory> {
+        MediaPlayerFactoryImpl()
     }
 
     single {
