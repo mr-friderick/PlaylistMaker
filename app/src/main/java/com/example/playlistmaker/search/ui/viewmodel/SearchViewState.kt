@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.ui.view_model
+package com.example.playlistmaker.search.ui.viewmodel
 
 import com.example.playlistmaker.search.domain.models.Track
 

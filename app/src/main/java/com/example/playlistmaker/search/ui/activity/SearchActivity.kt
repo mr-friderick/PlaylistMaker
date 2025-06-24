@@ -15,9 +15,9 @@ import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.main.ui.activity.MainActivity
 import com.example.playlistmaker.player.ui.activity.PlayerActivity
 import com.example.playlistmaker.search.domain.models.Track
-import com.example.playlistmaker.search.ui.view_model.SearchViewModel
-import com.example.playlistmaker.search.ui.view_model.SearchViewState
-import com.example.playlistmaker.search.ui.view_model.TrackAdapter
+import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
+import com.example.playlistmaker.search.ui.viewmodel.SearchViewState
+import com.example.playlistmaker.search.ui.viewmodel.TrackAdapter
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
