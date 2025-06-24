@@ -38,4 +38,10 @@
     <string name="description_button_play">Воспроизвести/пауза</string>
     <string name="description_button_add_favorite">Добавить в избранное</string>
     <string name="default_time_left">0:00</string>
+
+    <!--  For layout activity_media -->
+    <string name="media_toolbar">Медиатека</string>
+
+    <!--  For layout fragment_favorites_tracks -->
+    <string name="media_empty">Ваша медиатека пуста</string>
 </resources>

@@ -60,4 +60,8 @@ dependencies {
 
     // Koin
     implementation("io.insert-koin:koin-android:3.3.0")
+
+    // Fragment
+    val fragment_version = "1.5.5"
+    implementation("iandroidx.fragment:fragment-ktx:$fragment_version")
 }
