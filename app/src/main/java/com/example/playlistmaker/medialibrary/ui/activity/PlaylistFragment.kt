@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.playlistmaker.databinding.FragmentFavoritesTracksBinding
+import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 
-class FavoritesTracksFragment : Fragment() {
+class PlaylistFragment : Fragment() {
 
-    private var _binding: FragmentFavoritesTracksBinding? = null
+    private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -17,7 +17,7 @@ class FavoritesTracksFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFavoritesTracksBinding.inflate(inflater, container, false)
+        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
 
         return binding.root
     }

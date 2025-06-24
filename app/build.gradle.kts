@@ -63,5 +63,8 @@ dependencies {
 
     // Fragment
     val fragment_version = "1.5.5"
-    implementation("iandroidx.fragment:fragment-ktx:$fragment_version")
+    implementation("androidx.fragment:fragment-ktx:$fragment_version")
+
+    // ViewPager2
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
 }

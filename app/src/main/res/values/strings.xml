@@ -44,4 +44,6 @@
 
     <!--  For layout fragment_favorites_tracks -->
     <string name="media_empty">Ваша медиатека пуста</string>
+    <string name="button_new_playlist">Новый плейлист</string>
+    <string name="playlist_empty">Вы не создали \n ни одного плейлиста</string>
 </resources>

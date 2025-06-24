@@ -6,15 +6,23 @@
     android:gravity="top|center"
     android:orientation="vertical">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/button_new_playlist"
+        style="@style/button_search_refresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="72dp"
+        android:layout_marginBottom="46dp"
+        android:text="@string/button_new_playlist" />
+
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="154dp"
         android:src="@drawable/ic_search_not_found" />
 
     <TextView
         style="@style/text_search_placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/media_empty" />
+        android:text="@string/playlist_empty" />
 </LinearLayout>
