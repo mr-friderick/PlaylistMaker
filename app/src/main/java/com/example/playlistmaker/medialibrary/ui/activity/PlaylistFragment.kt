@@ -31,8 +31,6 @@ class PlaylistFragment : Fragment() {
     }
 
     companion object {
-        const val TITLE = "Плейлисты"
-
         fun newInstance() = PlaylistFragment().apply {
             arguments = Bundle().apply {
                 // TODO (Реализация будет в будущем)

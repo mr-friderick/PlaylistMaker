@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat.getString
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentFavoritesTracksBinding
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoritesTracksViewModel
@@ -31,12 +32,6 @@ class FavoritesTracksFragment : Fragment() {
     }
 
     companion object {
-        const val TITLE = "Избранные треки"
-
-        fun newInstance() = FavoritesTracksFragment().apply {
-            arguments = Bundle().apply {
-                // TODO (Реализация будет в будущем)
-            }
-        }
+        fun newInstance() = FavoritesTracksFragment()
     }
 }

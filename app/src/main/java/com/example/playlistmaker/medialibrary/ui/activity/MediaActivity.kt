@@ -6,6 +6,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.main.ui.activity.MainActivity
 import com.example.playlistmaker.medialibrary.ui.MediaViewPagerAdapter
@@ -50,8 +51,8 @@ class MediaActivity : AppCompatActivity() {
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
            when(position) {
-               0 -> tab.text = FavoritesTracksFragment.TITLE
-               1 -> tab.text = PlaylistFragment.TITLE
+               0 -> tab.text = getString(R.string.favorites_track_title)
+               1 -> tab.text = getString(R.string.playlist_title)
            }
         }
         tabMediator.attach()

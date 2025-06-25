@@ -7,6 +7,10 @@
     <string name="settings_support_message">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="settings_agreement_link">https://yandex.ru/legal/practicum_offer/</string>
 
+    <!--  For activity fragments MediaActivity -->
+    <string name="favorites_track_title">Избранные треки</string>
+    <string name="playlist_title">Плейлисты</string>
+
     <!--  For layout activity_main -->
     <string name="app_name">Playlist Maker</string>
     <string name="main_title">Playlist maker</string>

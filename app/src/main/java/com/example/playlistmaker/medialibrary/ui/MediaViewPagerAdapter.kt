@@ -8,17 +8,11 @@ import com.example.playlistmaker.medialibrary.ui.activity.PlaylistFragment
 
 class MediaViewPagerAdapter(host: AppCompatActivity) : FragmentStateAdapter(host) {
 
-    private val listFragments = listOf(
-        FavoritesTracksFragment.newInstance(),
-        PlaylistFragment.newInstance()
-    )
-
     override fun getItemCount(): Int {
-        return listFragments.count()
+        return 2
     }
 
     override fun createFragment(position: Int): Fragment {
-        return listFragments[position]
+        return if (position == 0) FavoritesTracksFragment.newInstance() else PlaylistFragment.newInstance()
     }
-
 }
