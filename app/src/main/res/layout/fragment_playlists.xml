@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="72dp"
         android:layout_marginBottom="46dp"
+        android:paddingHorizontal="14dp"
         android:text="@string/button_new_playlist" />
 
     <ImageView
@@ -22,6 +23,7 @@
 
     <TextView
         style="@style/text_search_placeholder"
+        android:layout_marginTop="@dimen/dp16"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/playlist_empty" />

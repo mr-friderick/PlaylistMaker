@@ -9,7 +9,6 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.databinding.ActivityMediaBinding
 import com.example.playlistmaker.main.ui.activity.MainActivity
 import com.example.playlistmaker.medialibrary.ui.MediaViewPagerAdapter
-import com.example.playlistmaker.search.ui.activity.SearchActivity
 import com.google.android.material.tabs.TabLayoutMediator
 
 class MediaActivity : AppCompatActivity() {
@@ -51,8 +50,8 @@ class MediaActivity : AppCompatActivity() {
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
            when(position) {
-               0 -> tab.text = "Избранные треки"
-               1 -> tab.text = "Плейлисты"
+               0 -> tab.text = FavoritesTracksFragment.TITLE
+               1 -> tab.text = PlaylistFragment.TITLE
            }
         }
         tabMediator.attach()
