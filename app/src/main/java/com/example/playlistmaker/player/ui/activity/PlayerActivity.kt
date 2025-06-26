@@ -11,8 +11,8 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
-import com.example.playlistmaker.player.ui.view_model.PlayerViewModel
-import com.example.playlistmaker.player.ui.view_model.PlayerViewState
+import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
+import com.example.playlistmaker.player.ui.viewmodel.PlayerViewState
 import com.example.playlistmaker.search.ui.activity.SearchActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf

@@ -41,4 +41,5 @@
 
     <!--  Other colors  -->
     <color name="bg_search_field">@color/switch_track_off</color>
+    <color name="tab_layout_color">#1A1B22</color>
 </resources>

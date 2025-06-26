@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="toolbar_settings" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <style name="toolbar_common" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">22sp</item>
         <item name="fontFamily">@font/ys_display_medium</item>
     </style>
@@ -82,5 +82,13 @@
         <item name="android:textColor">@color/gray</item>
         <item name="android:textFontWeight">400</item>
         <item name="android:textSize">@dimen/sp13</item>
+    </style>
+
+    <style name="media_tab_layout">
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="tabTextColor">@color/tab_layout_color</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:background">@color/bg_screen_default</item>
     </style>
 </resources>

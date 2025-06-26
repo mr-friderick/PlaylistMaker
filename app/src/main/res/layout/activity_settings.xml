@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:navigationIcon="@drawable/ic_arrow"
         android:title="@string/main_button_settings"
-        android:titleTextAppearance="@style/toolbar_settings" />
+        android:titleTextAppearance="@style/toolbar_common" />
 
     <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/theme_switcher"

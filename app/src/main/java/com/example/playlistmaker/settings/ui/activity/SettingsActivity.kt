@@ -11,7 +11,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
 import com.example.playlistmaker.main.ui.activity.MainActivity
-import com.example.playlistmaker.settings.ui.view_model.SettingsViewModel
+import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import com.example.playlistmaker.util.App
 import org.koin.androidx.viewmodel.ext.android.viewModel
 

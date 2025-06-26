@@ -33,5 +33,5 @@
 
     <!--  Other colors  -->
     <color name="bg_search_field">@color/white</color>
-
+    <color name="tab_layout_color">@color/white</color>
 </resources>
