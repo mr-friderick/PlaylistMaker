@@ -1,4 +1,4 @@
-package com.example.playlistmaker.medialibrary.ui.activity
+package com.example.playlistmaker.medialibrary.ui.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

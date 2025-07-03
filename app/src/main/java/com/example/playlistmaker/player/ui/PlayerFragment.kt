@@ -1,70 +1,60 @@
-package com.example.playlistmaker.player.ui.activity
+package com.example.playlistmaker.player.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewState
-import com.example.playlistmaker.search.ui.activity.SearchActivity
+import com.example.playlistmaker.search.ui.fragments.SearchFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PlayerActivity:  AppCompatActivity() {
+class PlayerFragment: Fragment() {
 
+    private lateinit var binding: FragmentPlayerBinding
     private val viewModel by viewModel<PlayerViewModel> {
-        parametersOf(intent.getStringExtra(SearchActivity.INTENT_EXTRA_TRACK)!!)
+        parametersOf(requireArguments().getString(SearchFragment.INTENT_EXTRA_TRACK)!!)
     }
-
     private lateinit var mainHandler: Handler
     private lateinit var timerRunnable: Runnable
-
-    private lateinit var binding: ActivityAudioPlayerBinding
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
-        initVariables()
-
-        setContentView(binding.root)
-        setupWindowInsets()
-
-        observeLiveData()
-        setListeners()
-
-        preparePlayer()
-    }
 
     override fun onPause() {
         super.onPause()
         viewModel.pauseAudioPlayer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
         mainHandler.removeCallbacks(timerRunnable)
         viewModel.releaseAudioPlayer()
     }
 
-    private fun setupWindowInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.screenPlayer) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initVariables()
+        observeLiveData()
+        setListeners()
+        preparePlayer()
     }
 
     private fun initVariables() {
-        binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
-
         mainHandler = Handler(Looper.getMainLooper())
         timerRunnable = Runnable {
             viewModel.updateTime()
@@ -72,7 +62,7 @@ class PlayerActivity:  AppCompatActivity() {
     }
 
     private fun observeLiveData() {
-        viewModel.playerStateLiveData.observe(this) { state ->
+        viewModel.playerStateLiveData.observe(viewLifecycleOwner) { state ->
             when(state) {
                 is PlayerViewState.Default -> {
                     binding.buttonPlay.isEnabled = false
@@ -117,8 +107,9 @@ class PlayerActivity:  AppCompatActivity() {
 
     private fun setListeners() {
         binding.playerBack.setOnClickListener {
-            startActivity(Intent(this, SearchActivity::class.java))
-            finish()
+            // TODO - заменить на навигацию фрагментов
+//            startActivity(Intent(this, SearchActivity::class.java))
+//            finish()
         }
 
         binding.buttonPlay.setOnClickListener {
@@ -128,12 +119,11 @@ class PlayerActivity:  AppCompatActivity() {
 
     private fun preparePlayer() {
         mainHandler.postDelayed( {
-                viewModel.prepareAudioPlayer()
-                viewModel.setOnCompletionListenerForPlayer()
-            },
+            viewModel.prepareAudioPlayer()
+            viewModel.setOnCompletionListenerForPlayer()
+        },
             PREPARE_DELAY
         )
-
     }
 
     companion object {
