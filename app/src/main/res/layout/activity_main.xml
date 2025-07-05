@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".main.ui.activity.RootActivity">
+    tools:context=".main.ui.activity.MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/root_fragment_container_view"
@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/main_navigation_graph"
-        tools:context=".main.ui.activity.RootActivity" />
+        tools:context=".main.ui.activity.MainActivity" />
 
     <View
         android:id="@+id/separator"
@@ -44,6 +44,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/root_bottom_navigation_menu" />
+        app:menu="@menu/main_bottom_navigation_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

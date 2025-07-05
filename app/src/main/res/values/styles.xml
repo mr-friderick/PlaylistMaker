@@ -98,5 +98,4 @@
         <item name="android:textSize">12sp</item>
         <item name="android:lineSpacingExtra">-15dp</item>
     </style>
-
 </resources>

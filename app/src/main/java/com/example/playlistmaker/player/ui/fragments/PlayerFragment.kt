@@ -14,11 +14,10 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewState
-import com.example.playlistmaker.search.ui.fragments.SearchFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PlayerFragment: Fragment() {
+class PlayerFragment : Fragment() {
 
     private lateinit var binding: FragmentPlayerBinding
     private val viewModel by viewModel<PlayerViewModel> {
@@ -54,8 +53,6 @@ class PlayerFragment: Fragment() {
         observeLiveData()
         setListeners()
         preparePlayer()
-
-
     }
 
     private fun initVariables() {
@@ -67,7 +64,7 @@ class PlayerFragment: Fragment() {
 
     private fun observeLiveData() {
         viewModel.playerStateLiveData.observe(viewLifecycleOwner) { state ->
-            when(state) {
+            when (state) {
                 is PlayerViewState.Default -> {
                     binding.buttonPlay.isEnabled = false
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
@@ -85,21 +82,25 @@ class PlayerFragment: Fragment() {
                         .placeholder(R.drawable.ic_track_placeholder)
                         .into(binding.trackPoster)
                 }
+
                 is PlayerViewState.Prepared -> {
                     binding.buttonPlay.isEnabled = true
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
                 }
+
                 is PlayerViewState.Playing -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_pause)
                     binding.trackTimeLeft.text = state.trackTime;
                     mainHandler.postDelayed(timerRunnable, TIME_LEFT_DELAY)
                 }
+
                 is PlayerViewState.Paused -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
                     mainHandler.removeCallbacks(timerRunnable)
                 }
+
                 is PlayerViewState.Complite -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
@@ -111,7 +112,7 @@ class PlayerFragment: Fragment() {
 
     private fun setListeners() {
         binding.playerBack.setOnClickListener {
-            findNavController().navigate(R.id.action_playerFragment_to_searchFragment)
+            findNavController().navigateUp()
         }
 
         binding.buttonPlay.setOnClickListener {
@@ -120,10 +121,11 @@ class PlayerFragment: Fragment() {
     }
 
     private fun preparePlayer() {
-        mainHandler.postDelayed( {
-            viewModel.prepareAudioPlayer()
-            viewModel.setOnCompletionListenerForPlayer()
-        },
+        mainHandler.postDelayed(
+            {
+                viewModel.prepareAudioPlayer()
+                viewModel.setOnCompletionListenerForPlayer()
+            },
             PREPARE_DELAY
         )
     }
@@ -133,8 +135,8 @@ class PlayerFragment: Fragment() {
         private const val TIME_LEFT_DELAY = 300L
         const val ARGS_TRACK = "track"
 
-        fun createArgs(track: String): Bundle {
-            return bundleOf(ARGS_TRACK to track)
+        fun createArgs(jsonTrack: String): Bundle {
+            return bundleOf(ARGS_TRACK to jsonTrack)
         }
     }
 }

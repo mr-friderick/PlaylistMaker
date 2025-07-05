@@ -1,6 +1,5 @@
 package com.example.playlistmaker.main.ui.activity
 
-import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -10,12 +9,12 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityRootBinding
+import com.example.playlistmaker.databinding.ActivityMainBinding
 import com.example.playlistmaker.util.App
 
-class RootActivity: AppCompatActivity() {
+class MainActivity: AppCompatActivity() {
 
-    private lateinit var binding: ActivityRootBinding
+    private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +27,7 @@ class RootActivity: AppCompatActivity() {
     }
 
     private fun initVariables() {
-        binding = ActivityRootBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.root_fragment_container_view) as NavHostFragment
         navController = navHostFragment.navController

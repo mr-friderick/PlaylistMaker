@@ -10,7 +10,7 @@ import com.example.playlistmaker.databinding.FragmentMediaRootBinding
 import com.example.playlistmaker.medialibrary.ui.MediaViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
-class MediaRootFragment: Fragment() {
+class MediaRootFragment : Fragment() {
 
     private lateinit var binding: FragmentMediaRootBinding
     private lateinit var adapter: MediaViewPagerAdapter
@@ -41,7 +41,7 @@ class MediaRootFragment: Fragment() {
         binding.viewPager.adapter = adapter
 
         tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            when(position) {
+            when (position) {
                 0 -> tab.text = getString(R.string.favorites_track_title)
                 1 -> tab.text = getString(R.string.playlist_title)
             }

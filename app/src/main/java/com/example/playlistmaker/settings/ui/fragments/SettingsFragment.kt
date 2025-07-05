@@ -14,7 +14,7 @@ import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import com.example.playlistmaker.util.App
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsFragment: Fragment() {
+class SettingsFragment : Fragment() {
 
     private lateinit var binding: FragmentSettingsBinding
     private val viewModel by viewModel<SettingsViewModel>()

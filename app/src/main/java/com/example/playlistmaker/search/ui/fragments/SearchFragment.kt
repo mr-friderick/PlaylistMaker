@@ -23,7 +23,7 @@ import com.example.playlistmaker.search.ui.viewmodel.TrackAdapter
 import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchFragment: Fragment() {
+class SearchFragment : Fragment() {
 
     private lateinit var binding: FragmentSearchBinding
     private val viewModel by viewModel<SearchViewModel>()
@@ -61,7 +61,12 @@ class SearchFragment: Fragment() {
     override fun onViewStateRestored(savedInstanceState: Bundle?) {
         super.onViewStateRestored(savedInstanceState)
         if (savedInstanceState != null) {
-            binding.searchEditText.setText(savedInstanceState.getString(INPUT_SEARCH_TEXT, INPUT_SEARCH_TEXT_DEF))
+            binding.searchEditText.setText(
+                savedInstanceState.getString(
+                    INPUT_SEARCH_TEXT,
+                    INPUT_SEARCH_TEXT_DEF
+                )
+            )
         }
     }
 
@@ -73,7 +78,7 @@ class SearchFragment: Fragment() {
     private fun observeLiveData() {
         viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
             hideAllDynamicView()
-            when(state) {
+            when (state) {
                 SearchViewState.Default -> {}
                 is SearchViewState.History -> {
                     historyAdapter = TrackAdapter(state.historyTracks) { track ->
@@ -82,16 +87,20 @@ class SearchFragment: Fragment() {
                     binding.searchHistoryRecyclerView.adapter = historyAdapter
                     binding.searchHistory.isVisible = true
                 }
+
                 SearchViewState.Loading -> {
                     binding.searchProgressBar.isVisible = true
                 }
+
                 is SearchViewState.Content -> {
                     createRecyclerView(state.contentTracks)
                     binding.searchRecyclerView.isVisible = true
                 }
+
                 SearchViewState.NotFound -> {
                     binding.searchNotFoundPlaceholder.isVisible = true
                 }
+
                 SearchViewState.Error -> {
                     binding.searchFailurePlaceholder.isVisible = true
                 }
@@ -130,8 +139,7 @@ class SearchFragment: Fragment() {
             setOnFocusChangeListener { _, _ ->
                 if (historyAllowed()) {
                     viewModel.setHistoryState()
-                    val iim = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    iim.showSoftInput(binding.searchEditText, InputMethodManager.SHOW_IMPLICIT)
+                    showKeyboard()
                 } else {
                     viewModel.setDefaultState()
                 }
@@ -153,6 +161,11 @@ class SearchFragment: Fragment() {
         binding.buttonClearHistory.setOnClickListener {
             viewModel.clearHistory()
         }
+    }
+
+    private fun showKeyboard() {
+        val iim = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        iim.showSoftInput(binding.searchEditText, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun processInstanceState(savedInstanceState: Bundle?) {
@@ -217,7 +230,8 @@ class SearchFragment: Fragment() {
     private fun searchDebounce(needDelay: Boolean = true) {
         mainHandler.removeCallbacks(searchRunnable)
         if (needDelay) {
-            mainHandler.postDelayed(searchRunnable,
+            mainHandler.postDelayed(
+                searchRunnable,
                 SEARCH_DEBOUNCE_DELAY
             )
         } else {
