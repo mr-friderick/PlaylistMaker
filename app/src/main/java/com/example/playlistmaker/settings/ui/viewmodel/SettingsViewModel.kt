@@ -12,6 +12,10 @@ class SettingsViewModel(
     private val theme = MutableLiveData(false)
     val themeLiveData: LiveData<Boolean> = theme
 
+    fun setupThemeSwitcher() {
+        theme.value = settingsInteractor.read()
+    }
+
     fun onThemeSwitcherClicked(currentValue: Boolean) {
         settingsInteractor.save(currentValue)
         theme.value = currentValue

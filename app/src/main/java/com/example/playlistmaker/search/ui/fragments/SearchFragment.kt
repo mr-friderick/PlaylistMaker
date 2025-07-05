@@ -32,6 +32,7 @@ class SearchFragment : Fragment() {
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var mainHandler: Handler
     private lateinit var searchRunnable: Runnable
+    private lateinit var iim: InputMethodManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +74,8 @@ class SearchFragment : Fragment() {
     private fun initVariables() {
         mainHandler = Handler(Looper.getMainLooper())
         searchRunnable = Runnable { viewModel.searchTracks(binding.searchEditText.text.toString()) }
+
+        iim = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
     private fun observeLiveData() {
@@ -139,7 +142,7 @@ class SearchFragment : Fragment() {
             setOnFocusChangeListener { _, _ ->
                 if (historyAllowed()) {
                     viewModel.setHistoryState()
-                    showKeyboard()
+                    setFocusScreen()
                 } else {
                     viewModel.setDefaultState()
                 }
@@ -149,7 +152,7 @@ class SearchFragment : Fragment() {
         binding.searchClearIcon.setOnClickListener {
             createRecyclerView(arrayListOf())
             binding.searchEditText.setText("")
-            binding.searchEditText.clearFocus()
+            clearFocusScreen()
 
             viewModel.setDefaultState()
         }
@@ -161,11 +164,6 @@ class SearchFragment : Fragment() {
         binding.buttonClearHistory.setOnClickListener {
             viewModel.clearHistory()
         }
-    }
-
-    private fun showKeyboard() {
-        val iim = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        iim.showSoftInput(binding.searchEditText, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun processInstanceState(savedInstanceState: Bundle?) {
@@ -180,6 +178,12 @@ class SearchFragment : Fragment() {
 
     private fun setFocusScreen() {
         binding.searchEditText.requestFocus()
+        iim.showSoftInput(binding.searchEditText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun clearFocusScreen() {
+        binding.searchEditText.clearFocus()
+        iim.hideSoftInputFromWindow(binding.searchEditText.windowToken, 0)
     }
 
     private fun defineCurrentView() {

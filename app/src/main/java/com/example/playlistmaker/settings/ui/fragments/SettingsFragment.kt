@@ -35,6 +35,7 @@ class SettingsFragment : Fragment() {
         initVariables()
         observeLiveData()
         setListeners()
+        setupTheme()
     }
 
     private fun initVariables() {
@@ -86,5 +87,9 @@ class SettingsFragment : Fragment() {
             }
             startActivity(intent)
         }
+    }
+
+    private fun setupTheme() {
+        viewModel.setupThemeSwitcher()
     }
 }
