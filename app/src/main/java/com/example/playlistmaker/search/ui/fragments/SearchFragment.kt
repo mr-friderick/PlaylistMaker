@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.ui.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -7,14 +8,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
+import com.example.playlistmaker.player.ui.fragments.PlayerFragment
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewState
 import com.example.playlistmaker.search.ui.viewmodel.TrackAdapter
+import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment: Fragment() {
@@ -71,7 +77,7 @@ class SearchFragment: Fragment() {
                 SearchViewState.Default -> {}
                 is SearchViewState.History -> {
                     historyAdapter = TrackAdapter(state.historyTracks) { track ->
-                        startPlayerActivity(track)
+                        startPlayerFragment(track)
                     }
                     binding.searchHistoryRecyclerView.adapter = historyAdapter
                     binding.searchHistory.isVisible = true
@@ -124,6 +130,8 @@ class SearchFragment: Fragment() {
             setOnFocusChangeListener { _, _ ->
                 if (historyAllowed()) {
                     viewModel.setHistoryState()
+                    val iim = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    iim.showSoftInput(binding.searchEditText, InputMethodManager.SHOW_IMPLICIT)
                 } else {
                     viewModel.setDefaultState()
                 }
@@ -177,12 +185,12 @@ class SearchFragment: Fragment() {
         binding.searchFailurePlaceholder.isVisible = false
     }
 
-    private fun startPlayerActivity(track: Track) {
+    private fun startPlayerFragment(track: Track) {
         if (clickDebounce()) {
-            // TODO Добавить смену фрагмента
-//            val intent = Intent(this, PlayerActivity::class.java)
-//            intent.putExtra(INTENT_EXTRA_TRACK, Gson().toJson(track))
-//            startActivity(intent)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_playerFragment,
+                PlayerFragment.createArgs(Gson().toJson(track))
+            )
         }
     }
 
@@ -201,7 +209,7 @@ class SearchFragment: Fragment() {
     private fun createRecyclerView(tracksList: ArrayList<Track>) {
         val trackAdapter = TrackAdapter(tracksList) { track ->
             viewModel.addTrackInHistory(track)
-            startPlayerActivity(track)
+            startPlayerFragment(track)
         }
         binding.searchRecyclerView.adapter = trackAdapter
     }
@@ -226,7 +234,6 @@ class SearchFragment: Fragment() {
     companion object {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
         const val INPUT_SEARCH_TEXT_DEF = ""
-        const val INTENT_EXTRA_TRACK = "track"
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }

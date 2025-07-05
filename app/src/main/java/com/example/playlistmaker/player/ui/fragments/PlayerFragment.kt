@@ -1,4 +1,4 @@
-package com.example.playlistmaker.player.ui
+package com.example.playlistmaker.player.ui.fragments
 
 import android.os.Bundle
 import android.os.Handler
@@ -6,7 +6,9 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
@@ -20,7 +22,7 @@ class PlayerFragment: Fragment() {
 
     private lateinit var binding: FragmentPlayerBinding
     private val viewModel by viewModel<PlayerViewModel> {
-        parametersOf(requireArguments().getString(SearchFragment.INTENT_EXTRA_TRACK)!!)
+        parametersOf(requireArguments().getString(ARGS_TRACK))
     }
     private lateinit var mainHandler: Handler
     private lateinit var timerRunnable: Runnable
@@ -52,6 +54,8 @@ class PlayerFragment: Fragment() {
         observeLiveData()
         setListeners()
         preparePlayer()
+
+
     }
 
     private fun initVariables() {
@@ -107,9 +111,7 @@ class PlayerFragment: Fragment() {
 
     private fun setListeners() {
         binding.playerBack.setOnClickListener {
-            // TODO - заменить на навигацию фрагментов
-//            startActivity(Intent(this, SearchActivity::class.java))
-//            finish()
+            findNavController().navigate(R.id.action_playerFragment_to_searchFragment)
         }
 
         binding.buttonPlay.setOnClickListener {
@@ -129,5 +131,10 @@ class PlayerFragment: Fragment() {
     companion object {
         private const val PREPARE_DELAY = 200L
         private const val TIME_LEFT_DELAY = 300L
+        const val ARGS_TRACK = "track"
+
+        fun createArgs(track: String): Bundle {
+            return bundleOf(ARGS_TRACK to track)
+        }
     }
 }

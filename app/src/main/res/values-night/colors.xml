@@ -6,7 +6,7 @@
 
     <!--  Screen colors  -->
     <color name="bg_screen_default">@color/bg_dark_mode</color>
-    <color name="bg_main_screen">@color/bg_dark_mode</color>
+    <color name="bg_main_screen">@color/blue</color>
 
     <!--  Layout colors  -->
     <color name="bg_layout_search">@color/white</color>
@@ -34,4 +34,5 @@
     <!--  Other colors  -->
     <color name="bg_search_field">@color/white</color>
     <color name="tab_layout_color">@color/white</color>
+    <color name="bnm_unactive_color">@color/white</color>
 </resources>

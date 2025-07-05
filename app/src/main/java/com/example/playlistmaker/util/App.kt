@@ -1,7 +1,9 @@
 package com.example.playlistmaker.util
 
 import android.app.Application
+import android.view.WindowInsetsController
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.view.WindowInsetsControllerCompat
 import com.example.playlistmaker.di.dataModule
 import com.example.playlistmaker.di.interactorModule
 import com.example.playlistmaker.di.repositoryModule
@@ -42,5 +44,9 @@ class App : Application() {
             }
         )
         settingsInteractor.save(darkThemeEnabled)
+    }
+
+    fun isDarkThemeEnabled(): Boolean {
+        return darkTheme
     }
 }

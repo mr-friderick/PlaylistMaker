@@ -91,4 +91,12 @@
         <item name="android:textSize">14sp</item>
         <item name="android:background">@color/bg_screen_default</item>
     </style>
+
+    <style name="bnm_default">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingExtra">-15dp</item>
+    </style>
+
 </resources>

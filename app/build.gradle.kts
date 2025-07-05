@@ -65,4 +65,8 @@ dependencies {
 
     // ViewPager2
     implementation(libs.androidx.viewpager2)
+
+    // Jetpack Navigation Component
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.navigation.ui.ktx)
 }
