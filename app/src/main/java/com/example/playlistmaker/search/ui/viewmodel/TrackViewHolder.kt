@@ -12,9 +12,9 @@ import com.google.android.material.textview.MaterialTextView
 class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     LayoutInflater.from(parent.context).inflate(R.layout.element_track, parent, false)
 ) {
-    private val trackPoster: ImageView = itemView.findViewById(R.id.track_poster)
-    private val trackName: MaterialTextView = itemView.findViewById(R.id.track_name)
-    private val trackArtist: MaterialTextView = itemView.findViewById(R.id.track_artist)
+    private val trackPoster: ImageView = itemView.findViewById(R.id.trackPoster)
+    private val trackName: MaterialTextView = itemView.findViewById(R.id.trackName)
+    private val trackArtist: MaterialTextView = itemView.findViewById(R.id.trackArtist)
     private val trackTime: MaterialTextView = itemView.findViewById(R.id.time)
 
     fun bind(model: Track) {

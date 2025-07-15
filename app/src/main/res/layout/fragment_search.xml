@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/screen_search"
+    android:id="@+id/screenSearch"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen_default"
@@ -10,7 +10,7 @@
     tools:context=".search.ui.fragments.SearchFragment">
 
     <Toolbar
-        android:id="@+id/search_back"
+        android:id="@+id/searchBack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:title="@string/main_button_search"
@@ -24,7 +24,7 @@
         android:background="@drawable/layout_search_background">
 
         <EditText
-            android:id="@+id/search_edit_text"
+            android:id="@+id/searchEditText"
             android:layout_width="match_parent"
             android:layout_height="36dp"
             android:background="@android:color/transparent"
@@ -41,7 +41,7 @@
             android:textCursorDrawable="@drawable/ic_cursor" />
 
         <ImageView
-            android:id="@+id/search_clear_icon"
+            android:id="@+id/searchClearIcon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|center_vertical"
@@ -52,7 +52,7 @@
     </FrameLayout>
 
     <LinearLayout
-        android:id="@+id/search_history"
+        android:id="@+id/searchHistory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/dp50"
@@ -73,20 +73,20 @@
             android:layout_marginTop="@dimen/dp28">
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/search_history_recycler_view"
+                android:id="@+id/searchHistoryRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="13dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginBottom="24dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toTopOf="@id/button_clear_history"
+                app:layout_constraintBottom_toTopOf="@id/buttonClearHistory"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/button_clear_history"
+                android:id="@+id/buttonClearHistory"
                 style="@style/button_search_refresh"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/search_not_found_placeholder"
+        android:id="@+id/searchNotFoundPlaceholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="110dp"
@@ -119,7 +119,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/search_failure_placeholder"
+        android:id="@+id/searchFailurePlaceholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="110dp"
@@ -139,7 +139,7 @@
             android:text="@string/search_failure_text" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/button_refresh"
+            android:id="@+id/buttonRefresh"
             style="@style/button_search_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -148,7 +148,7 @@
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/search_progress_bar"
+        android:id="@+id/searchProgressBar"
         android:layout_width="44dp"
         android:layout_height="44dp"
         android:layout_gravity="center"
@@ -157,7 +157,7 @@
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/search_recycler_view"
+        android:id="@+id/searchRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="13dp"

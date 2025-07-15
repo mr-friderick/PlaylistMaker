@@ -29,7 +29,7 @@ class MainActivity: AppCompatActivity() {
     private fun initVariables() {
         binding = ActivityMainBinding.inflate(layoutInflater)
 
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.root_fragment_container_view) as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.rootFragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
 
         binding.bottomNavigationView.setupWithNavController(navController)

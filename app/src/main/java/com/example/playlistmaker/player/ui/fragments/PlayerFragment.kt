@@ -26,11 +26,6 @@ class PlayerFragment : Fragment() {
     private lateinit var mainHandler: Handler
     private lateinit var timerRunnable: Runnable
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.pauseAudioPlayer()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,12 +35,6 @@ class PlayerFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        mainHandler.removeCallbacks(timerRunnable)
-        viewModel.releaseAudioPlayer()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -53,6 +42,17 @@ class PlayerFragment : Fragment() {
         observeLiveData()
         setListeners()
         preparePlayer()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mainHandler.removeCallbacks(timerRunnable)
+        viewModel.releaseAudioPlayer()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.pauseAudioPlayer()
     }
 
     private fun initVariables() {
@@ -101,7 +101,7 @@ class PlayerFragment : Fragment() {
                     mainHandler.removeCallbacks(timerRunnable)
                 }
 
-                is PlayerViewState.Complite -> {
+                is PlayerViewState.Completed -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
                     mainHandler.removeCallbacks(timerRunnable)

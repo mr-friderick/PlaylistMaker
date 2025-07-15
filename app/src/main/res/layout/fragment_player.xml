@@ -9,12 +9,12 @@
     tools:context=".player.ui.fragments.PlayerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/screen_player"
+        android:id="@+id/screenPlayer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ImageButton
-            android:id="@+id/player_back"
+            android:id="@+id/playerBack"
             android:layout_width="@dimen/dp48"
             android:layout_height="@dimen/dp48"
             android:layout_marginStart="@dimen/dp4"
@@ -26,22 +26,22 @@
             app:srcCompat="@drawable/ic_arrow" />
 
         <com.google.android.material.imageview.ShapeableImageView
-            android:id="@+id/track_poster"
+            android:id="@+id/trackPoster"
             android:layout_width="@dimen/dp321"
             android:layout_height="@dimen/dp321"
             android:layout_marginHorizontal="@dimen/dp24"
             android:layout_marginTop="@dimen/dp30"
             android:layout_marginBottom="@dimen/dp24"
             android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@id/track_name"
+            app:layout_constraintBottom_toTopOf="@id/trackName"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/player_back"
+            app:layout_constraintTop_toBottomOf="@id/playerBack"
             app:shapeAppearanceOverlay="@style/image_track_poster"
             app:srcCompat="@drawable/ic_track_placeholder" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/track_name"
+            android:id="@+id/trackName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp24"
@@ -50,14 +50,14 @@
             android:textColor="@color/txt_default"
             android:textFontWeight="400"
             android:textSize="@dimen/sp22"
-            app:layout_constraintBottom_toTopOf="@id/track_artist"
+            app:layout_constraintBottom_toTopOf="@id/trackArtist"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_poster"
+            app:layout_constraintTop_toBottomOf="@id/trackPoster"
             tools:text="Smells Like Teen Spirit" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/track_artist"
+            android:id="@+id/trackArtist"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp24"
@@ -69,11 +69,11 @@
             android:textSize="@dimen/sp14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_name"
+            app:layout_constraintTop_toBottomOf="@id/trackName"
             tools:text="Nirvana" />
 
         <ImageButton
-            android:id="@+id/button_add_playlist"
+            android:id="@+id/buttonAddPlaylist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp24"
@@ -81,13 +81,13 @@
             android:background="@drawable/round_button"
             android:contentDescription="@string/description_button_add_playlist"
             android:src="@drawable/ic_button_add_playlist"
-            app:layout_constraintEnd_toStartOf="@id/button_play"
+            app:layout_constraintEnd_toStartOf="@id/buttonPlay"
             app:layout_constraintHorizontal_chainStyle="spread_inside"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_artist" />
+            app:layout_constraintTop_toBottomOf="@id/trackArtist" />
 
         <ImageButton
-            android:id="@+id/button_play"
+            android:id="@+id/buttonPlay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp38"
@@ -95,13 +95,13 @@
             android:contentDescription="@string/description_button_play"
             android:enabled="false"
             android:src="@drawable/ic_button_play"
-            app:layout_constraintBottom_toTopOf="@id/track_time_left"
-            app:layout_constraintEnd_toStartOf="@id/button_add_favorite"
-            app:layout_constraintStart_toEndOf="@id/button_add_playlist"
-            app:layout_constraintTop_toBottomOf="@id/track_artist" />
+            app:layout_constraintBottom_toTopOf="@id/trackTimeLeft"
+            app:layout_constraintEnd_toStartOf="@id/buttonAddFavorite"
+            app:layout_constraintStart_toEndOf="@id/buttonAddPlaylist"
+            app:layout_constraintTop_toBottomOf="@id/trackArtist" />
 
         <ImageButton
-            android:id="@+id/button_add_favorite"
+            android:id="@+id/buttonAddFavorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp54"
@@ -110,11 +110,11 @@
             android:contentDescription="@string/description_button_add_favorite"
             android:src="@drawable/ic_button_favorite"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/button_play"
-            app:layout_constraintTop_toBottomOf="@id/track_artist" />
+            app:layout_constraintStart_toEndOf="@id/buttonPlay"
+            app:layout_constraintTop_toBottomOf="@id/trackArtist" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/track_time_left"
+            android:id="@+id/trackTimeLeft"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp12"
@@ -126,7 +126,7 @@
             android:textSize="@dimen/sp14"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/button_play" />
+            app:layout_constraintTop_toBottomOf="@id/buttonPlay" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline"
@@ -146,7 +146,7 @@
             android:text="@string/player_time_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_time_left" />
+            app:layout_constraintTop_toBottomOf="@id/trackTimeLeft" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/collection"
@@ -159,7 +159,7 @@
             android:text="@string/player_collection_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_time" />
+            app:layout_constraintTop_toBottomOf="@id/trackTime" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/release"
@@ -172,7 +172,7 @@
             android:text="@string/player_release_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_collection" />
+            app:layout_constraintTop_toBottomOf="@id/trackCollection" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/genre"
@@ -185,7 +185,7 @@
             android:text="@string/player_genre_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_release" />
+            app:layout_constraintTop_toBottomOf="@id/trackRelease" />
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/country"
@@ -198,10 +198,10 @@
             android:text="@string/player_country_text"
             app:layout_constraintEnd_toStartOf="@id/guideline"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/track_genre" />
+            app:layout_constraintTop_toBottomOf="@id/trackGenre" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/track_time"
+            android:id="@+id/trackTime"
             style="@style/for_player_field_values"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -209,11 +209,11 @@
             android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/track_time_left"
+            app:layout_constraintTop_toBottomOf="@id/trackTimeLeft"
             tools:text="0:00" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/track_collection"
+            android:id="@+id/trackCollection"
             style="@style/for_player_field_values"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -221,11 +221,11 @@
             android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/track_time"
+            app:layout_constraintTop_toBottomOf="@id/trackTime"
             tools:text="Smells Like Teen Spirit" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/track_release"
+            android:id="@+id/trackRelease"
             style="@style/for_player_field_values"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -233,11 +233,11 @@
             android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/track_collection"
+            app:layout_constraintTop_toBottomOf="@id/trackCollection"
             tools:text="0000" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/track_genre"
+            android:id="@+id/trackGenre"
             style="@style/for_player_field_values"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -245,11 +245,11 @@
             android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/track_release"
+            app:layout_constraintTop_toBottomOf="@id/trackRelease"
             tools:text="Rock" />
 
         <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/track_country"
+            android:id="@+id/trackCountry"
             style="@style/for_player_field_values"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -257,7 +257,7 @@
             android:layout_marginEnd="@dimen/dp16"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline"
-            app:layout_constraintTop_toBottomOf="@id/track_genre"
+            app:layout_constraintTop_toBottomOf="@id/trackGenre"
             tools:text="USA" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

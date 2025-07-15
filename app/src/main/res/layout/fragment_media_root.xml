@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/screen_media"
+    android:id="@+id/screenMedia"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/bg_screen_default"
@@ -10,14 +10,14 @@
     tools:context=".medialibrary.ui.fragments.MediaRootFragment">
 
     <Toolbar
-        android:id="@+id/media_back"
+        android:id="@+id/mediaBack"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:title="@string/media_toolbar"
         android:titleTextAppearance="@style/toolbar_common" />
 
     <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
+        android:id="@+id/tabLayout"
         style="@style/media_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
         app:tabIndicatorColor="@color/tab_layout_color" />
 
     <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
