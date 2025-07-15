@@ -1,52 +1,44 @@
-package com.example.playlistmaker.settings.ui.activity
+package com.example.playlistmaker.settings.ui.fragments
 
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.net.toUri
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivitySettingsBinding
-import com.example.playlistmaker.main.ui.activity.MainActivity
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import com.example.playlistmaker.util.App
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
+    private lateinit var binding: FragmentSettingsBinding
     private val viewModel by viewModel<SettingsViewModel>()
-
-    private lateinit var binding: ActivitySettingsBinding
     private var dataForIntent: MutableMap<String, String> = mutableMapOf()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-
-        initVariables()
-
-        setContentView(binding.root)
-        setupWindowInsets()
-
-        observeLiveData()
-        setupThemeSwitcher()
-        setListeners()
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    private fun setupWindowInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.screenSettings) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        initVariables()
+        observeLiveData()
+        setListeners()
+        setupTheme()
     }
 
     private fun initVariables() {
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-
         dataForIntent["shareLink"] = getString(R.string.settings_share_link)
         dataForIntent["shareTitle"] = getString(R.string.settings_share_title)
         dataForIntent["supportEmail"] = getString(R.string.settings_support_email)
@@ -56,22 +48,13 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun observeLiveData() {
-        viewModel.themeLiveData.observe(this) { value ->
+        viewModel.themeLiveData.observe(viewLifecycleOwner) { value ->
             binding.themeSwitcher.isChecked = value
-            (applicationContext as App).switchTheme(value)
+            (requireContext().applicationContext as App).switchTheme(value)
         }
-    }
-
-    private fun setupThemeSwitcher() {
-       viewModel.setupThemeSwitcher()
     }
 
     private fun setListeners() {
-        binding.settingsBack.setNavigationOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-
         binding.themeSwitcher.setOnCheckedChangeListener { _, checked ->
             viewModel.onThemeSwitcherClicked(checked)
         }
@@ -92,7 +75,7 @@ class SettingsActivity : AppCompatActivity() {
                     ("mailto:${dataForIntent["supportEmail"]}?" +
                             "subject=${Uri.encode(dataForIntent["supportSubject"])}" +
                             "&body=${Uri.encode(dataForIntent["supportMessage"])}"
-                    ).toUri()
+                            ).toUri()
             }
             startActivity(intent)
         }
@@ -104,5 +87,9 @@ class SettingsActivity : AppCompatActivity() {
             }
             startActivity(intent)
         }
+    }
+
+    private fun setupTheme() {
+        viewModel.setupThemeSwitcher()
     }
 }

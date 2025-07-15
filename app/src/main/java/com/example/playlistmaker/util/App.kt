@@ -43,4 +43,8 @@ class App : Application() {
         )
         settingsInteractor.save(darkThemeEnabled)
     }
+
+    fun isDarkThemeEnabled(): Boolean {
+        return darkTheme
+    }
 }

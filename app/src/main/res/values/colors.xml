@@ -5,6 +5,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="bg_dark_mode">#1A1B22</color>
     <color name="gray">#AEAFB4</color>
+    <color name="light_gray">#E6E8EB</color>
     <color name="blue">#3772E7</color>
 
     <!--  Screen colors  -->
@@ -34,7 +35,7 @@
     <!--  Switch colors  -->
     <color name="switch_thumb_on">@color/blue</color>
     <color name="switch_track_on">#9FBBF3</color>
-    <color name="switch_track_off">#E6E8EB</color>
+    <color name="switch_track_off">@color/light_gray</color>
 
     <!--  Progress bars colors  -->
     <color name="progress_bar_search">@color/blue</color>
@@ -42,4 +43,5 @@
     <!--  Other colors  -->
     <color name="bg_search_field">@color/switch_track_off</color>
     <color name="tab_layout_color">#1A1B22</color>
+    <color name="bnm_unactive_color">@color/bg_dark_mode</color>
 </resources>

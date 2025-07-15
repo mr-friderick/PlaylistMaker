@@ -1,54 +1,57 @@
 package com.example.playlistmaker.main.ui.activity
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isVisible
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
-import com.example.playlistmaker.medialibrary.ui.activity.MediaActivity
-import com.example.playlistmaker.search.ui.activity.SearchActivity
-import com.example.playlistmaker.settings.ui.activity.SettingsActivity
+import com.example.playlistmaker.util.App
 
-class MainActivity : AppCompatActivity() {
+class MainActivity: AppCompatActivity() {
+
     private lateinit var binding: ActivityMainBinding
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
 
         initVariables()
-
         setContentView(binding.root)
-        setupWindowInsets()
-
         setListeners()
-    }
-
-    private fun setupWindowInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.screenMain) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+        setupStatusBar()
     }
 
     private fun initVariables() {
         binding = ActivityMainBinding.inflate(layoutInflater)
+
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.root_fragment_container_view) as NavHostFragment
+        navController = navHostFragment.navController
+
+        binding.bottomNavigationView.setupWithNavController(navController)
     }
 
     private fun setListeners() {
-        binding.search.setOnClickListener {
-            startActivity(Intent(this, SearchActivity::class.java))
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when(destination.id) {
+                R.id.playerFragment -> {
+                    binding.separator.isVisible = false
+                    binding.bottomNavigationView.isVisible = false
+                }
+                else -> {
+                    binding.separator.isVisible = true
+                    binding.bottomNavigationView.isVisible = true
+                }
+            }
         }
+    }
 
-        binding.media.setOnClickListener {
-            startActivity(Intent(this, MediaActivity::class.java))
-        }
-
-        binding.settings.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
+    private fun setupStatusBar() {
+        window.statusBarColor = ContextCompat.getColor(this, R.color.bg_screen_default)
+        WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightStatusBars = !(applicationContext as App).isDarkThemeEnabled()
     }
 }
