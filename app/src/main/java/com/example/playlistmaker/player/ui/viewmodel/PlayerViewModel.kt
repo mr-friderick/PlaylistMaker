@@ -20,18 +20,19 @@ class PlayerViewModel(
         Track::class.java
     )
 
-    private val playerState = MutableLiveData<PlayerViewState>(PlayerViewState.Default(trackModel))
-    val playerStateLiveData: LiveData<PlayerViewState> = playerState
+    private val _playerStateLiveData = MutableLiveData<PlayerViewState>(PlayerViewState.Default(trackModel))
+    val playerStateLiveData: LiveData<PlayerViewState> = _playerStateLiveData
 
     fun playerControl() {
-        when(playerState.value) {
+        when(_playerStateLiveData.value) {
             is PlayerViewState.Default, null -> {
                 prepareAudioPlayer()
             }
+
             is PlayerViewState.Playing -> {
                 pauseAudioPlayer()
             }
-            is PlayerViewState.Prepared, is PlayerViewState.Paused, is PlayerViewState.Complite -> {
+            is PlayerViewState.Prepared, is PlayerViewState.Paused, is PlayerViewState.Completed -> {
                 playAudioPlayer()
             }
         }
@@ -39,9 +40,9 @@ class PlayerViewModel(
 
     fun updateTime() {
         val formattedTrackTimeLeft = getFormattedTime()
-        val currentState = playerState.value
-        playerState.value = when(currentState) {
-            is PlayerViewState.Default, is PlayerViewState.Complite, null -> currentState
+        val currentState = _playerStateLiveData.value
+        _playerStateLiveData.value = when(currentState) {
+            is PlayerViewState.Default, is PlayerViewState.Completed, null -> currentState
             is PlayerViewState.Prepared -> currentState.copy(trackTime = formattedTrackTimeLeft)
             is PlayerViewState.Playing -> currentState.copy(trackTime = formattedTrackTimeLeft)
             is PlayerViewState.Paused ->  currentState.copy(trackTime = formattedTrackTimeLeft)
@@ -50,28 +51,28 @@ class PlayerViewModel(
 
     fun setOnCompletionListenerForPlayer() {
         playerInteractor.setOnCompletionListener {
-            playerState.value = PlayerViewState.Complite()
+            _playerStateLiveData.value = PlayerViewState.Completed()
         }
     }
 
     fun prepareAudioPlayer() {
         playerInteractor.prepare(trackModel.previewUrl)
-        playerState.value = PlayerViewState.Prepared(getFormattedTime())
+        _playerStateLiveData.value = PlayerViewState.Prepared(getFormattedTime())
     }
 
     fun playAudioPlayer() {
         playerInteractor.play()
-        playerState.value = PlayerViewState.Playing(getFormattedTime())
+        _playerStateLiveData.value = PlayerViewState.Playing(getFormattedTime())
     }
 
     fun pauseAudioPlayer() {
         playerInteractor.pause()
-        playerState.value = PlayerViewState.Paused(getFormattedTime())
+        _playerStateLiveData.value = PlayerViewState.Paused(getFormattedTime())
     }
 
     fun releaseAudioPlayer() {
         playerInteractor.release()
-        playerState.value = PlayerViewState.Default(trackModel)
+        _playerStateLiveData.value = PlayerViewState.Default(trackModel)
     }
 
     private fun getFormattedTime(): String {
