@@ -53,24 +53,21 @@ class SearchViewModel(
 
             state.postValue(SearchViewState.Loading)
 
-            tracksInteractor.searchTracks(
-                expression,
-                object : TracksInteractor.TracksConsumer {
-                    override fun consume(foundTracks: ArrayList<Track>, isError: Boolean) {
-                        if (foundTracks.isEmpty()) {
-                            if (isError) {
-                                state.postValue(SearchViewState.Error)
-                            } else {
-                                state.postValue(SearchViewState.NotFound)
-                            }
+            tracksInteractor.searchTracks(expression)
+                .collect { pair ->
+                    val foundTracks = pair.first
+                    val isError = pair.second
+                    if (foundTracks.isEmpty()) {
+                        if (isError) {
+                            state.postValue(SearchViewState.Error)
                         } else {
-                            state.postValue(SearchViewState.Content(foundTracks))
+                            state.postValue(SearchViewState.NotFound)
                         }
+                    } else {
+                        state.postValue(SearchViewState.Content(foundTracks))
                     }
                 }
-            )
         }
-
     }
 
     companion object {
