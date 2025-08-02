@@ -3,9 +3,13 @@ package com.example.playlistmaker.player.ui.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.player.domain.interactors.AudioPlayerInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.google.gson.Gson
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -19,6 +23,8 @@ class PlayerViewModel(
         jsonModel,
         Track::class.java
     )
+
+    private var timerJob: Job? = null
 
     private val _playerStateLiveData = MutableLiveData<PlayerViewState>(PlayerViewState.Default(trackModel))
     val playerStateLiveData: LiveData<PlayerViewState> = _playerStateLiveData
@@ -38,40 +44,42 @@ class PlayerViewModel(
         }
     }
 
-    fun updateTime() {
-        val formattedTrackTimeLeft = getFormattedTime()
-        val currentState = _playerStateLiveData.value
-        _playerStateLiveData.value = when(currentState) {
-            is PlayerViewState.Default, is PlayerViewState.Completed, null -> currentState
-            is PlayerViewState.Prepared -> currentState.copy(trackTime = formattedTrackTimeLeft)
-            is PlayerViewState.Playing -> currentState.copy(trackTime = formattedTrackTimeLeft)
-            is PlayerViewState.Paused ->  currentState.copy(trackTime = formattedTrackTimeLeft)
-        }
-    }
-
-    fun setOnCompletionListenerForPlayer() {
+    private fun setOnCompletionListenerForPlayer() {
         playerInteractor.setOnCompletionListener {
+            timerJob?.cancel()
             _playerStateLiveData.value = PlayerViewState.Completed()
         }
     }
 
     fun prepareAudioPlayer() {
-        playerInteractor.prepare(trackModel.previewUrl)
-        _playerStateLiveData.value = PlayerViewState.Prepared(getFormattedTime())
+        viewModelScope.launch {
+            delay(PREPARE_DELAY)
+            playerInteractor.prepare(trackModel.previewUrl)
+            _playerStateLiveData.value = PlayerViewState.Prepared(getFormattedTime())
+
+            setOnCompletionListenerForPlayer()
+        }
     }
 
-    fun playAudioPlayer() {
+     fun playAudioPlayer() {
         playerInteractor.play()
-        _playerStateLiveData.value = PlayerViewState.Playing(getFormattedTime())
+        timerJob = viewModelScope.launch {
+            while (playerInteractor.isPlaying()) {
+                delay(TIME_LEFT_DELAY)
+                _playerStateLiveData.value = PlayerViewState.Playing(getFormattedTime())
+            }
+        }
     }
 
     fun pauseAudioPlayer() {
         playerInteractor.pause()
+        timerJob?.cancel()
         _playerStateLiveData.value = PlayerViewState.Paused(getFormattedTime())
     }
 
     fun releaseAudioPlayer() {
         playerInteractor.release()
+        timerJob?.cancel()
         _playerStateLiveData.value = PlayerViewState.Default(trackModel)
     }
 
@@ -80,5 +88,10 @@ class PlayerViewModel(
             "m:ss",
             Locale.getDefault()
         ).format(playerInteractor.getCurrentPosition())
+    }
+
+    companion object {
+        private const val PREPARE_DELAY = 200L
+        private const val TIME_LEFT_DELAY = 300L
     }
 }

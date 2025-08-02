@@ -1,8 +1,6 @@
 package com.example.playlistmaker.player.ui.fragments
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,8 +21,6 @@ class PlayerFragment : Fragment() {
     private val viewModel by viewModel<PlayerViewModel> {
         parametersOf(requireArguments().getString(ARGS_TRACK))
     }
-    private lateinit var mainHandler: Handler
-    private lateinit var timerRunnable: Runnable
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +42,6 @@ class PlayerFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        mainHandler.removeCallbacks(timerRunnable)
         viewModel.releaseAudioPlayer()
     }
 
@@ -56,10 +51,7 @@ class PlayerFragment : Fragment() {
     }
 
     private fun initVariables() {
-        mainHandler = Handler(Looper.getMainLooper())
-        timerRunnable = Runnable {
-            viewModel.updateTime()
-        }
+        // Инициализация переменных
     }
 
     private fun observeLiveData() {
@@ -92,19 +84,16 @@ class PlayerFragment : Fragment() {
                 is PlayerViewState.Playing -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_pause)
                     binding.trackTimeLeft.text = state.trackTime;
-                    mainHandler.postDelayed(timerRunnable, TIME_LEFT_DELAY)
                 }
 
                 is PlayerViewState.Paused -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
-                    mainHandler.removeCallbacks(timerRunnable)
                 }
 
                 is PlayerViewState.Completed -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
-                    mainHandler.removeCallbacks(timerRunnable)
                 }
             }
         }
@@ -121,18 +110,10 @@ class PlayerFragment : Fragment() {
     }
 
     private fun preparePlayer() {
-        mainHandler.postDelayed(
-            {
-                viewModel.prepareAudioPlayer()
-                viewModel.setOnCompletionListenerForPlayer()
-            },
-            PREPARE_DELAY
-        )
+        viewModel.prepareAudioPlayer()
     }
 
     companion object {
-        private const val PREPARE_DELAY = 200L
-        private const val TIME_LEFT_DELAY = 300L
         const val ARGS_TRACK = "track"
 
         fun createArgs(jsonTrack: String): Bundle {
