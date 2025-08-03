@@ -61,8 +61,9 @@ class PlayerViewModel(
         }
     }
 
-     fun playAudioPlayer() {
+    fun playAudioPlayer() {
         playerInteractor.play()
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (playerInteractor.isPlaying()) {
                 delay(TIME_LEFT_DELAY)
