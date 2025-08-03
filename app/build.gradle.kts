@@ -69,4 +69,7 @@ dependencies {
     // Jetpack Navigation Component
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
 }

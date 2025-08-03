@@ -39,12 +39,14 @@ class MediaPlayerController(
         isRelease = true
     }
 
+    override fun isPlaying() = mediaPlayer.isPlaying
+
     override fun getCurrentPosition() = max(currentPosition, mediaPlayer.currentPosition)
 
     override fun setOnCompletionListener(listener: () -> Unit) {
         mediaPlayer.setOnCompletionListener {
-            listener.invoke()
             currentPosition = 0;
+            listener.invoke()
         }
     }
 }

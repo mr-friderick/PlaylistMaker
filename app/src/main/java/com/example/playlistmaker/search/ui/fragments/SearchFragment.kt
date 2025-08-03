@@ -2,8 +2,6 @@ package com.example.playlistmaker.search.ui.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
@@ -21,6 +20,8 @@ import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewState
 import com.example.playlistmaker.search.ui.viewmodel.TrackAdapter
 import com.google.gson.Gson
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -30,8 +31,6 @@ class SearchFragment : Fragment() {
     private var isClickAllowed = true
     private var inputText = INPUT_SEARCH_TEXT_DEF
     private lateinit var historyAdapter: TrackAdapter
-    private lateinit var mainHandler: Handler
-    private lateinit var searchRunnable: Runnable
     private lateinit var iim: InputMethodManager
 
     override fun onCreateView(
@@ -72,9 +71,6 @@ class SearchFragment : Fragment() {
     }
 
     private fun initVariables() {
-        mainHandler = Handler(Looper.getMainLooper())
-        searchRunnable = Runnable { viewModel.searchTracks(binding.searchEditText.text.toString()) }
-
         iim = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
@@ -211,14 +207,20 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun searchDebounce(needDelay: Boolean = true) {
+        viewModel.searchTracks(
+            binding.searchEditText.text.toString(), needDelay
+        )
+    }
+
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            mainHandler.postDelayed(
-                { isClickAllowed = true },
-                CLICK_DEBOUNCE_DELAY
-            )
+            lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY)
+                isClickAllowed = true
+            }
         }
         return current
     }
@@ -231,18 +233,6 @@ class SearchFragment : Fragment() {
         binding.searchRecyclerView.adapter = trackAdapter
     }
 
-    private fun searchDebounce(needDelay: Boolean = true) {
-        mainHandler.removeCallbacks(searchRunnable)
-        if (needDelay) {
-            mainHandler.postDelayed(
-                searchRunnable,
-                SEARCH_DEBOUNCE_DELAY
-            )
-        } else {
-            mainHandler.post(searchRunnable)
-        }
-    }
-
     private fun historyAllowed(): Boolean {
         return binding.searchEditText.hasFocus()
                 && binding.searchEditText.text.isEmpty()
@@ -252,7 +242,6 @@ class SearchFragment : Fragment() {
     companion object {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
         const val INPUT_SEARCH_TEXT_DEF = ""
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
