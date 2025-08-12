@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.medialibrary.domain.interactors.FavoriteTracksInteractor
 import com.example.playlistmaker.player.domain.interactors.AudioPlayerInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.google.gson.Gson
@@ -15,6 +16,7 @@ import java.util.Locale
 
 class PlayerViewModel(
     private val playerInteractor: AudioPlayerInteractor,
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
     gson: Gson,
     jsonModel: String
 ): ViewModel() {
@@ -26,8 +28,15 @@ class PlayerViewModel(
 
     private var timerJob: Job? = null
 
-    private val _playerStateLiveData = MutableLiveData<PlayerViewState>(PlayerViewState.Default(trackModel))
+    private val _playerStateLiveData = MutableLiveData<PlayerViewState>()
     val playerStateLiveData: LiveData<PlayerViewState> = _playerStateLiveData
+
+    init {
+        viewModelScope.launch {
+            trackModel.isFavorite = favoriteTracksInteractor.isFavorite(trackModel.trackId)
+            _playerStateLiveData.value = PlayerViewState.Default(trackModel)
+        }
+    }
 
     fun playerControl() {
         when(_playerStateLiveData.value) {

@@ -1,5 +1,8 @@
 package com.example.playlistmaker.di
 
+import com.example.playlistmaker.db.converters.TrackDbConvertor
+import com.example.playlistmaker.medialibrary.data.impl.FavoriteTracksRepositoryImpl
+import com.example.playlistmaker.medialibrary.domain.api.FavoriteTracksRepository
 import com.example.playlistmaker.player.data.impl.AudioPlayerRepositoryImpl
 import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
 import com.example.playlistmaker.search.data.localstorage.HistoryRepositoryImpl
@@ -28,4 +31,9 @@ val repositoryModule = module {
         TracksRepositoryImpl(get())
     }
 
+    factory<FavoriteTracksRepository> {
+        FavoriteTracksRepositoryImpl(get(), get())
+    }
+
+    factory { TrackDbConvertor() }
 }
