@@ -11,11 +11,11 @@ class FavoriteTracksInteractorImpl(
     private val repository: FavoriteTracksRepository
 ): FavoriteTracksInteractor {
 
-    override suspend fun addTrack(track: Track) {
+    override suspend fun addTrack(track: Track) = withContext(Dispatchers.IO) {
         repository.addTrack(track)
     }
 
-    override suspend fun deleteTrack(trackId: Int) {
+    override suspend fun deleteTrack(trackId: Int) = withContext(Dispatchers.IO) {
         repository.deleteTrack(trackId)
     }
 

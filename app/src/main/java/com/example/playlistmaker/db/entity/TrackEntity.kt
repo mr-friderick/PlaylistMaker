@@ -3,7 +3,7 @@ package com.example.playlistmaker.db.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "track_table")
+@Entity(tableName = "favorite_track_table")
 data class TrackEntity(
     @PrimaryKey
     val trackId: Int,
@@ -16,5 +16,5 @@ data class TrackEntity(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,
-    val isFavorite: Boolean
+    val addTime: Long = System.currentTimeMillis()
 )

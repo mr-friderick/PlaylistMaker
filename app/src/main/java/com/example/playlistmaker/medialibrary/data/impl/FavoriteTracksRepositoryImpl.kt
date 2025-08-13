@@ -25,8 +25,8 @@ class FavoriteTracksRepositoryImpl(
     override fun getAll(): Flow<List<Track>> = flow {
         val tracks = appDatabase.trackDao().selectAll()
         emit(tracks
+            .sortedByDescending { it.addTime }
             .map { track -> trackDbConvertor.map(track) }
-            .reversed()
         )
     }
 

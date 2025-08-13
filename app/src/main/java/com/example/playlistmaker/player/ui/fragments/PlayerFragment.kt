@@ -69,6 +69,8 @@ class PlayerFragment : Fragment() {
                     binding.trackGenre.text = state.trackModel.primaryGenreName
                     binding.trackCountry.text = state.trackModel.country
 
+                    setFavoriteIcon(state.trackModel.isFavorite)
+
                     Glide.with(binding.trackPoster)
                         .load(state.trackModel.getCoverArtwork())
                         .placeholder(R.drawable.ic_track_placeholder)
@@ -79,21 +81,29 @@ class PlayerFragment : Fragment() {
                     binding.buttonPlay.isEnabled = true
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
+
+                    setFavoriteIcon(state.trackModel.isFavorite)
                 }
 
                 is PlayerViewState.Playing -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_pause)
                     binding.trackTimeLeft.text = state.trackTime;
+
+                    setFavoriteIcon(state.trackModel.isFavorite)
                 }
 
                 is PlayerViewState.Paused -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
+
+                    setFavoriteIcon(state.trackModel.isFavorite)
                 }
 
                 is PlayerViewState.Completed -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
+
+                    setFavoriteIcon(state.trackModel.isFavorite)
                 }
             }
         }
@@ -107,10 +117,24 @@ class PlayerFragment : Fragment() {
         binding.buttonPlay.setOnClickListener {
             viewModel.playerControl()
         }
+
+        binding.buttonAddFavorite.setOnClickListener {
+            viewModel.favoriteControl()
+        }
     }
 
     private fun preparePlayer() {
         viewModel.prepareAudioPlayer()
+    }
+
+    private fun setFavoriteIcon(favorite: Boolean) {
+        binding.buttonAddFavorite.setImageResource(
+            if (favorite) {
+                R.drawable.ic_button_favorite_active
+            } else {
+                R.drawable.ic_button_favorite
+            }
+        )
     }
 
     companion object {
@@ -121,3 +145,4 @@ class PlayerFragment : Fragment() {
         }
     }
 }
+

@@ -1,7 +1,6 @@
 package com.example.playlistmaker.db.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -12,12 +11,12 @@ interface FavoriteTrackDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertTrack(track: TrackEntity)
 
-    @Query("DELETE FROM track_table WHERE trackId = :trackId")
+    @Query("DELETE FROM favorite_track_table WHERE trackId = :trackId")
     fun deleteTrackById(trackId: Int)
 
-    @Query("SELECT * FROM track_table WHERE isFavorite")
+    @Query("SELECT * FROM favorite_track_table")
     suspend fun selectAll(): List<TrackEntity>
 
-    @Query("SELECT 1 FROM track_table WHERE isFavorite AND trackId = :trackId")
+    @Query("SELECT 1 FROM favorite_track_table WHERE trackId = :trackId")
     fun selectIsFavorite(trackId: Int): Boolean
 }

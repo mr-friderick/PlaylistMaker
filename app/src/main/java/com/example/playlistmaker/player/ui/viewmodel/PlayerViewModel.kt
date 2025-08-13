@@ -38,6 +38,20 @@ class PlayerViewModel(
         }
     }
 
+    private fun setOnCompletionListenerForPlayer() {
+        playerInteractor.setOnCompletionListener {
+            timerJob?.cancel()
+            _playerStateLiveData.value = PlayerViewState.Completed(trackModel)
+        }
+    }
+
+    private fun getFormattedTime(): String {
+        return SimpleDateFormat(
+            "m:ss",
+            Locale.getDefault()
+        ).format(playerInteractor.getCurrentPosition())
+    }
+
     fun playerControl() {
         when(_playerStateLiveData.value) {
             is PlayerViewState.Default, null -> {
@@ -53,18 +67,11 @@ class PlayerViewModel(
         }
     }
 
-    private fun setOnCompletionListenerForPlayer() {
-        playerInteractor.setOnCompletionListener {
-            timerJob?.cancel()
-            _playerStateLiveData.value = PlayerViewState.Completed()
-        }
-    }
-
     fun prepareAudioPlayer() {
         viewModelScope.launch {
             delay(PREPARE_DELAY)
             playerInteractor.prepare(trackModel.previewUrl)
-            _playerStateLiveData.value = PlayerViewState.Prepared(getFormattedTime())
+            _playerStateLiveData.value = PlayerViewState.Prepared(trackModel,getFormattedTime())
 
             setOnCompletionListenerForPlayer()
         }
@@ -76,7 +83,7 @@ class PlayerViewModel(
         timerJob = viewModelScope.launch {
             while (playerInteractor.isPlaying()) {
                 delay(TIME_LEFT_DELAY)
-                _playerStateLiveData.value = PlayerViewState.Playing(getFormattedTime())
+                _playerStateLiveData.value = PlayerViewState.Playing(trackModel, getFormattedTime())
             }
         }
     }
@@ -84,7 +91,7 @@ class PlayerViewModel(
     fun pauseAudioPlayer() {
         playerInteractor.pause()
         timerJob?.cancel()
-        _playerStateLiveData.value = PlayerViewState.Paused(getFormattedTime())
+        _playerStateLiveData.value = PlayerViewState.Paused(trackModel, getFormattedTime())
     }
 
     fun releaseAudioPlayer() {
@@ -93,11 +100,25 @@ class PlayerViewModel(
         _playerStateLiveData.value = PlayerViewState.Default(trackModel)
     }
 
-    private fun getFormattedTime(): String {
-        return SimpleDateFormat(
-            "m:ss",
-            Locale.getDefault()
-        ).format(playerInteractor.getCurrentPosition())
+    fun favoriteControl() {
+        viewModelScope.launch {
+            if (trackModel.isFavorite) {
+                trackModel.isFavorite = false
+                favoriteTracksInteractor.deleteTrack(trackModel.trackId)
+            } else {
+                trackModel.isFavorite = true
+                favoriteTracksInteractor.addTrack(trackModel)
+            }
+            val currentState = _playerStateLiveData.value
+            _playerStateLiveData.value = when (currentState) {
+                is PlayerViewState.Completed -> currentState.copy(trackModel)
+                is PlayerViewState.Default -> currentState.copy(trackModel)
+                is PlayerViewState.Paused -> currentState.copy(trackModel, getFormattedTime())
+                is PlayerViewState.Playing -> currentState.copy(trackModel, getFormattedTime())
+                is PlayerViewState.Prepared -> currentState.copy(trackModel, getFormattedTime())
+                else -> { PlayerViewState.Default(trackModel) }
+            }
+        }
     }
 
     companion object {
