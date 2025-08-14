@@ -27,10 +27,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class SearchFragment : Fragment() {
 
     private val clickDebounceDelay = 1000L
-    private lateinit var binding: FragmentSearchBinding
     private val viewModel by viewModel<SearchViewModel>()
+    private  val gson = Gson()
     private var isClickAllowed = true
     private var inputText = INPUT_SEARCH_TEXT_DEF
+    private lateinit var binding: FragmentSearchBinding
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var iim: InputMethodManager
 
@@ -203,7 +204,7 @@ class SearchFragment : Fragment() {
         if (clickDebounce()) {
             findNavController().navigate(
                 R.id.action_searchFragment_to_playerFragment,
-                PlayerFragment.createArgs(Gson().toJson(track))
+                PlayerFragment.createArgs(gson.toJson(track))
             )
         }
     }

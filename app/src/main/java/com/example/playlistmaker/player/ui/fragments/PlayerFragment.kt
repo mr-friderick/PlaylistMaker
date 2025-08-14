@@ -17,10 +17,10 @@ import org.koin.core.parameter.parametersOf
 
 class PlayerFragment : Fragment() {
 
-    private lateinit var binding: FragmentPlayerBinding
     private val viewModel by viewModel<PlayerViewModel> {
         parametersOf(requireArguments().getString(ARGS_TRACK))
     }
+    private lateinit var binding: FragmentPlayerBinding
 
     override fun onCreateView(
         inflater: LayoutInflater,
