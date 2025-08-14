@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -51,7 +52,7 @@ dependencies {
 
     //  Glide https://github.com/bumptech/glide
     implementation(libs.github.glide)
-    annotationProcessor(libs.compiler)
+    kapt(libs.compiler)
 
     // Retrofit
     implementation(libs.retrofit)
@@ -72,4 +73,9 @@ dependencies {
 
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
+
+    // Room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 }

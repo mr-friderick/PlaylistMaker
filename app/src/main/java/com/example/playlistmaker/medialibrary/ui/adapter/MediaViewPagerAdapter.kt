@@ -1,4 +1,4 @@
-package com.example.playlistmaker.medialibrary.ui
+package com.example.playlistmaker.medialibrary.ui.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter

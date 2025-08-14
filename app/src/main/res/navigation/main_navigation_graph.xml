@@ -9,7 +9,11 @@
         android:id="@+id/mediaRootFragment"
         android:name="com.example.playlistmaker.medialibrary.ui.fragments.MediaRootFragment"
         android:label="fragment_media_root"
-        tools:layout="@layout/fragment_media_root" />
+        tools:layout="@layout/fragment_media_root" >
+        <action
+            android:id="@+id/action_mediaRootFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/playlistFragment"
         android:name="com.example.playlistmaker.medialibrary.ui.fragments.PlaylistFragment"

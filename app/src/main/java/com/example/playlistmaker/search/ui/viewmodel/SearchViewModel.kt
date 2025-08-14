@@ -16,14 +16,14 @@ class SearchViewModel(
     private val historyInteractor: HistoryInteractor
 ): ViewModel() {
 
+    private val searchDebounceDelay = 2000L
     private var searchJob: Job? = null
-
-    private val state = MutableLiveData<SearchViewState>(SearchViewState.Default)
-    val stateLiveData: LiveData<SearchViewState> = state
+    private val _state = MutableLiveData<SearchViewState>(SearchViewState.Default)
+    val stateLiveData: LiveData<SearchViewState> = _state
 
     fun clearHistory() {
         historyInteractor.clear()
-        state.postValue(SearchViewState.Default)
+        _state.postValue(SearchViewState.Default)
     }
 
     fun addTrackInHistory(track: Track) {
@@ -35,11 +35,11 @@ class SearchViewModel(
     }
 
     fun setDefaultState() {
-        state.postValue(SearchViewState.Default)
+        _state.postValue(SearchViewState.Default)
     }
 
     fun setHistoryState() {
-        state.postValue(SearchViewState.History(historyInteractor.read()))
+        _state.postValue(SearchViewState.History(historyInteractor.read()))
     }
 
     fun searchTracks(expression: String, needDelay:Boolean = true) {
@@ -48,10 +48,10 @@ class SearchViewModel(
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
             if (needDelay) {
-                delay(SEARCH_DEBOUNCE_DELAY)
+                delay(searchDebounceDelay)
             }
 
-            state.postValue(SearchViewState.Loading)
+            _state.postValue(SearchViewState.Loading)
 
             tracksInteractor.searchTracks(expression)
                 .collect { pair ->
@@ -59,18 +59,15 @@ class SearchViewModel(
                     val isError = pair.second
                     if (foundTracks.isEmpty()) {
                         if (isError) {
-                            state.postValue(SearchViewState.Error)
+                            _state.postValue(SearchViewState.Error)
                         } else {
-                            state.postValue(SearchViewState.NotFound)
+                            _state.postValue(SearchViewState.NotFound)
                         }
                     } else {
-                        state.postValue(SearchViewState.Content(foundTracks))
+                        _state.postValue(SearchViewState.Content(foundTracks))
                     }
                 }
         }
     }
 
-    companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
-    }
 }

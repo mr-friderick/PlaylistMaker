@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.medialibrary.domain.interactors.FavoriteTracksInteractor
 import com.example.playlistmaker.player.domain.interactors.AudioPlayerInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.google.gson.Gson
@@ -15,6 +16,7 @@ import java.util.Locale
 
 class PlayerViewModel(
     private val playerInteractor: AudioPlayerInteractor,
+    private val favoriteTracksInteractor: FavoriteTracksInteractor,
     gson: Gson,
     jsonModel: String
 ): ViewModel() {
@@ -23,14 +25,34 @@ class PlayerViewModel(
         jsonModel,
         Track::class.java
     )
-
+    private var isFavorite = false
     private var timerJob: Job? = null
+    private val _state = MutableLiveData<PlayerViewState>()
+    val stateLiveData: LiveData<PlayerViewState> = _state
 
-    private val _playerStateLiveData = MutableLiveData<PlayerViewState>(PlayerViewState.Default(trackModel))
-    val playerStateLiveData: LiveData<PlayerViewState> = _playerStateLiveData
+    init {
+        viewModelScope.launch {
+            isFavorite = favoriteTracksInteractor.isFavorite(trackModel.trackId)
+            _state.value = PlayerViewState.Default(isFavorite, trackModel)
+        }
+    }
+
+    private fun setOnCompletionListenerForPlayer() {
+        playerInteractor.setOnCompletionListener {
+            timerJob?.cancel()
+            _state.value = PlayerViewState.Completed(isFavorite)
+        }
+    }
+
+    private fun getFormattedTime(): String {
+        return SimpleDateFormat(
+            "m:ss",
+            Locale.getDefault()
+        ).format(playerInteractor.getCurrentPosition())
+    }
 
     fun playerControl() {
-        when(_playerStateLiveData.value) {
+        when(_state.value) {
             is PlayerViewState.Default, null -> {
                 prepareAudioPlayer()
             }
@@ -44,18 +66,11 @@ class PlayerViewModel(
         }
     }
 
-    private fun setOnCompletionListenerForPlayer() {
-        playerInteractor.setOnCompletionListener {
-            timerJob?.cancel()
-            _playerStateLiveData.value = PlayerViewState.Completed()
-        }
-    }
-
     fun prepareAudioPlayer() {
         viewModelScope.launch {
             delay(PREPARE_DELAY)
             playerInteractor.prepare(trackModel.previewUrl)
-            _playerStateLiveData.value = PlayerViewState.Prepared(getFormattedTime())
+            _state.value = PlayerViewState.Prepared(isFavorite,getFormattedTime())
 
             setOnCompletionListenerForPlayer()
         }
@@ -67,7 +82,7 @@ class PlayerViewModel(
         timerJob = viewModelScope.launch {
             while (playerInteractor.isPlaying()) {
                 delay(TIME_LEFT_DELAY)
-                _playerStateLiveData.value = PlayerViewState.Playing(getFormattedTime())
+                _state.value = PlayerViewState.Playing(isFavorite, getFormattedTime())
             }
         }
     }
@@ -75,20 +90,34 @@ class PlayerViewModel(
     fun pauseAudioPlayer() {
         playerInteractor.pause()
         timerJob?.cancel()
-        _playerStateLiveData.value = PlayerViewState.Paused(getFormattedTime())
+        _state.value = PlayerViewState.Paused(isFavorite, getFormattedTime())
     }
 
     fun releaseAudioPlayer() {
         playerInteractor.release()
         timerJob?.cancel()
-        _playerStateLiveData.value = PlayerViewState.Default(trackModel)
+        _state.value = PlayerViewState.Default(isFavorite, trackModel)
     }
 
-    private fun getFormattedTime(): String {
-        return SimpleDateFormat(
-            "m:ss",
-            Locale.getDefault()
-        ).format(playerInteractor.getCurrentPosition())
+    fun favoriteControl() {
+        viewModelScope.launch {
+            if (isFavorite) {
+                isFavorite = false
+                favoriteTracksInteractor.deleteTrack(trackModel.trackId)
+            } else {
+                isFavorite = true
+                favoriteTracksInteractor.addTrack(trackModel)
+            }
+            val currentState = _state.value
+            _state.value = when (currentState) {
+                is PlayerViewState.Completed -> currentState.copy(isFavorite)
+                is PlayerViewState.Default -> currentState.copy(isFavorite, trackModel)
+                is PlayerViewState.Paused -> currentState.copy(isFavorite, getFormattedTime())
+                is PlayerViewState.Playing -> currentState.copy(isFavorite, getFormattedTime())
+                is PlayerViewState.Prepared -> currentState.copy(isFavorite, getFormattedTime())
+                else -> { PlayerViewState.Default(isFavorite, trackModel) }
+            }
+        }
     }
 
     companion object {
