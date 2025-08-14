@@ -1,4 +1,4 @@
-package com.example.playlistmaker.search.ui.viewmodel
+package com.example.playlistmaker.search.ui.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -29,4 +29,3 @@ class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             .into(trackPoster)
     }
 }
-

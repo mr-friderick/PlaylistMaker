@@ -55,7 +55,7 @@ class PlayerFragment : Fragment() {
     }
 
     private fun observeLiveData() {
-        viewModel.playerStateLiveData.observe(viewLifecycleOwner) { state ->
+        viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is PlayerViewState.Default -> {
                     binding.buttonPlay.isEnabled = false
@@ -69,7 +69,7 @@ class PlayerFragment : Fragment() {
                     binding.trackGenre.text = state.trackModel.primaryGenreName
                     binding.trackCountry.text = state.trackModel.country
 
-                    setFavoriteIcon(state.trackModel.isFavorite)
+                    setFavoriteIcon(state.trackIsFavorite)
 
                     Glide.with(binding.trackPoster)
                         .load(state.trackModel.getCoverArtwork())
@@ -82,28 +82,28 @@ class PlayerFragment : Fragment() {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
 
-                    setFavoriteIcon(state.trackModel.isFavorite)
+                    setFavoriteIcon(state.trackIsFavorite)
                 }
 
                 is PlayerViewState.Playing -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_pause)
                     binding.trackTimeLeft.text = state.trackTime;
 
-                    setFavoriteIcon(state.trackModel.isFavorite)
+                    setFavoriteIcon(state.trackIsFavorite)
                 }
 
                 is PlayerViewState.Paused -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
 
-                    setFavoriteIcon(state.trackModel.isFavorite)
+                    setFavoriteIcon(state.trackIsFavorite)
                 }
 
                 is PlayerViewState.Completed -> {
                     binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
                     binding.trackTimeLeft.text = state.trackTime;
 
-                    setFavoriteIcon(state.trackModel.isFavorite)
+                    setFavoriteIcon(state.trackIsFavorite)
                 }
             }
         }

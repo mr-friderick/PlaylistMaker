@@ -14,7 +14,7 @@ import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoriteTracksViewSta
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoritesTracksViewModel
 import com.example.playlistmaker.player.ui.fragments.PlayerFragment
 import com.example.playlistmaker.search.domain.models.Track
-import com.example.playlistmaker.search.ui.viewmodel.TrackAdapter
+import com.example.playlistmaker.search.ui.adapter.TrackAdapter
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -22,13 +22,11 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesTracksFragment : Fragment() {
 
+    private val clickDebounceDelay = 1000L
     private var _binding: FragmentFavoritesTracksBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel by viewModel<FavoritesTracksViewModel>()
-
     private var isClickAllowed = true
-
     private lateinit var historyAdapter: TrackAdapter
 
     override fun onCreateView(
@@ -90,7 +88,7 @@ class FavoritesTracksFragment : Fragment() {
         if (isClickAllowed) {
             isClickAllowed = false
             lifecycleScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
+                delay(clickDebounceDelay)
                 isClickAllowed = true
             }
         }
@@ -104,7 +102,5 @@ class FavoritesTracksFragment : Fragment() {
 
     companion object {
         fun newInstance() = FavoritesTracksFragment()
-
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }

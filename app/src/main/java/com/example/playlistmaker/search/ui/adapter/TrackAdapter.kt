@@ -1,8 +1,9 @@
-package com.example.playlistmaker.search.ui.viewmodel
+package com.example.playlistmaker.search.ui.adapter
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.search.domain.models.Track
+import com.example.playlistmaker.search.ui.adapter.TrackViewHolder
 
 class TrackAdapter(private val tracks: ArrayList<Track>, private val clickItem: (Track) -> Unit) : RecyclerView.Adapter<TrackViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {

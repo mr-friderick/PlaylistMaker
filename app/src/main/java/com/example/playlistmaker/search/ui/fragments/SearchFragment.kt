@@ -18,7 +18,7 @@ import com.example.playlistmaker.player.ui.fragments.PlayerFragment
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewModel
 import com.example.playlistmaker.search.ui.viewmodel.SearchViewState
-import com.example.playlistmaker.search.ui.viewmodel.TrackAdapter
+import com.example.playlistmaker.search.ui.adapter.TrackAdapter
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -26,6 +26,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
 
+    private val clickDebounceDelay = 1000L
     private lateinit var binding: FragmentSearchBinding
     private val viewModel by viewModel<SearchViewModel>()
     private var isClickAllowed = true
@@ -218,7 +219,7 @@ class SearchFragment : Fragment() {
         if (isClickAllowed) {
             isClickAllowed = false
             lifecycleScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
+                delay(clickDebounceDelay)
                 isClickAllowed = true
             }
         }
@@ -242,6 +243,5 @@ class SearchFragment : Fragment() {
     companion object {
         const val INPUT_SEARCH_TEXT = "INPUT_SEARCH_TEXT"
         const val INPUT_SEARCH_TEXT_DEF = ""
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
