@@ -12,6 +12,6 @@ class MediaViewPagerAdapter(host: Fragment) : FragmentStateAdapter(host) {
     }
 
     override fun createFragment(position: Int): Fragment {
-        return if (position == 0) FavoritesTracksFragment.Companion.newInstance() else PlaylistFragment.Companion.newInstance()
+        return if (position == 0) FavoritesTracksFragment.newInstance() else PlaylistFragment.newInstance()
     }
 }
