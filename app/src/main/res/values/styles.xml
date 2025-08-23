@@ -98,4 +98,21 @@
         <item name="android:textSize">12sp</item>
         <item name="android:lineSpacingExtra">-15dp</item>
     </style>
+
+    <style name="newplaylist_button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/ys_display_medium</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/background_button_newplaylist</item>
+    </style>
+
+    <style name="newplaylist_text">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="android:elevation">0dp</item>
+    </style>
 </resources>

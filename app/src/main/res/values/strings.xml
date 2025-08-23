@@ -50,4 +50,8 @@
     <string name="media_empty">Ваша медиатека пуста</string>
     <string name="button_new_playlist">Новый плейлист</string>
     <string name="playlist_empty">Вы не создали \n ни одного плейлиста</string>
+    <string name="newplaylist_toolbar">Новый плейлист</string>
+    <string name="newplaylist_title_hint">Название*</string>
+    <string name="newplaylist_description_hint">Описание</string>
+    <string name="newplaylist_button_create">Создать</string>
 </resources>
