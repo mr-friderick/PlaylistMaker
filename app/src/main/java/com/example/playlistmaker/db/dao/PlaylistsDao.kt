@@ -13,4 +13,7 @@ interface PlaylistsDao {
 
     @Query("UPDATE playlists_table SET tracksId = :tracksId WHERE id = :playlistId")
     fun updateTracksInPlaylist(playlistId: Int, tracksId: String)
+
+    @Query("SELECT * FROM playlists_table")
+    suspend fun selectAll(): List<PlaylistEntity>
 }

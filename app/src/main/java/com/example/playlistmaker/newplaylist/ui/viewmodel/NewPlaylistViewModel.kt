@@ -11,10 +11,10 @@ import kotlinx.coroutines.launch
 class NewPlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor,
     private val imageStorageInteractor: ImageStorageInteractor
-): ViewModel() {
+) : ViewModel() {
 
-    fun createPlaylist(title: String, description: String, uri: Uri?) {
-        viewModelScope.launch {
+    suspend fun createPlaylist(title: String, description: String, uri: Uri?): Result<Unit> =
+        runCatching {
             var picturePath = ""
             if (uri != null) {
                 picturePath = imageStorageInteractor.saveFromUri(uri)
@@ -29,5 +29,4 @@ class NewPlaylistViewModel(
 
             playlistInteractor.addPlaylist(playlist)
         }
-    }
 }

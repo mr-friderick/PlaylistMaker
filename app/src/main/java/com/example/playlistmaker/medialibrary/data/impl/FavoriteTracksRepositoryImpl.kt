@@ -1,6 +1,5 @@
 package com.example.playlistmaker.medialibrary.data.impl
 
-import com.example.playlistmaker.db.AppDatabase
 import com.example.playlistmaker.db.converters.TrackDbConvertor
 import com.example.playlistmaker.db.dao.FavoriteTrackDao
 import com.example.playlistmaker.medialibrary.domain.api.FavoriteTracksRepository

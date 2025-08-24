@@ -4,6 +4,7 @@ import com.example.playlistmaker.newplaylist.domain.api.PlaylistsRepository
 import com.example.playlistmaker.newplaylist.domain.interactors.PlaylistInteractor
 import com.example.playlistmaker.newplaylist.domain.models.Playlist
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 class PlaylistInteractorImpl(
@@ -18,5 +19,9 @@ class PlaylistInteractorImpl(
         tracksId: List<Int>
     ) = withContext(Dispatchers.IO) {
         repository.updateTracksInPlaylist(playlistId, tracksId)
+    }
+
+    override fun getAll(): Flow<List<Playlist>> {
+        return repository.getAll()
     }
 }

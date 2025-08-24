@@ -68,6 +68,11 @@
         <item name="cornerSize">8dp</item>
     </style>
 
+    <style name="playlist_cover" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
     <style name="for_player_field_values">
         <item name="android:fontFamily">@font/ys_display_regular</item>
         <item name="android:gravity">end</item>

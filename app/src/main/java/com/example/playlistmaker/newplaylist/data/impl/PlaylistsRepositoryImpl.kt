@@ -4,6 +4,8 @@ import com.example.playlistmaker.db.converters.PlaylistsDbConvertor
 import com.example.playlistmaker.db.dao.PlaylistsDao
 import com.example.playlistmaker.newplaylist.domain.api.PlaylistsRepository
 import com.example.playlistmaker.newplaylist.domain.models.Playlist
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class PlaylistsRepositoryImpl(
     private val dao: PlaylistsDao,
@@ -19,6 +21,14 @@ class PlaylistsRepositoryImpl(
         dao.updateTracksInPlaylist(
             playlistId,
             dbConvertor.mapTracksId(tracksId)
+        )
+    }
+
+    override fun getAll(): Flow<List<Playlist>> = flow {
+        val playlists = dao.selectAll()
+        emit(playlists
+            .sortedByDescending { it.tracksId }
+            .map { playlist -> dbConvertor.map(playlist) }
         )
     }
 }

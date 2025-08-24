@@ -48,10 +48,20 @@
 
     <!--  For layout fragment_favorites_tracks -->
     <string name="media_empty">Ваша медиатека пуста</string>
+
+    <!--  For layout fragment_newplaylist -->
     <string name="button_new_playlist">Новый плейлист</string>
     <string name="playlist_empty">Вы не создали \n ни одного плейлиста</string>
     <string name="newplaylist_toolbar">Новый плейлист</string>
     <string name="newplaylist_title_hint">Название*</string>
     <string name="newplaylist_description_hint">Описание</string>
     <string name="newplaylist_button_create">Создать</string>
+
+    <!--  For layout element_playlist -->
+    <plurals name="tracks_count">
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
 </resources>

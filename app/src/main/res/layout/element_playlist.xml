@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="16dp"
+    android:background="@color/bg_screen_default"
+    android:orientation="vertical">
+
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/playlistCover"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_gravity="start|center_vertical"
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_track_placeholder"
+        app:shapeAppearanceOverlay="@style/image_track_poster"/>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/playlistName"
+        style="@style/text_view_track"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:ellipsize="end"
+        android:textColor="@color/txt_default"
+        android:textSize="12sp"
+        tools:text="My best playlist #1" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/playlistTracksCount"
+        style="@style/text_view_track"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:textColor="@color/txt_default"
+        android:textSize="12sp"
+        tools:text="999 треков" />
+
+</LinearLayout>

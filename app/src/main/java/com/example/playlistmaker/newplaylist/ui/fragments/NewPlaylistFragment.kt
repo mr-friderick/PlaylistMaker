@@ -11,11 +11,13 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.databinding.FragmentNewplaylistBinding
 import com.example.playlistmaker.newplaylist.ui.viewmodel.NewPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewPlaylistFragment: Fragment() {
@@ -85,18 +87,27 @@ class NewPlaylistFragment: Fragment() {
             val title = binding.titleEditText.text.toString()
             val description = binding.descriptionEditText.text.toString()
 
-            viewModel.createPlaylist(
-                title,
-                description,
-                uriCover
-            )
+            viewLifecycleOwner.lifecycleScope.launch {
+                val result = viewModel.createPlaylist(
+                    title,
+                    description,
+                    uriCover
+                )
 
-            Toast.makeText(requireContext(),
-                "Плейлист $title создан",
-                Toast.LENGTH_SHORT
-            ).show()
+                if (result.isSuccess) {
+                    Toast.makeText(requireContext(),
+                        "Плейлист $title создан",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-            findNavController().navigateUp()
+                    findNavController().navigateUp()
+                } else {
+                    Toast.makeText(requireContext(),
+                        "Не удалось создать плейлист",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
 
         binding.titleEditText.doOnTextChanged { text, _, _, _ ->
