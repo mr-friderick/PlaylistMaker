@@ -5,25 +5,25 @@ import com.example.playlistmaker.newplaylist.domain.models.Playlist
 
 class PlaylistsDbConvertor {
 
-    fun map(playlistEntity: PlaylistEntity): Playlist {
+    fun map(entity: PlaylistEntity): Playlist {
         return Playlist(
-            id = playlistEntity.id,
-            title = playlistEntity.title,
-            description = playlistEntity.description,
-            picturePath = playlistEntity.picturePath,
-            tracksId = mapTracksId(playlistEntity.tracksId),
-            tracksCount = playlistEntity.tracksCount
+            id = entity.id,
+            title = entity.title,
+            description = entity.description,
+            picturePath = entity.picturePath,
+            tracksId = mapTracksId(entity.tracksId),
+            tracksCount = entity.tracksCount
         )
     }
 
-    fun map(playlist: Playlist): PlaylistEntity {
+    fun map(model: Playlist): PlaylistEntity {
         return PlaylistEntity(
-            id = playlist.id,
-            title = playlist.title,
-            description = playlist.description,
-            picturePath = playlist.picturePath,
-            tracksId = mapTracksId(playlist.tracksId),
-            tracksCount = playlist.tracksCount
+            id = model.id ?: 0,
+            title = model.title,
+            description = model.description,
+            picturePath = model.picturePath,
+            tracksId = mapTracksId(model.tracksId),
+            tracksCount = model.tracksId.size
         )
     }
 

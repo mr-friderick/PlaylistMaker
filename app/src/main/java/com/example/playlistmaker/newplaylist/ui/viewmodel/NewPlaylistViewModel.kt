@@ -1,29 +1,33 @@
 package com.example.playlistmaker.newplaylist.ui.viewmodel
 
-import android.Manifest
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.newplaylist.domain.interactors.ImageStorageInteractor
 import com.example.playlistmaker.newplaylist.domain.interactors.PlaylistInteractor
-import com.markodevcic.peko.PermissionRequester
-import com.markodevcic.peko.PermissionResult
+import com.example.playlistmaker.newplaylist.domain.models.Playlist
 import kotlinx.coroutines.launch
 
 class NewPlaylistViewModel(
-    private val playlistInteractor: PlaylistInteractor
+    private val playlistInteractor: PlaylistInteractor,
+    private val imageStorageInteractor: ImageStorageInteractor
 ): ViewModel() {
 
-    fun createPlaylist() {
-//        viewModelScope.launch {
-//            requester.request(
-//                Manifest.permission.READ_MEDIA_IMAGES
-//            ).collect { result ->
-//                when (result) {
-//                    PermissionResult.Cancelled -> {}
-//                    is PermissionResult.Denied.DeniedPermanently -> {}
-//                    is PermissionResult.Denied.NeedsRationale -> {}
-//                    is PermissionResult.Granted -> {}
-//                }
-//            }
-//        }
+    fun createPlaylist(title: String, description: String, uri: Uri?) {
+        viewModelScope.launch {
+            var picturePath = ""
+            if (uri != null) {
+                picturePath = imageStorageInteractor.saveFromUri(uri)
+            }
+
+            val playlist = Playlist(
+                title = title,
+                description = description,
+                picturePath = picturePath,
+                tracksId = emptyList()
+            )
+
+            playlistInteractor.addPlaylist(playlist)
+        }
     }
 }

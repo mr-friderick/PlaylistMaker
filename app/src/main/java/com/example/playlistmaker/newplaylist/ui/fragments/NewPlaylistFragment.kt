@@ -5,13 +5,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.result.ActivityResultLauncher
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.playlistmaker.databinding.FragmentNewplaylistBinding
 import com.example.playlistmaker.newplaylist.ui.viewmodel.NewPlaylistViewModel
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewPlaylistFragment: Fragment() {
@@ -22,11 +26,17 @@ class NewPlaylistFragment: Fragment() {
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
         if (uri != null) {
-            binding.pictureCover.setImageURI(uri)
+            uriCover = uri
+            Glide.with(this)
+                .load(uriCover)
+                .centerCrop()
+                .into(binding.pictureCover)
         } else {
             // Пользователь отменил выбор
         }
     }
+    private var uriCover: Uri? = null
+    private lateinit var confirmDialog: MaterialAlertDialogBuilder
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +56,14 @@ class NewPlaylistFragment: Fragment() {
     }
 
     private fun initVariables() {
-
+        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Завершить создание плейлиста?")
+            .setMessage("Все несохраненные данные будут потеряны")
+            .setNegativeButton("Отмена") { dialog, which ->
+                // Ничего не делаем
+            }.setPositiveButton("Завершить") { dialog, which ->
+                findNavController().navigateUp()
+            }
     }
 
     private fun observeLiveData() {
@@ -55,13 +72,53 @@ class NewPlaylistFragment: Fragment() {
 
     private fun setListeners() {
         binding.toolbarBack.setOnClickListener {
-            findNavController().navigateUp()
+            showExitDialog()
         }
 
-        binding.create.setOnClickListener {
+        binding.pictureCover.setOnClickListener {
             pickMedia.launch(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
         }
+
+        binding.create.setOnClickListener {
+            val title = binding.titleEditText.text.toString()
+            val description = binding.descriptionEditText.text.toString()
+
+            viewModel.createPlaylist(
+                title,
+                description,
+                uriCover
+            )
+
+            Toast.makeText(requireContext(),
+                "Плейлист $title создан",
+                Toast.LENGTH_SHORT
+            ).show()
+
+            findNavController().navigateUp()
+        }
+
+        binding.titleEditText.doOnTextChanged { text, _, _, _ ->
+            binding.create.isEnabled = !text.isNullOrBlank()
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+            showExitDialog()
+        }
+    }
+
+    private fun showExitDialog() {
+        if (isModified()) {
+            confirmDialog.show()
+        } else {
+            findNavController().navigateUp()
+        }
+    }
+
+    private fun isModified(): Boolean {
+        return uriCover != null
+                || binding.titleEditText.text?.isBlank() == false
+                || binding.descriptionEditText.text?.isBlank() == false
     }
 }
