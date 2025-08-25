@@ -10,5 +10,5 @@ sealed interface PlayerViewState {
     data class Paused(val trackIsFavorite: Boolean, val trackTime: String): PlayerViewState
     data class Completed(val trackIsFavorite: Boolean, val trackTime: String = "0:00"): PlayerViewState
     data class Playlists(val playlists: List<Playlist>): PlayerViewState
-    data class ResultAddTrack(val success: Boolean, val message: String): PlayerViewState
+    data class ResultAddTrack(val success: Boolean, val messageId: Int, val playlistTitle: String): PlayerViewState
 }

@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
@@ -133,7 +130,7 @@ class PlayerFragment : Fragment() {
                         setBottomSheet(BottomSheetBehavior.STATE_HIDDEN)
                     }
                     Toast.makeText(requireContext(),
-                        state.message,
+                        getString(state.messageId, state.playlistTitle),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

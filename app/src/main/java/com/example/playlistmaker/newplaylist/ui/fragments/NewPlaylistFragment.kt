@@ -14,13 +14,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewplaylistBinding
 import com.example.playlistmaker.newplaylist.ui.viewmodel.NewPlaylistViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment: Fragment() {
+class NewPlaylistFragment : Fragment() {
 
     private val viewModel by viewModel<NewPlaylistViewModel>()
     private lateinit var binding: FragmentNewplaylistBinding
@@ -59,17 +60,18 @@ class NewPlaylistFragment: Fragment() {
 
     private fun initVariables() {
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Завершить создание плейлиста?")
-            .setMessage("Все несохраненные данные будут потеряны")
-            .setNegativeButton("Отмена") { dialog, which ->
+            .setTitle(getString(R.string.playlist_exit_question))
+            .setMessage(getString(R.string.playlist_exit_message))
+            .setNegativeButton(getString(R.string.playlist_exit_negative_button)) { dialog, which ->
                 // Ничего не делаем
-            }.setPositiveButton("Завершить") { dialog, which ->
+            }
+            .setPositiveButton(getString(R.string.playlist_exit_positive_button)) { dialog, which ->
                 findNavController().navigateUp()
             }
     }
 
     private fun observeLiveData() {
-        //TODO("Not yet implemented")
+        // Получение состояния экрана
     }
 
     private fun setListeners() {
@@ -87,6 +89,7 @@ class NewPlaylistFragment: Fragment() {
             val title = binding.titleEditText.text.toString()
             val description = binding.descriptionEditText.text.toString()
 
+            // Решил сделать без LiveData, т.к. кажется что для вывода сообщения это избыточно
             viewLifecycleOwner.lifecycleScope.launch {
                 val result = viewModel.createPlaylist(
                     title,
@@ -95,15 +98,17 @@ class NewPlaylistFragment: Fragment() {
                 )
 
                 if (result.isSuccess) {
-                    Toast.makeText(requireContext(),
-                        "Плейлист $title создан",
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.playlist_create_success, title),
                         Toast.LENGTH_SHORT
                     ).show()
 
                     findNavController().navigateUp()
                 } else {
-                    Toast.makeText(requireContext(),
-                        "Не удалось создать плейлист",
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.playlist_create_error),
                         Toast.LENGTH_SHORT
                     ).show()
                 }

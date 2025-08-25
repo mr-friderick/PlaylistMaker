@@ -53,11 +53,13 @@ class PlaylistFragment : Fragment() {
                         state.playlists
                     ) {}
 
-                    binding.playlistRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+                    binding.playlistRecyclerView.layoutManager =
+                        GridLayoutManager(requireContext(), 2)
                     binding.playlistRecyclerView.adapter = playlistsAdapter
                     binding.playlistPlaceholder.isVisible = false
                     binding.playlistRecyclerView.isVisible = true
                 }
+
                 is PlaylistsViewState.Empty -> {
                     binding.playlistPlaceholder.isVisible = true
                     binding.playlistRecyclerView.isVisible = false

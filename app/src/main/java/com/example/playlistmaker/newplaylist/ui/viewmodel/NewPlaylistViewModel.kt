@@ -2,11 +2,9 @@ package com.example.playlistmaker.newplaylist.ui.viewmodel
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.newplaylist.domain.interactors.ImageStorageInteractor
 import com.example.playlistmaker.newplaylist.domain.interactors.PlaylistInteractor
 import com.example.playlistmaker.newplaylist.domain.models.Playlist
-import kotlinx.coroutines.launch
 
 class NewPlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor,

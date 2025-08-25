@@ -57,6 +57,14 @@
     <string name="newplaylist_description_hint">Описание</string>
     <string name="newplaylist_button_create">Создать</string>
     <string name="bottomsheet_title">Добавить в плейлист</string>
+    <string name="playlist_exit_question">Завершить создание плейлиста?</string>
+    <string name="playlist_exit_message">Все несохраненные данные будут потеряны</string>
+    <string name="playlist_exit_negative_button">Отмена</string>
+    <string name="playlist_exit_positive_button">Завершить</string>
+    <string name="playlist_create_error">Не удалось создать плейлист</string>
+    <string name="playlist_create_success">Плейлист \"%1$s\" создан</string>
+    <string name="playlist_track_allready_add">Трек уже добавлен в плейлист \"%1$s\"</string>
+    <string name="playlist_track_success_add">Добавлено в плейлист \"%1$s\"</string>
 
     <!--  For layout element_playlist -->
     <plurals name="tracks_count">
