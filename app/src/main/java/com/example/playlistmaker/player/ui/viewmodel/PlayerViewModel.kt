@@ -5,6 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.medialibrary.domain.interactors.FavoriteTracksInteractor
+import com.example.playlistmaker.medialibrary.ui.viewmodel.PlaylistsViewState
+import com.example.playlistmaker.newplaylist.domain.interactors.PlaylistInteractor
+import com.example.playlistmaker.newplaylist.domain.models.Playlist
 import com.example.playlistmaker.player.domain.interactors.AudioPlayerInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.google.gson.Gson
@@ -17,6 +20,7 @@ import java.util.Locale
 class PlayerViewModel(
     private val playerInteractor: AudioPlayerInteractor,
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistInteractor: PlaylistInteractor,
     gson: Gson,
     jsonModel: String
 ): ViewModel() {
@@ -63,6 +67,8 @@ class PlayerViewModel(
             is PlayerViewState.Prepared, is PlayerViewState.Paused, is PlayerViewState.Completed -> {
                 playAudioPlayer()
             }
+
+            is PlayerViewState.Playlists, is PlayerViewState.ResultAddTrack -> {}
         }
     }
 
@@ -116,6 +122,32 @@ class PlayerViewModel(
                 is PlayerViewState.Playing -> currentState.copy(isFavorite, getFormattedTime())
                 is PlayerViewState.Prepared -> currentState.copy(isFavorite, getFormattedTime())
                 else -> { PlayerViewState.Default(isFavorite, trackModel) }
+            }
+        }
+    }
+
+    fun playlistsControl() {
+        viewModelScope.launch {
+            playlistInteractor.getAll()
+                .collect { playlists ->
+                    _state.value = PlayerViewState.Playlists(playlists)
+                }
+        }
+    }
+
+    fun addTrackInPlaylist(playlist: Playlist) {
+        val alreadyAdd = playlist.tracksId.contains(trackModel.trackId)
+        if (alreadyAdd) {
+            _state.value = PlayerViewState.ResultAddTrack(false, "Трек уже добавлен в плейлист '${playlist.title}'")
+        } else {
+            viewModelScope.launch {
+                val newTracksList = playlist.tracksId.toMutableList()
+                newTracksList.add(trackModel.trackId)
+
+                playlistInteractor.updateTracksInPlaylist(playlist.id!!, newTracksList.toList())
+                playlistInteractor.addPlaylistTrack(trackModel)
+
+                _state.value = PlayerViewState.ResultAddTrack(true, "Добавлено в плейлист '${playlist.title}'")
             }
         }
     }

@@ -49,8 +49,9 @@ class PlaylistFragment : Fragment() {
             when (state) {
                 is PlaylistsViewState.Content -> {
                     playlistsAdapter = PlaylistsAdapter(
+                        R.layout.element_playlist,
                         state.playlists
-                    )
+                    ) {}
 
                     binding.playlistRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
                     binding.playlistRecyclerView.adapter = playlistsAdapter

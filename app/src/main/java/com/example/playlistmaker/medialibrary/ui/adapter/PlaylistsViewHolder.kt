@@ -1,8 +1,10 @@
 package com.example.playlistmaker.medialibrary.ui.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
@@ -10,8 +12,8 @@ import com.example.playlistmaker.newplaylist.domain.models.Playlist
 import com.google.android.material.textview.MaterialTextView
 import java.io.File
 
-class PlaylistsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
-    LayoutInflater.from(parent.context).inflate(R.layout.element_playlist, parent, false)
+class PlaylistsViewHolder(parent: ViewGroup, @LayoutRes layoutId: Int) : RecyclerView.ViewHolder(
+    LayoutInflater.from(parent.context).inflate(layoutId, parent, false)
 ) {
     private val playlistCover: ImageView = itemView.findViewById(R.id.playlistCover)
     private val playlistTitle: MaterialTextView = itemView.findViewById(R.id.playlistName)

@@ -56,6 +56,7 @@
     <string name="newplaylist_title_hint">Название*</string>
     <string name="newplaylist_description_hint">Описание</string>
     <string name="newplaylist_button_create">Создать</string>
+    <string name="bottomsheet_title">Добавить в плейлист</string>
 
     <!--  For layout element_playlist -->
     <plurals name="tracks_count">

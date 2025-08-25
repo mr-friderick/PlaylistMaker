@@ -14,7 +14,7 @@ class FavoriteTracksRepositoryImpl(
 
     override suspend fun addTrack(track: Track) {
         dao.insertTrack(
-            trackDbConvertor.map(track)
+            trackDbConvertor.mapTrack(track)
         )
     }
 
@@ -26,7 +26,7 @@ class FavoriteTracksRepositoryImpl(
         val tracks = dao.selectAll()
         emit(tracks
             .sortedByDescending { it.addTime }
-            .map { track -> trackDbConvertor.map(track) }
+            .map { track -> trackDbConvertor.mapTrack(track) }
         )
     }
 
