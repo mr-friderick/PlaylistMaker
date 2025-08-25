@@ -111,7 +111,8 @@ class NewPlaylistFragment: Fragment() {
         }
 
         binding.titleEditText.doOnTextChanged { text, _, _, _ ->
-            binding.create.isEnabled = !text.isNullOrBlank()
+            val notEmpty = !text.isNullOrBlank()
+            binding.create.isEnabled = notEmpty
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
