@@ -23,21 +23,20 @@
         android:id="@+id/scroll"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:fillViewport="true"
-        android:clipToPadding="false"
         android:layout_marginTop="26dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
         android:paddingBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/create"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/toolbarBack"
-        app:layout_constraintBottom_toTopOf="@id/create">
+        app:layout_constraintTop_toBottomOf="@id/toolbarBack">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            >
+            android:layout_height="wrap_content">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/pictureCover"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -45,9 +44,10 @@
                 android:layout_marginBottom="33dp"
                 android:clickable="true"
                 android:src="@drawable/ic_newplaylist_choose"
+                app:layout_constraintBottom_toTopOf="@id/title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/title"
+                app:shapeAppearanceOverlay="@style/image_track_poster"
                 tools:ignore="ContentDescription" />
 
             <com.google.android.material.textfield.TextInputLayout
