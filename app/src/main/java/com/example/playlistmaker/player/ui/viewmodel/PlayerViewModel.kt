@@ -4,7 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.domain.interactors.FavoriteTracksInteractor
+import com.example.playlistmaker.newplaylist.domain.interactors.PlaylistInteractor
+import com.example.playlistmaker.newplaylist.domain.models.Playlist
 import com.example.playlistmaker.player.domain.interactors.AudioPlayerInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.google.gson.Gson
@@ -17,9 +20,10 @@ import java.util.Locale
 class PlayerViewModel(
     private val playerInteractor: AudioPlayerInteractor,
     private val favoriteTracksInteractor: FavoriteTracksInteractor,
+    private val playlistInteractor: PlaylistInteractor,
     gson: Gson,
     jsonModel: String
-): ViewModel() {
+) : ViewModel() {
 
     private val trackModel = gson.fromJson(
         jsonModel,
@@ -52,7 +56,7 @@ class PlayerViewModel(
     }
 
     fun playerControl() {
-        when(_state.value) {
+        when (_state.value) {
             is PlayerViewState.Default, null -> {
                 prepareAudioPlayer()
             }
@@ -60,9 +64,12 @@ class PlayerViewModel(
             is PlayerViewState.Playing -> {
                 pauseAudioPlayer()
             }
+
             is PlayerViewState.Prepared, is PlayerViewState.Paused, is PlayerViewState.Completed -> {
                 playAudioPlayer()
             }
+
+            is PlayerViewState.Playlists, is PlayerViewState.ResultAddTrack -> {}
         }
     }
 
@@ -70,7 +77,7 @@ class PlayerViewModel(
         viewModelScope.launch {
             delay(PREPARE_DELAY)
             playerInteractor.prepare(trackModel.previewUrl)
-            _state.value = PlayerViewState.Prepared(isFavorite,getFormattedTime())
+            _state.value = PlayerViewState.Prepared(isFavorite, getFormattedTime())
 
             setOnCompletionListenerForPlayer()
         }
@@ -115,7 +122,44 @@ class PlayerViewModel(
                 is PlayerViewState.Paused -> currentState.copy(isFavorite, getFormattedTime())
                 is PlayerViewState.Playing -> currentState.copy(isFavorite, getFormattedTime())
                 is PlayerViewState.Prepared -> currentState.copy(isFavorite, getFormattedTime())
-                else -> { PlayerViewState.Default(isFavorite, trackModel) }
+                else -> {
+                    PlayerViewState.Default(isFavorite, trackModel)
+                }
+            }
+        }
+    }
+
+    fun playlistsControl() {
+        viewModelScope.launch {
+            playlistInteractor.getAll()
+                .collect { playlists ->
+                    _state.value = PlayerViewState.Playlists(playlists)
+                }
+        }
+    }
+
+    fun addTrackInPlaylist(playlist: Playlist) {
+        val alreadyAdd = playlist.tracksId.contains(trackModel.trackId)
+        if (alreadyAdd) {
+            _state.value = PlayerViewState.ResultAddTrack(
+                false,
+                R.string.playlist_track_allready_add,
+                playlist.title
+            )
+        } else {
+            viewModelScope.launch {
+                val newTracksList = playlist.tracksId.toMutableList()
+                newTracksList.add(trackModel.trackId)
+
+                playlistInteractor.updateTracksInPlaylist(playlist.id!!, newTracksList.toList())
+                playlistInteractor.addPlaylistTrack(trackModel)
+
+                _state.value =
+                    PlayerViewState.ResultAddTrack(
+                        true,
+                        R.string.playlist_track_success_add,
+                        playlist.title
+                    )
             }
         }
     }

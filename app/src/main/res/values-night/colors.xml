@@ -35,4 +35,5 @@
     <color name="bg_search_field">@color/white</color>
     <color name="tab_layout_color">@color/white</color>
     <color name="bnm_unactive_color">@color/white</color>
+    <color name="text_field_stroke">@color/white</color>
 </resources>

@@ -14,16 +14,16 @@ class FavoritesTracksViewModel(
     val stateLiveData = _state
 
     fun setContent() {
-       viewModelScope.launch {
-           favoriteTracksInteractor.getAll()
-               .collect { tracks ->
+        viewModelScope.launch {
+            favoriteTracksInteractor.getAll()
+                .collect { tracks ->
                     if (tracks.isEmpty()) {
                         _state.postValue(FavoriteTracksViewState.Empty)
                     } else {
                         _state.postValue(FavoriteTracksViewState.Content(tracks))
                     }
-               }
-       }
+                }
+        }
     }
 
 }

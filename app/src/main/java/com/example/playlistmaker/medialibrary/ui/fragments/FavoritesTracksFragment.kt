@@ -23,10 +23,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class FavoritesTracksFragment : Fragment() {
 
     private val clickDebounceDelay = 1000L
+    private var _binding: FragmentFavoritesTracksBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<FavoritesTracksViewModel>()
     private val gson = Gson()
-    private var _binding: FragmentFavoritesTracksBinding? = null
     private var isClickAllowed = true
     private lateinit var historyAdapter: TrackAdapter
 

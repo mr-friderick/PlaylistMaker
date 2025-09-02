@@ -48,6 +48,29 @@
 
     <!--  For layout fragment_favorites_tracks -->
     <string name="media_empty">Ваша медиатека пуста</string>
+
+    <!--  For layout fragment_newplaylist -->
     <string name="button_new_playlist">Новый плейлист</string>
     <string name="playlist_empty">Вы не создали \n ни одного плейлиста</string>
+    <string name="newplaylist_toolbar">Новый плейлист</string>
+    <string name="newplaylist_title_hint">Название*</string>
+    <string name="newplaylist_description_hint">Описание</string>
+    <string name="newplaylist_button_create">Создать</string>
+    <string name="bottomsheet_title">Добавить в плейлист</string>
+    <string name="playlist_exit_question">Завершить создание плейлиста?</string>
+    <string name="playlist_exit_message">Все несохраненные данные будут потеряны</string>
+    <string name="playlist_exit_negative_button">Отмена</string>
+    <string name="playlist_exit_positive_button">Завершить</string>
+    <string name="playlist_create_error">Не удалось создать плейлист</string>
+    <string name="playlist_create_success">Плейлист \"%1$s\" создан</string>
+    <string name="playlist_track_allready_add">Трек уже добавлен в плейлист \"%1$s\"</string>
+    <string name="playlist_track_success_add">Добавлено в плейлист \"%1$s\"</string>
+
+    <!--  For layout element_playlist -->
+    <plurals name="tracks_count">
+        <item quantity="one">%d трек</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
 </resources>

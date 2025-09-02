@@ -1,6 +1,5 @@
 package com.example.playlistmaker.medialibrary.data.impl
 
-import com.example.playlistmaker.db.AppDatabase
 import com.example.playlistmaker.db.converters.TrackDbConvertor
 import com.example.playlistmaker.db.dao.FavoriteTrackDao
 import com.example.playlistmaker.medialibrary.domain.api.FavoriteTracksRepository
@@ -15,7 +14,7 @@ class FavoriteTracksRepositoryImpl(
 
     override suspend fun addTrack(track: Track) {
         dao.insertTrack(
-            trackDbConvertor.map(track)
+            trackDbConvertor.mapTrack(track)
         )
     }
 
@@ -27,7 +26,7 @@ class FavoriteTracksRepositoryImpl(
         val tracks = dao.selectAll()
         emit(tracks
             .sortedByDescending { it.addTime }
-            .map { track -> trackDbConvertor.map(track) }
+            .map { track -> trackDbConvertor.mapTrack(track) }
         )
     }
 

@@ -4,14 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
+import com.example.playlistmaker.medialibrary.ui.adapter.PlaylistsAdapter
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewState
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -21,6 +25,8 @@ class PlayerFragment : Fragment() {
         parametersOf(requireArguments().getString(ARGS_TRACK))
     }
     private lateinit var binding: FragmentPlayerBinding
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private lateinit var playlistsAdapter: PlaylistsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,6 +44,7 @@ class PlayerFragment : Fragment() {
         observeLiveData()
         setListeners()
         preparePlayer()
+        setBottomSheet(BottomSheetBehavior.STATE_HIDDEN)
     }
 
     override fun onDestroyView() {
@@ -51,7 +58,7 @@ class PlayerFragment : Fragment() {
     }
 
     private fun initVariables() {
-        // Инициализация переменных
+        bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetInclude.root)
     }
 
     private fun observeLiveData() {
@@ -105,6 +112,28 @@ class PlayerFragment : Fragment() {
 
                     setFavoriteIcon(state.trackIsFavorite)
                 }
+
+                is PlayerViewState.Playlists -> {
+                    playlistsAdapter = PlaylistsAdapter(
+                        R.layout.element_playlist_for_player,
+                        state.playlists
+                    ) { playlist -> viewModel.addTrackInPlaylist(playlist) }
+
+                    binding.bottomSheetInclude.playlistRecyclerView.adapter = playlistsAdapter
+
+                    setBottomSheet(BottomSheetBehavior.STATE_COLLAPSED)
+                    binding.overlay.isVisible = true
+                }
+
+                is PlayerViewState.ResultAddTrack -> {
+                    if (state.success) {
+                        setBottomSheet(BottomSheetBehavior.STATE_HIDDEN)
+                    }
+                    Toast.makeText(requireContext(),
+                        getString(state.messageId, state.playlistTitle),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         }
     }
@@ -121,6 +150,31 @@ class PlayerFragment : Fragment() {
         binding.buttonAddFavorite.setOnClickListener {
             viewModel.favoriteControl()
         }
+
+        binding.buttonAddPlaylist.setOnClickListener {
+            viewModel.playlistsControl()
+        }
+
+        binding.bottomSheetInclude.buttonNewPlaylist.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_playerFragment_to_newPlaylistFragment
+            )
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN-> {
+                        binding.overlay.isVisible = false
+                    }
+                    else -> {
+                        binding.overlay.isVisible = true
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
     }
 
     private fun preparePlayer() {
@@ -135,6 +189,10 @@ class PlayerFragment : Fragment() {
                 R.drawable.ic_button_favorite
             }
         )
+    }
+
+    private fun setBottomSheet(state: Int) {
+        bottomSheetBehavior.state = state
     }
 
     companion object {
