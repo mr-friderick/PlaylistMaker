@@ -19,9 +19,9 @@
     </fragment>
     <fragment
         android:id="@+id/playlistFragment"
-        android:name="com.example.playlistmaker.medialibrary.ui.fragments.PlaylistFragment"
+        android:name="com.example.playlistmaker.medialibrary.ui.fragments.ListPlaylistFragment"
         android:label="fragment_playlists"
-        tools:layout="@layout/fragment_playlists" />
+        tools:layout="@layout/fragment_list_playlist" />
     <fragment
         android:id="@+id/favoritesTracksFragment"
         android:name="com.example.playlistmaker.medialibrary.ui.fragments.FavoritesTracksFragment"

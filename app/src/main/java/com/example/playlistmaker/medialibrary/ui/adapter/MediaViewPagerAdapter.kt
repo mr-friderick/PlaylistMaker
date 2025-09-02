@@ -3,7 +3,7 @@ package com.example.playlistmaker.medialibrary.ui.adapter
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.playlistmaker.medialibrary.ui.fragments.FavoritesTracksFragment
-import com.example.playlistmaker.medialibrary.ui.fragments.PlaylistFragment
+import com.example.playlistmaker.medialibrary.ui.fragments.ListPlaylistFragment
 
 class MediaViewPagerAdapter(host: Fragment) : FragmentStateAdapter(host) {
 
@@ -12,6 +12,6 @@ class MediaViewPagerAdapter(host: Fragment) : FragmentStateAdapter(host) {
     }
 
     override fun createFragment(position: Int): Fragment {
-        return if (position == 0) FavoritesTracksFragment.newInstance() else PlaylistFragment.newInstance()
+        return if (position == 0) FavoritesTracksFragment.newInstance() else ListPlaylistFragment.newInstance()
     }
 }

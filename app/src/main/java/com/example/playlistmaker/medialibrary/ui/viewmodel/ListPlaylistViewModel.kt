@@ -6,11 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.newplaylist.domain.interactors.PlaylistInteractor
 import kotlinx.coroutines.launch
 
-class PlaylistViewModel(
+class ListPlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
-    private val _state = MutableLiveData<PlaylistsViewState>()
+    private val _state = MutableLiveData<ListPlaylistsViewState>()
     val stateLiveData = _state
 
     fun setContent() {
@@ -18,9 +18,9 @@ class PlaylistViewModel(
             playlistInteractor.getAll()
                 .collect { playlists ->
                     if (playlists.isEmpty()) {
-                        _state.postValue(PlaylistsViewState.Empty)
+                        _state.postValue(ListPlaylistsViewState.Empty)
                     } else {
-                        _state.postValue(PlaylistsViewState.Content(playlists))
+                        _state.postValue(ListPlaylistsViewState.Content(playlists))
                     }
                 }
         }
