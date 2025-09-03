@@ -21,8 +21,7 @@ class NewPlaylistViewModel(
             val playlist = Playlist(
                 title = title,
                 description = description,
-                picturePath = picturePath,
-                tracksId = emptyList()
+                picturePath = picturePath
             )
 
             playlistInteractor.addPlaylist(playlist)

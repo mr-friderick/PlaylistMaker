@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import com.example.playlistmaker.db.AppDatabase
 import com.example.playlistmaker.db.dao.FavoriteTrackDao
-import com.example.playlistmaker.db.dao.PlaylistTrackDao
 import com.example.playlistmaker.db.dao.PlaylistsDao
 import com.example.playlistmaker.player.data.AudioPlayerClient
 import com.example.playlistmaker.player.data.MediaPlayerController
@@ -65,7 +64,7 @@ val dataModule = module {
     }
 
     single {
-        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "dbase.db")
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "dbase2.db")
             .build()
     }
 
@@ -75,9 +74,5 @@ val dataModule = module {
 
     single<PlaylistsDao> {
         get<AppDatabase>().playlistsDao()
-    }
-
-    single<PlaylistTrackDao> {
-        get<AppDatabase>().playlistTrackDao()
     }
 }

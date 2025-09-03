@@ -16,15 +16,20 @@ class PlaylistInteractorImpl(
         repository.addPlaylist(playlist)
     }
 
-    override suspend fun addPlaylistTrack(track: Track) = withContext(Dispatchers.IO) {
-        repository.addPlaylistTrack(track)
+    override suspend fun isTrackInPlaylist(playlistId: Int, trackId: Int): Boolean = withContext(Dispatchers.IO) {
+        repository.isTrackInPlaylist(playlistId, trackId)
     }
 
-    override suspend fun updateTracksInPlaylist(
-        playlistId: Int,
-        tracksId: List<Int>
-    ) = withContext(Dispatchers.IO) {
-        repository.updateTracksInPlaylist(playlistId, tracksId)
+    override suspend fun addTrackToPlaylist(playlistId: Int, trackId: Int) = withContext(Dispatchers.IO) {
+        repository.addTrackToPlaylist(playlistId, trackId)
+    }
+
+    override suspend fun getTracksCountInPlaylist(playlistId: Int): Int = withContext(Dispatchers.IO) {
+        repository.getTracksCountInPlaylist(playlistId)
+    }
+
+    override suspend fun addPlaylistTrack(track: Track) = withContext(Dispatchers.IO) {
+        repository.addPlaylistTrack(track)
     }
 
     override fun getAll(): Flow<List<Playlist>> {

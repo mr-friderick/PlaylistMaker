@@ -139,20 +139,17 @@ class PlayerViewModel(
     }
 
     fun addTrackInPlaylist(playlist: Playlist) {
-        val alreadyAdd = playlist.tracksId.contains(trackModel.trackId)
-        if (alreadyAdd) {
-            _state.value = PlayerViewState.ResultAddTrack(
-                false,
-                R.string.playlist_track_allready_add,
-                playlist.title
-            )
-        } else {
-            viewModelScope.launch {
-                val newTracksList = playlist.tracksId.toMutableList()
-                newTracksList.add(trackModel.trackId)
-
-                playlistInteractor.updateTracksInPlaylist(playlist.id!!, newTracksList.toList())
+        viewModelScope.launch {
+            val alreadyAdd = playlistInteractor.isTrackInPlaylist(playlist.id!!, trackModel.trackId)
+            if (alreadyAdd) {
+                _state.value = PlayerViewState.ResultAddTrack(
+                    false,
+                    R.string.playlist_track_allready_add,
+                    playlist.title
+                )
+            } else {
                 playlistInteractor.addPlaylistTrack(trackModel)
+                playlistInteractor.addTrackToPlaylist(playlist.id, trackModel.trackId)
 
                 _state.value =
                     PlayerViewState.ResultAddTrack(
@@ -160,6 +157,7 @@ class PlayerViewModel(
                         R.string.playlist_track_success_add,
                         playlist.title
                     )
+
             }
         }
     }
