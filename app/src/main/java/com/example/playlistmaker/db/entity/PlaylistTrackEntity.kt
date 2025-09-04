@@ -2,6 +2,10 @@ package com.example.playlistmaker.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.playlistmaker.search.data.dto.TrackDto.Companion.DEFAULT_TIME
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Entity(tableName = "tracks_in_playlists_table")
 data class PlaylistTrackEntity(

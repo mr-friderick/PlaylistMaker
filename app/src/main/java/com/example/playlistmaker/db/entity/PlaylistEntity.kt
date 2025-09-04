@@ -1,6 +1,7 @@
 package com.example.playlistmaker.db.entity
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "playlists_table")

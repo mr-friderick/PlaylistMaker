@@ -82,9 +82,10 @@ class SearchFragment : Fragment() {
             when (state) {
                 SearchViewState.Default -> {}
                 is SearchViewState.History -> {
-                    historyAdapter = TrackAdapter(state.historyTracks) { track ->
-                        startPlayerFragment(track)
-                    }
+                    historyAdapter = TrackAdapter(
+                        tracks = state.historyTracks,
+                        clickItem = { track -> startPlayerFragment(track) }
+                    )
                     binding.searchHistoryRecyclerView.adapter = historyAdapter
                     binding.searchHistory.isVisible = true
                 }
@@ -228,10 +229,13 @@ class SearchFragment : Fragment() {
     }
 
     private fun createRecyclerView(tracksList: ArrayList<Track>) {
-        val trackAdapter = TrackAdapter(tracksList) { track ->
-            viewModel.addTrackInHistory(track)
-            startPlayerFragment(track)
-        }
+        val trackAdapter = TrackAdapter(
+            tracks = tracksList,
+            clickItem = { track ->
+                viewModel.addTrackInHistory(track)
+                startPlayerFragment(track)
+            }
+        )
         binding.searchRecyclerView.adapter = trackAdapter
     }
 

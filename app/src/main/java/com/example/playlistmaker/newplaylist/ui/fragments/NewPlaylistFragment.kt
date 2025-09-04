@@ -60,12 +60,12 @@ class NewPlaylistFragment : Fragment() {
 
     private fun initVariables() {
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.playlist_exit_question))
-            .setMessage(getString(R.string.playlist_exit_message))
-            .setNegativeButton(getString(R.string.playlist_exit_negative_button)) { dialog, which ->
+            .setTitle(getString(R.string.newplaylist_exit_question))
+            .setMessage(getString(R.string.newplaylist_exit_message))
+            .setNegativeButton(getString(R.string.newplaylist_exit_negative_button)) { dialog, which ->
                 // Ничего не делаем
             }
-            .setPositiveButton(getString(R.string.playlist_exit_positive_button)) { dialog, which ->
+            .setPositiveButton(getString(R.string.newplaylist_exit_positive_button)) { dialog, which ->
                 findNavController().navigateUp()
             }
     }

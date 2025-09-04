@@ -6,7 +6,8 @@ import com.example.playlistmaker.search.domain.models.Track
 
 class TrackAdapter(
     private val tracks: ArrayList<Track>,
-    private val clickItem: (Track) -> Unit
+    private val clickItem: (Track) -> Unit,
+    private val longClickItem: (Int) -> Unit = {}
 ) : RecyclerView.Adapter<TrackViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -25,6 +26,10 @@ class TrackAdapter(
 
         holder.itemView.setOnClickListener {
             clickItem(track)
+        }
+        holder.itemView.setOnLongClickListener {
+            longClickItem(track.trackId)
+            true
         }
     }
 

@@ -19,6 +19,7 @@ class NewPlaylistViewModel(
             }
 
             val playlist = Playlist(
+                id = 0,
                 title = title,
                 description = description,
                 picturePath = picturePath

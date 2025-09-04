@@ -24,6 +24,9 @@ interface PlaylistsDao {
     @Query("SELECT * FROM playlists_table")
     suspend fun selectAll(): List<PlaylistEntity>
 
+    @Query("DELETE FROM tracks_in_playlists_table WHERE trackId = :trackId")
+    suspend fun deleteTrack(trackId: Int)
+
     // ---- Методы связей ----
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertTrackToPlaylist(crossRef: PlaylistTrackCrossRef)
@@ -36,8 +39,19 @@ interface PlaylistsDao {
     """)
     suspend fun isTrackInPlaylist(playlistId: Int, trackId: Int): Boolean
 
+    @Query("""
+        SELECT EXISTS(
+            SELECT 1 FROM playlist_track_cross_ref
+            WHERE trackId = :trackId
+        )
+    """)
+    suspend fun isTrackInAnyPlaylist(trackId: Int): Boolean
+
     @Query("SELECT COUNT(*) FROM playlist_track_cross_ref WHERE playlistId = :playlistId")
     suspend fun selectTracksCountInPlaylist(playlistId: Int): Int
+
+    @Query("DELETE FROM playlist_track_cross_ref WHERE playlistId = :playlistId AND trackId = :trackId")
+    suspend fun deleteTrackFromPlaylist(playlistId: Int, trackId: Int)
 
     // ---- Методы отношений ----
     @Transaction
@@ -47,14 +61,4 @@ interface PlaylistsDao {
     @Transaction
     @Query("SELECT * FROM tracks_in_playlists_table WHERE trackId = :trackId")
     suspend fun selectTrackWithPlaylists(trackId: Int): TrackWithPlaylists
-
-
-
-
-
-    // ---- TODO НА РАЗРБОР ----
-
-    @Query("DELETE FROM playlist_track_cross_ref WHERE playlistId = :playlistId AND trackId = :trackId")
-    suspend fun deleteTrackFromPlaylist(playlistId: Int, trackId: Int)
-
 }

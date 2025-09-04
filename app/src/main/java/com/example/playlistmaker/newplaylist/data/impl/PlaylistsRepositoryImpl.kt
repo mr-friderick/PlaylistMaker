@@ -34,6 +34,21 @@ class PlaylistsRepositoryImpl(
         return dao.selectTracksCountInPlaylist(playlistId)
     }
 
+    override suspend fun getTracksForPlaylist(playlistId: Int): Flow<List<Track>> = flow {
+        val tracks = dao.selectPlaylistWithTracks(playlistId).tracks
+        emit(tracks
+            .map { track -> dbPlaylistTrackConvertor.mapPlaylistTrack(track) }
+        )
+    }
+
+    override suspend fun deleteTrackFromPlaylist(playlistId: Int, trackId: Int) {
+        dao.deleteTrackFromPlaylist(playlistId, trackId)
+
+        if (!dao.isTrackInAnyPlaylist(trackId)) {
+            dao.deleteTrack(trackId)
+        }
+    }
+
     override suspend fun addPlaylistTrack(track: Track) {
         dao.insertTrack(
             dbPlaylistTrackConvertor.mapPlaylistTrack(track)
