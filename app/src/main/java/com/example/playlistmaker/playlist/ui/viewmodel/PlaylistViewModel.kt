@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.newplaylist.domain.interactors.PlaylistInteractor
 import com.example.playlistmaker.newplaylist.domain.models.Playlist
+import com.example.playlistmaker.search.domain.models.Track
 import com.google.gson.Gson
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -18,12 +19,14 @@ class PlaylistViewModel(
     jsonModel: String
 ) : ViewModel() {
 
+    private var cashTracksList: List<Track> = emptyList()
     private val playlistModel = gson.fromJson(
         jsonModel,
         Playlist::class.java
     )
     private val _state = MutableLiveData<PlaylistViewState>()
     val stateLiveData: LiveData<PlaylistViewState> = _state
+
 
     init {
         viewModelScope.launch {
@@ -42,6 +45,7 @@ class PlaylistViewModel(
                     val totalTimeToString = playlistTimeToString(totalTime)
                     _state.value = PlaylistViewState.Default(playlistModel, tracks, totalTimeToString)
                 }
+                cashTracksList = tracks
             }
     }
 
@@ -58,5 +62,18 @@ class PlaylistViewModel(
             playlistInteractor.deleteTrackFromPlaylist(playlistModel.id, trackId)
             initialization()
         }
+    }
+
+    fun messageForShare(tracksCount: String): String {
+        val message = playlistModel.title + "\n" + playlistModel.description + "\n" + tracksCount + "\n" + tracksInLine()
+        return message
+    }
+
+    private fun tracksInLine(): String {
+        var returnValue = ""
+        for ((index, value) in cashTracksList.withIndex()) {
+            returnValue = returnValue + "\n${index + 1}.${value.artistName} - ${value.trackName} (${value.trackTimeMillis})"
+        }
+        return returnValue
     }
 }

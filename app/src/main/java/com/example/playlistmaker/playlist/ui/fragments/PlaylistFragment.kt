@@ -1,5 +1,6 @@
 package com.example.playlistmaker.playlist.ui.fragments
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +41,7 @@ class PlaylistFragment : Fragment() {
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
     private var removableTrackId: Int = 0
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private var playlistTracksCountText: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,11 +80,14 @@ class PlaylistFragment : Fragment() {
                     binding.apply {
                         playlistName.text = state.model.title
                         playlistDescription.text = state.model.description
-                        playlistTracksCount.text = resources.getQuantityString(
+
+                        playlistTracksCountText = resources.getQuantityString(
                             R.plurals.tracks_count,
                             state.model.tracksCount,
                             state.model.tracksCount
                         )
+                        playlistTracksCount.text = playlistTracksCountText
+
                         playlistTime.text = resources.getQuantityString(
                             R.plurals.playlist_time,
                             state.playlistTime.toInt(),
@@ -115,6 +120,15 @@ class PlaylistFragment : Fragment() {
     private fun setListeners() {
         binding.playlistButtonBack.setOnClickListener {
             findNavController().navigateUp()
+        }
+
+        binding.playlistShare.setOnClickListener {
+            val intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, viewModel.messageForShare(playlistTracksCountText))
+            }
+            startActivity(Intent.createChooser(intent, ""))
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {

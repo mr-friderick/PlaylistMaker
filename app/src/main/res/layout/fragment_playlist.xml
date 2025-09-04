@@ -52,7 +52,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="24dp"
                 android:fontFamily="@font/ys_display_medium"
-                android:textColor="@color/txt_default"
+                android:textColor="@color/bg_dark_mode"
                 android:textFontWeight="700"
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +67,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/ys_display_regular"
-                android:textColor="@color/txt_default"
+                android:textColor="@color/bg_dark_mode"
                 android:textFontWeight="400"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +94,7 @@
                     android:drawablePadding="5dp"
                     android:ellipsize="end"
                     android:fontFamily="@font/ys_display_regular"
-                    android:textColor="@color/txt_default"
+                    android:textColor="@color/bg_dark_mode"
                     android:textFontWeight="400"
                     android:textSize="18sp"
                     tools:text="999 минут" />
@@ -105,7 +105,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:fontFamily="@font/ys_display_regular"
-                    android:textColor="@color/txt_default"
+                    android:textColor="@color/bg_dark_mode"
                     android:textFontWeight="400"
                     android:textSize="18sp"
                     tools:text="999 треков" />
@@ -125,17 +125,17 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/playlistShare"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:clickable="true"
                     android:scaleType="center"
                     app:srcCompat="@drawable/ic_playlist_share" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/playlistMenu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="26dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginStart="16dp"
                     android:clickable="true"
                     android:scaleType="center"
                     app:srcCompat="@drawable/ic_playlist_menu" />
