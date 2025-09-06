@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
+import com.example.playlistmaker.newplaylist.ui.fragments.NewPlaylistFragment
 import com.example.playlistmaker.player.ui.fragments.PlayerFragment
 import com.example.playlistmaker.playlist.ui.viewmodel.PlaylistViewModel
 import com.example.playlistmaker.playlist.ui.viewmodel.PlaylistViewState
@@ -33,15 +35,16 @@ class PlaylistFragment : Fragment() {
     private var isClickAllowed = true
     private  val gson = Gson()
     private val viewModel by viewModel<PlaylistViewModel> {
-        parametersOf(requireArguments().getString(ARGS_PLAYLIST))
+        parametersOf(requireArguments().getInt(ARGS_PLAYLIST))
     }
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
     private lateinit var tracksAdapter: TrackAdapter
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
-    private var removableTrackId: Int = 0
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
+    private lateinit var bottomSheetTracksBehavior: BottomSheetBehavior<View>
+    private lateinit var bottomSheetMenuBehavior: BottomSheetBehavior<View>
     private var playlistTracksCountText: String = ""
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,19 +61,18 @@ class PlaylistFragment : Fragment() {
         initVariables()
         observeLiveData()
         setListeners()
+        viewModel.setDefaultState()
+        setBottomSheet(bottomSheetMenuBehavior, BottomSheetBehavior.STATE_HIDDEN)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     private fun initVariables() {
-        confirmDialog = MaterialAlertDialogBuilder(requireContext())
-            .setMessage(getString(R.string.playlist_longclick_message))
-            .setNegativeButton(getString(R.string.playlist_longlick_negative_button)) { dialog, which ->
-                // Ничего не делаем
-            }
-            .setPositiveButton(getString(R.string.playlist_longlick_positive_button)) { dialog, which ->
-               viewModel.deleteTrack(removableTrackId)
-            }
-
-        bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheetInclude.root)
+        bottomSheetTracksBehavior = BottomSheetBehavior.from(binding.playlistBottomSheetInclude.root)
+        bottomSheetMenuBehavior = BottomSheetBehavior.from(binding.playlistBottomSheetMenuInclude.root)
     }
 
     private fun observeLiveData() {
@@ -81,11 +83,7 @@ class PlaylistFragment : Fragment() {
                         playlistName.text = state.model.title
                         playlistDescription.text = state.model.description
 
-                        playlistTracksCountText = resources.getQuantityString(
-                            R.plurals.tracks_count,
-                            state.model.tracksCount,
-                            state.model.tracksCount
-                        )
+                        playlistTracksCountText = tracksCountText(state.model.tracksCount)
                         playlistTracksCount.text = playlistTracksCountText
 
                         playlistTime.text = resources.getQuantityString(
@@ -94,19 +92,16 @@ class PlaylistFragment : Fragment() {
                             state.playlistTime
                         )
 
-                        val file = File(context?.filesDir, state.model.picturePath)
-                        Glide.with(playlistCover)
-                            .load(file)
-                            .placeholder(R.drawable.ic_playlist_placeholder)
-                            .error(R.drawable.ic_playlist_placeholder)
-                            .centerCrop()
-                            .into(playlistCover)
+                        setPlaylistCover(playlistCover, state.model.picturePath)
 
                         tracksAdapter = TrackAdapter(
                             tracks = state.tracks.toCollection(ArrayList()),
                             clickItem = { startPlayerFragment(it) },
                             longClickItem = {
-                                removableTrackId = it
+                                buildConfirmDialog(
+                                    message = getString(R.string.playlist_longclick_message),
+                                    positiveCallback = { viewModel.deleteTrack(it) }
+                                )
                                 confirmDialog.show()
                             }
                         )
@@ -118,25 +113,79 @@ class PlaylistFragment : Fragment() {
     }
 
     private fun setListeners() {
-        binding.playlistButtonBack.setOnClickListener {
-            findNavController().navigateUp()
-        }
-
-        binding.playlistShare.setOnClickListener {
-            val intent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plain"
-                putExtra(Intent.EXTRA_TEXT, viewModel.messageForShare(playlistTracksCountText))
+        binding.apply {
+            playlistButtonBack.setOnClickListener {
+                findNavController().navigateUp()
             }
-            startActivity(Intent.createChooser(intent, ""))
+
+            playlistMenu.setOnClickListener {
+                val dataForMenu = viewModel.dataForMenu()
+
+                setBottomSheet(bottomSheetMenuBehavior, BottomSheetBehavior.STATE_COLLAPSED)
+                binding.overlay.isVisible = true
+
+                binding.playlistBottomSheetMenuInclude.apply {
+                    playlistMenuName.text = dataForMenu["title"] as String
+                    playlistMenuTracksCount.text = tracksCountText(dataForMenu["trackCount"] as Int)
+
+                    setPlaylistCover(playlistMenuCover, dataForMenu["coverPath"] as String)
+                }
+            }
+
+            playlistShare.setOnClickListener {
+                startShareActivity()
+            }
+
+            playlistBottomSheetMenuInclude.apply {
+                playlistMenuShare.setOnClickListener {
+                    startShareActivity()
+                }
+
+                playlistMenuDelete.setOnClickListener {
+                    buildConfirmDialog(
+                        message = getString(
+                            R.string.playlist_menu_delete_message,
+                            viewModel.playlistName()
+                        ),
+                        positiveCallback = {
+                            viewModel.deletePlaylist()
+                            findNavController().navigateUp()
+                        }
+                    )
+                    confirmDialog.show()
+                }
+
+                playlistMenuEdit.setOnClickListener {
+                    startEditFragment(viewModel.modelToGson())
+                }
+            }
         }
 
-        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+        bottomSheetTracksBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
-                    BottomSheetBehavior.STATE_COLLAPSED-> {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
                         binding.overlay.isVisible = false
                     }
+
+                    else -> {
+                        binding.overlay.isVisible = true
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
+        bottomSheetMenuBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                    }
+
                     else -> {
                         binding.overlay.isVisible = true
                     }
@@ -147,6 +196,26 @@ class PlaylistFragment : Fragment() {
         })
     }
 
+    fun buildConfirmDialog(message: String, positiveCallback: () -> Unit, negativeCallback: () -> Unit = {}) {
+        confirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setMessage(message)
+            .setNegativeButton(getString(R.string.playlist_longlick_negative_button)) { dialog, which ->
+                negativeCallback()
+            }
+            .setPositiveButton(getString(R.string.playlist_longlick_positive_button)) { dialog, which ->
+                positiveCallback()
+            }
+    }
+
+    private fun startShareActivity() {
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, viewModel.messageForShare(playlistTracksCountText))
+        }
+        startActivity(Intent.createChooser(intent, ""))
+    }
+
     private fun startPlayerFragment(track: Track) {
         if (clickDebounce()) {
             findNavController().navigate(
@@ -154,6 +223,33 @@ class PlaylistFragment : Fragment() {
                 PlayerFragment.createArgs(gson.toJson(track))
             )
         }
+    }
+
+    private fun startEditFragment(playlist: String) {
+        if (clickDebounce()) {
+            findNavController().navigate(
+                R.id.action_playlistFragment_to_newPlaylistFragment,
+                NewPlaylistFragment.createArgs(playlist)
+            )
+        }
+    }
+
+    fun tracksCountText(count: Int): String {
+        return resources.getQuantityString(
+            R.plurals.tracks_count,
+            count,
+            count
+        )
+    }
+
+    fun setPlaylistCover(view: ImageView, path: String) {
+        val file = File(context?.filesDir, path)
+        Glide.with(view)
+            .load(file)
+            .placeholder(R.drawable.ic_playlist_placeholder)
+            .error(R.drawable.ic_playlist_placeholder)
+            .centerCrop()
+            .into(view)
     }
 
     private fun clickDebounce(): Boolean {
@@ -168,16 +264,15 @@ class PlaylistFragment : Fragment() {
         return current
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    private fun setBottomSheet(bottomSheet: BottomSheetBehavior<View>, state: Int) {
+        bottomSheet.state = state
     }
 
     companion object {
         const val ARGS_PLAYLIST = "playlist"
 
-        fun createArgs(jsonPlaylist: String): Bundle {
-            return bundleOf(ARGS_PLAYLIST to jsonPlaylist)
+        fun createArgs(playlistId: Int): Bundle {
+            return bundleOf(ARGS_PLAYLIST to playlistId)
         }
     }
 }

@@ -22,6 +22,22 @@ class PlaylistsRepositoryImpl(
         )
     }
 
+    override suspend fun getPlaylist(playlistId: Int): Playlist {
+        return dbPlaylistConvertor.map(
+            dao.selectPlaylist(playlistId)
+        )
+    }
+
+    override suspend fun deletePlaylist(playlistId: Int) {
+        dao.deletePlaylistAndUnownedTracks(playlistId)
+    }
+
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        dao.updatePlaylist(
+            dbPlaylistConvertor.map(playlist)
+        )
+    }
+
     override suspend fun isTrackInPlaylist(playlistId: Int, trackId: Int): Boolean {
         return dao.isTrackInPlaylist(playlistId, trackId)
     }

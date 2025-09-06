@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottomSheetMenu"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_bottomsheet_player"
+    android:orientation="vertical"
+    app:behavior_hideable="true"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/ic_strip" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginHorizontal="13dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/playlistMenuCover"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_gravity="start|center_vertical"
+            android:src="@drawable/ic_track_placeholder"
+            app:shapeAppearanceOverlay="@style/image_track_poster" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="8dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/playlistMenuName"
+                style="@style/text_view_track"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:textColor="@color/txt_default"
+                android:textSize="16sp"
+                tools:text="My best playlist #1" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/playlistMenuTracksCount"
+                style="@style/text_view_track"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:textColor="@color/txt_track_author"
+                android:textSize="11sp"
+                tools:text="999 треков" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/playlistMenuShare"
+        style="@style/text_view_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:paddingVertical="21dp"
+        android:text="@string/playlistmenu_button_share"
+        android:textColor="@color/txt_default"
+        android:textSize="16sp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/playlistMenuEdit"
+        style="@style/text_view_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:paddingVertical="21dp"
+        android:text="@string/playlistmenu_button_edit"
+        android:textColor="@color/txt_default"
+        android:textSize="16sp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/playlistMenuDelete"
+        style="@style/text_view_track"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:paddingVertical="21dp"
+        android:text="@string/playlistmenu_button_delete"
+        android:textColor="@color/txt_default"
+        android:textSize="16sp" />
+
+</LinearLayout>

@@ -5,11 +5,13 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.example.playlistmaker.db.entity.PlaylistEntity
 import com.example.playlistmaker.db.entity.PlaylistTrackCrossRef
 import com.example.playlistmaker.db.entity.PlaylistTrackEntity
 import com.example.playlistmaker.db.relationship.PlaylistWithTracks
 import com.example.playlistmaker.db.relationship.TrackWithPlaylists
+import com.example.playlistmaker.newplaylist.domain.models.Playlist
 
 @Dao
 interface PlaylistsDao {
@@ -18,14 +20,39 @@ interface PlaylistsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPlaylist(playlist: PlaylistEntity)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertTrack(track: PlaylistTrackEntity)
+    @Query("SELECT * FROM playlists_table WHERE id = :playlistId")
+    fun selectPlaylist(playlistId: Int): PlaylistEntity
+
+    @Update
+    fun updatePlaylist(playlist: PlaylistEntity)
+
+    @Query("DELETE FROM playlists_table WHERE id = :playlistId")
+    suspend fun deletePlaylist(playlistId: Int)
 
     @Query("SELECT * FROM playlists_table")
     suspend fun selectAll(): List<PlaylistEntity>
 
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun insertTrack(track: PlaylistTrackEntity)
+
     @Query("DELETE FROM tracks_in_playlists_table WHERE trackId = :trackId")
     suspend fun deleteTrack(trackId: Int)
+
+    @Query("""
+        DELETE FROM tracks_in_playlists_table
+            WHERE NOT EXISTS (
+            SELECT 1
+            FROM playlist_track_cross_ref AS c
+            WHERE c.trackId = tracks_in_playlists_table.trackId
+    )
+    """)
+    suspend fun deleteUnownedTracks()
+
+    @Transaction
+    suspend fun deletePlaylistAndUnownedTracks(playlistId: Int) {
+        deletePlaylist(playlistId)
+        deleteUnownedTracks()
+    }
 
     // ---- Методы связей ----
     @Insert(onConflict = OnConflictStrategy.IGNORE)

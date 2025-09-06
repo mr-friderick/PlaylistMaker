@@ -15,26 +15,17 @@ import java.util.Locale
 
 class PlaylistViewModel(
     private val playlistInteractor: PlaylistInteractor,
-    gson: Gson,
-    jsonModel: String
+    private val gson: Gson,
+    private val playlistId: Int
 ) : ViewModel() {
 
     private var cashTracksList: List<Track> = emptyList()
-    private val playlistModel = gson.fromJson(
-        jsonModel,
-        Playlist::class.java
-    )
+    private lateinit var playlistModel: Playlist
     private val _state = MutableLiveData<PlaylistViewState>()
     val stateLiveData: LiveData<PlaylistViewState> = _state
 
-
-    init {
-        viewModelScope.launch {
-            initialization()
-        }
-    }
-
     private suspend fun initialization() {
+        playlistModel = playlistInteractor.getPlaylist(playlistId)
         playlistModel.tracksCount = playlistInteractor.getTracksCountInPlaylist(playlistModel.id)
         playlistInteractor.getTracksForPlaylist(playlistModel.id)
             .collect { tracks ->
@@ -57,10 +48,38 @@ class PlaylistViewModel(
         }.getOrDefault("0")
     }
 
+    private fun tracksInLine(): String {
+        var returnValue = ""
+        for ((index, value) in cashTracksList.withIndex()) {
+            returnValue = returnValue + "\n${index + 1}.${value.artistName} - ${value.trackName} (${value.trackTimeMillis})"
+        }
+        return returnValue
+    }
+
+    fun setDefaultState() {
+        viewModelScope.launch {
+            initialization()
+        }
+    }
+
+    fun playlistName(): String {
+        return playlistModel.title
+    }
+
     fun deleteTrack(trackId: Int) {
         viewModelScope.launch {
             playlistInteractor.deleteTrackFromPlaylist(playlistModel.id, trackId)
             initialization()
+        }
+    }
+
+    fun modelToGson(): String {
+        return gson.toJson(playlistModel)
+    }
+
+    fun deletePlaylist() {
+        viewModelScope.launch {
+            playlistInteractor.deletePlaylist(playlistModel.id)
         }
     }
 
@@ -69,11 +88,11 @@ class PlaylistViewModel(
         return message
     }
 
-    private fun tracksInLine(): String {
-        var returnValue = ""
-        for ((index, value) in cashTracksList.withIndex()) {
-            returnValue = returnValue + "\n${index + 1}.${value.artistName} - ${value.trackName} (${value.trackTimeMillis})"
-        }
-        return returnValue
+    fun dataForMenu() : Map<String, Any> {
+        return mapOf(
+            "title" to playlistModel.title,
+            "trackCount" to playlistModel.tracksCount,
+            "coverPath" to playlistModel.picturePath
+        )
     }
 }

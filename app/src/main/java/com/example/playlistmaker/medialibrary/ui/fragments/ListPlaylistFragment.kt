@@ -89,7 +89,8 @@ class ListPlaylistFragment : Fragment() {
         if (clickDebounce()) {
             findNavController().navigate(
                 R.id.action_mediaRootFragment_to_playlistFragment,
-                PlaylistFragment.createArgs(gson.toJson(playlist))
+//                PlaylistFragment.createArgs(gson.toJson(playlist))
+                PlaylistFragment.createArgs(playlist.id)
             )
         }
     }

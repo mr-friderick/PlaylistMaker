@@ -70,6 +70,10 @@
     <string name="playlist_longclick_message">Хотите удалить трек?</string>
     <string name="playlist_longlick_negative_button">НЕТ</string>
     <string name="playlist_longlick_positive_button">ДА</string>
+    <string name="playlistmenu_button_share">Поделиться</string>
+    <string name="playlistmenu_button_edit">Редактировать информацию</string>
+    <string name="playlistmenu_button_delete">Удалить плейлист</string>
+    <string name="playlist_menu_delete_message">Хотите удалить плейлист «%1$s»?</string>
 
     <!--  For layout element_playlist -->
     <plurals name="tracks_count">

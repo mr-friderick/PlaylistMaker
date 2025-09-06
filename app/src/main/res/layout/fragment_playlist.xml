@@ -153,10 +153,10 @@
 
     <include
         android:id="@+id/playlistBottomSheetInclude"
-        layout="@layout/buttomsheet_playlist"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playlistShareMenuGroup" />
+        layout="@layout/buttomsheet_playlist" />
+
+    <include
+        android:id="@+id/playlistBottomSheetMenuInclude"
+        layout="@layout/buttomsheet_playlist_menu" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
