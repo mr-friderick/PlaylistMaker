@@ -84,8 +84,4 @@ interface PlaylistsDao {
     @Transaction
     @Query("SELECT * FROM playlists_table WHERE id = :playlistId")
     suspend fun selectPlaylistWithTracks(playlistId: Int): PlaylistWithTracks
-
-    @Transaction
-    @Query("SELECT * FROM tracks_in_playlists_table WHERE trackId = :trackId")
-    suspend fun selectTrackWithPlaylists(trackId: Int): TrackWithPlaylists
 }

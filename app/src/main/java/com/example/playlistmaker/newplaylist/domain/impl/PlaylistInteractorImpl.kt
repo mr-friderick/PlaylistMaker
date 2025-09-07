@@ -20,12 +20,16 @@ class PlaylistInteractorImpl(
         repository.getPlaylist(playlistId)
     }
 
+    override suspend fun updatePlaylist(playlist: Playlist) = withContext(Dispatchers.IO) {
+        repository.updatePlaylist(playlist)
+    }
+
     override suspend fun deletePlaylist(playlistId: Int) = withContext(Dispatchers.IO) {
         repository.deletePlaylist(playlistId)
     }
 
-    override suspend fun updatePlaylist(playlist: Playlist) = withContext(Dispatchers.IO) {
-        repository.updatePlaylist(playlist)
+    override fun getAll(): Flow<List<Playlist>> {
+        return repository.getAll()
     }
 
     override suspend fun isTrackInPlaylist(playlistId: Int, trackId: Int): Boolean = withContext(Dispatchers.IO) {
@@ -50,9 +54,5 @@ class PlaylistInteractorImpl(
 
     override suspend fun addPlaylistTrack(track: Track) = withContext(Dispatchers.IO) {
         repository.addPlaylistTrack(track)
-    }
-
-    override fun getAll(): Flow<List<Playlist>> {
-        return repository.getAll()
     }
 }

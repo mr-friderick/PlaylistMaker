@@ -15,6 +15,8 @@ class NewPlaylistViewModel(
     jsonModel: String = ""
 ) : ViewModel() {
 
+    private val _state = MutableLiveData<NewPlaylistViewState>()
+    val stateLiveData = _state
     private var playlistModel: Playlist? = if (jsonModel.isNotEmpty()) {
         gson.fromJson(
             jsonModel,
@@ -23,8 +25,6 @@ class NewPlaylistViewModel(
     } else {
         null
     }
-    private val _state = MutableLiveData<NewPlaylistViewState>()
-    val stateLiveData = _state
 
     init {
         if (playlistModel != null) {

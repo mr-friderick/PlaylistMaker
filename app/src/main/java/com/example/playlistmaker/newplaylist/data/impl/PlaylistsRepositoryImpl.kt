@@ -28,13 +28,23 @@ class PlaylistsRepositoryImpl(
         )
     }
 
+    override suspend fun updatePlaylist(playlist: Playlist) {
+        dao.updatePlaylist(
+            dbPlaylistConvertor.map(playlist)
+        )
+    }
+
     override suspend fun deletePlaylist(playlistId: Int) {
         dao.deletePlaylistAndUnownedTracks(playlistId)
     }
 
-    override suspend fun updatePlaylist(playlist: Playlist) {
-        dao.updatePlaylist(
-            dbPlaylistConvertor.map(playlist)
+    override fun getAll(): Flow<List<Playlist>> = flow {
+        val playlists = dao.selectAll()
+        for (entity in playlists) {
+            entity.tracksCount = dao.selectTracksCountInPlaylist(entity.id)
+        }
+        emit(playlists
+            .map { playlist -> dbPlaylistConvertor.map(playlist) }
         )
     }
 
@@ -53,6 +63,7 @@ class PlaylistsRepositoryImpl(
     override suspend fun getTracksForPlaylist(playlistId: Int): Flow<List<Track>> = flow {
         val tracks = dao.selectPlaylistWithTracks(playlistId).tracks
         emit(tracks
+            .sortedByDescending { it.addTime }
             .map { track -> dbPlaylistTrackConvertor.mapPlaylistTrack(track) }
         )
     }
@@ -71,13 +82,4 @@ class PlaylistsRepositoryImpl(
         )
     }
 
-    override fun getAll(): Flow<List<Playlist>> = flow {
-        val playlists = dao.selectAll()
-        for (entity in playlists) {
-            entity.tracksCount = dao.selectTracksCountInPlaylist(entity.id)
-        }
-        emit(playlists
-            .map { playlist -> dbPlaylistConvertor.map(playlist) }
-        )
-    }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -31,20 +32,21 @@ import java.io.File
 
 class PlaylistFragment : Fragment() {
 
-    private val clickDebounceDelay = 1000L
-    private var isClickAllowed = true
-    private  val gson = Gson()
     private val viewModel by viewModel<PlaylistViewModel> {
         parametersOf(requireArguments().getInt(ARGS_PLAYLIST))
     }
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
+    private val gson = Gson()
     private lateinit var tracksAdapter: TrackAdapter
     private lateinit var confirmDialog: MaterialAlertDialogBuilder
     private lateinit var bottomSheetTracksBehavior: BottomSheetBehavior<View>
     private lateinit var bottomSheetMenuBehavior: BottomSheetBehavior<View>
     private var playlistTracksCountText: String = ""
-
+    private var isClickAllowed = true
+    private var messageAlreadyShow = false
+    private var noTracksInPlaylist = false
+    private val clickDebounceDelay = 1000L
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -71,13 +73,15 @@ class PlaylistFragment : Fragment() {
     }
 
     private fun initVariables() {
-        bottomSheetTracksBehavior = BottomSheetBehavior.from(binding.playlistBottomSheetInclude.root)
-        bottomSheetMenuBehavior = BottomSheetBehavior.from(binding.playlistBottomSheetMenuInclude.root)
+        bottomSheetTracksBehavior =
+            BottomSheetBehavior.from(binding.playlistBottomSheetInclude.root)
+        bottomSheetMenuBehavior =
+            BottomSheetBehavior.from(binding.playlistBottomSheetMenuInclude.root)
     }
 
     private fun observeLiveData() {
         viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
-            when(state) {
+            when (state) {
                 is PlaylistViewState.Default -> {
                     binding.apply {
                         playlistName.text = state.model.title
@@ -94,18 +98,29 @@ class PlaylistFragment : Fragment() {
 
                         setPlaylistCover(playlistCover, state.model.picturePath)
 
-                        tracksAdapter = TrackAdapter(
-                            tracks = state.tracks.toCollection(ArrayList()),
-                            clickItem = { startPlayerFragment(it) },
-                            longClickItem = {
-                                buildConfirmDialog(
-                                    message = getString(R.string.playlist_longclick_message),
-                                    positiveCallback = { viewModel.deleteTrack(it) }
-                                )
-                                confirmDialog.show()
+                        if (state.tracks.isNotEmpty()) {
+                            tracksAdapter = TrackAdapter(
+                                tracks = state.tracks.toCollection(ArrayList()),
+                                clickItem = { startPlayerFragment(it) },
+                                longClickItem = {
+                                    buildConfirmDialog(
+                                        message = getString(R.string.playlist_longclick_message),
+                                        negativeButton = getString(R.string.playlist_longlick_negative_button),
+                                        positiveButton = getString(R.string.playlist_longlick_positive_button),
+                                        positiveCallback = { viewModel.deleteTrack(it) }
+                                    )
+                                    confirmDialog.show()
+                                }
+                            )
+                            playlistBottomSheetInclude.playlistRecyclerView.adapter = tracksAdapter
+                            noTracksInPlaylist = false
+                        } else {
+                            if (!messageAlreadyShow) {
+                                showNoTracksMessage()
                             }
-                        )
-                        binding.playlistBottomSheetInclude.playlistRecyclerView.adapter = tracksAdapter
+                            messageAlreadyShow = true
+                            noTracksInPlaylist = true
+                        }
                     }
                 }
             }
@@ -143,10 +158,10 @@ class PlaylistFragment : Fragment() {
 
                 playlistMenuDelete.setOnClickListener {
                     buildConfirmDialog(
-                        message = getString(
-                            R.string.playlist_menu_delete_message,
-                            viewModel.playlistName()
-                        ),
+                        title = getString(R.string.playlist_delete_title),
+                        message = getString(R.string.playlist_menu_delete_message),
+                        negativeButton = getString(R.string.playlist_delete_negative_button),
+                        positiveButton = getString(R.string.playlist_delete_positive_button),
                         positiveCallback = {
                             viewModel.deletePlaylist()
                             findNavController().navigateUp()
@@ -196,24 +211,37 @@ class PlaylistFragment : Fragment() {
         })
     }
 
-    fun buildConfirmDialog(message: String, positiveCallback: () -> Unit, negativeCallback: () -> Unit = {}) {
+    fun buildConfirmDialog(
+        title: String = "",
+        message: String,
+        negativeButton: String,
+        positiveButton: String,
+        positiveCallback: () -> Unit,
+        negativeCallback: () -> Unit = {}
+    ) {
         confirmDialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(title)
             .setMessage(message)
-            .setNegativeButton(getString(R.string.playlist_longlick_negative_button)) { dialog, which ->
+            .setNegativeButton(negativeButton) { dialog, which ->
                 negativeCallback()
             }
-            .setPositiveButton(getString(R.string.playlist_longlick_positive_button)) { dialog, which ->
+            .setPositiveButton(positiveButton) { dialog, which ->
                 positiveCallback()
             }
     }
 
     private fun startShareActivity() {
-        val intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = "text/plain"
-            putExtra(Intent.EXTRA_TEXT, viewModel.messageForShare(playlistTracksCountText))
+        if (noTracksInPlaylist) {
+            showNoTracksMessage()
+            setBottomSheet(bottomSheetMenuBehavior, BottomSheetBehavior.STATE_HIDDEN)
+        } else {
+            val intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                type = "text/plain"
+                putExtra(Intent.EXTRA_TEXT, viewModel.messageForShare(playlistTracksCountText))
+            }
+            startActivity(Intent.createChooser(intent, ""))
         }
-        startActivity(Intent.createChooser(intent, ""))
     }
 
     private fun startPlayerFragment(track: Track) {
@@ -266,6 +294,14 @@ class PlaylistFragment : Fragment() {
 
     private fun setBottomSheet(bottomSheet: BottomSheetBehavior<View>, state: Int) {
         bottomSheet.state = state
+    }
+
+    private fun showNoTracksMessage() {
+        Toast.makeText(
+            requireContext(),
+            getString(R.string.playlist_no_track_message),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     companion object {

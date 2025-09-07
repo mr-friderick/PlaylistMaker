@@ -19,10 +19,10 @@ class PlaylistViewModel(
     private val playlistId: Int
 ) : ViewModel() {
 
-    private var cashTracksList: List<Track> = emptyList()
-    private lateinit var playlistModel: Playlist
     private val _state = MutableLiveData<PlaylistViewState>()
     val stateLiveData: LiveData<PlaylistViewState> = _state
+    private var cashTracksList: List<Track> = emptyList()
+    private lateinit var playlistModel: Playlist
 
     private suspend fun initialization() {
         playlistModel = playlistInteractor.getPlaylist(playlistId)
@@ -60,10 +60,6 @@ class PlaylistViewModel(
         viewModelScope.launch {
             initialization()
         }
-    }
-
-    fun playlistName(): String {
-        return playlistModel.title
     }
 
     fun deleteTrack(trackId: Int) {

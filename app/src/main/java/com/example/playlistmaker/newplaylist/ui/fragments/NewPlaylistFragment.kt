@@ -38,6 +38,8 @@ class NewPlaylistFragment : Fragment() {
     }
     private var _binding: FragmentNewplaylistBinding? = null
     private val binding get() = _binding!!
+    private lateinit var confirmDialog: MaterialAlertDialogBuilder
+    private var uriCover: Uri? = null
     private val pickMedia = registerForActivityResult(
         ActivityResultContracts.PickVisualMedia()
     ) { uri: Uri? ->
@@ -54,9 +56,7 @@ class NewPlaylistFragment : Fragment() {
             // Пользователь отменил выбор
         }
     }
-    private var uriCover: Uri? = null
     private var uriChange = false
-    private lateinit var confirmDialog: MaterialAlertDialogBuilder
     private var isEditing = false
 
     override fun onCreateView(
@@ -115,8 +115,8 @@ class NewPlaylistFragment : Fragment() {
                             .into(pictureCover)
                         uriCover = file.toUri()
 
-                        toolbarBack.title = "Редактировать"
-                        create.text = "Сохранить"
+                        toolbarBack.title = getString(R.string.newplaylist_edit_title)
+                        create.text = getString(R.string.newplaylist_edit_button_text)
                     }
                 }
             }
