@@ -38,7 +38,7 @@ class MainActivity: AppCompatActivity() {
     private fun setListeners() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when(destination.id) {
-                R.id.playerFragment, R.id.newPlaylistFragment -> {
+                R.id.playerFragment, R.id.newPlaylistFragment, R.id.playlistFragment -> {
                     binding.separator.isVisible = false
                     binding.bottomNavigationView.isVisible = false
                 }

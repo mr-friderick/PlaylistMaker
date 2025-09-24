@@ -8,7 +8,7 @@
     android:background="@color/bg_screen_default"
     android:gravity="top|center"
     android:orientation="vertical"
-    tools:context=".medialibrary.ui.fragments.PlaylistFragment">
+    tools:context=".medialibrary.ui.fragments.ListPlaylistFragment">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonNewPlaylist"

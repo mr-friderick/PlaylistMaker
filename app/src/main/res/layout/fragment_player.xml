@@ -275,6 +275,7 @@
         android:visibility="gone"/>
 
     <include layout="@layout/buttomsheet_player"
-        android:id="@+id/bottomSheetInclude"/>
+        android:id="@+id/bottomSheetInclude"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

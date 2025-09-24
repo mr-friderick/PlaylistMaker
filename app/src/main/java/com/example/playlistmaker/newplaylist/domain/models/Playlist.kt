@@ -1,10 +1,9 @@
 package com.example.playlistmaker.newplaylist.domain.models
 
 data class Playlist(
-    val id: Int? = null,
+    val id: Int,
     val title: String,
     val description: String,
     val picturePath: String,
-    val tracksId: List<Int>,
-    val tracksCount: Int = tracksId.size
+    var tracksCount: Int = 0
 )

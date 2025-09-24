@@ -56,9 +56,10 @@ class FavoritesTracksFragment : Fragment() {
         viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is FavoriteTracksViewState.Content -> {
-                    historyAdapter = TrackAdapter(state.favoriteTracks.toCollection(ArrayList())) { track ->
-                        startPlayerFragment(track)
-                    }
+                    historyAdapter = TrackAdapter(
+                        tracks = state.favoriteTracks.toCollection(ArrayList()),
+                        clickItem = { track -> startPlayerFragment(track) }
+                    )
                     binding.favoriteRecyclerView.adapter = historyAdapter
                     binding.favoritePlaceholder.isVisible = false
                     binding.favoriteRecyclerView.isVisible = true

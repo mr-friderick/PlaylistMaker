@@ -6,28 +6,37 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
+import com.example.playlistmaker.databinding.FragmentListPlaylistBinding
 import com.example.playlistmaker.medialibrary.ui.adapter.PlaylistsAdapter
-import com.example.playlistmaker.medialibrary.ui.viewmodel.PlaylistViewModel
-import com.example.playlistmaker.medialibrary.ui.viewmodel.PlaylistsViewState
+import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistViewModel
+import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistsViewState
+import com.example.playlistmaker.newplaylist.domain.models.Playlist
+import com.example.playlistmaker.playlist.ui.fragments.PlaylistFragment
+import com.google.gson.Gson
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistFragment : Fragment() {
+class ListPlaylistFragment : Fragment() {
 
-    private var _binding: FragmentPlaylistsBinding? = null
+    private val clickDebounceDelay = 1000L
+    private var _binding: FragmentListPlaylistBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModel<PlaylistViewModel>()
+    private val viewModel by viewModel<ListPlaylistViewModel>()
     private lateinit var playlistsAdapter: PlaylistsAdapter
+    private var isClickAllowed = true
+    private  val gson = Gson()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
+        _binding = FragmentListPlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -47,11 +56,11 @@ class PlaylistFragment : Fragment() {
     private fun observeLiveData() {
         viewModel.stateLiveData.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is PlaylistsViewState.Content -> {
+                is ListPlaylistsViewState.Content -> {
                     playlistsAdapter = PlaylistsAdapter(
                         R.layout.element_playlist,
                         state.playlists
-                    ) {}
+                    ) { playlist -> startPlaylistFragment(playlist)}
 
                     binding.playlistRecyclerView.layoutManager =
                         GridLayoutManager(requireContext(), 2)
@@ -60,7 +69,7 @@ class PlaylistFragment : Fragment() {
                     binding.playlistRecyclerView.isVisible = true
                 }
 
-                is PlaylistsViewState.Empty -> {
+                is ListPlaylistsViewState.Empty -> {
                     binding.playlistPlaceholder.isVisible = true
                     binding.playlistRecyclerView.isVisible = false
                 }
@@ -76,13 +85,35 @@ class PlaylistFragment : Fragment() {
         }
     }
 
+    private fun startPlaylistFragment(playlist: Playlist) {
+        if (clickDebounce()) {
+            findNavController().navigate(
+                R.id.action_mediaRootFragment_to_playlistFragment,
+//                PlaylistFragment.createArgs(gson.toJson(playlist))
+                PlaylistFragment.createArgs(playlist.id)
+            )
+        }
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            lifecycleScope.launch {
+                delay(clickDebounceDelay)
+                isClickAllowed = true
+            }
+        }
+        return current
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
     }
 
     companion object {
-        fun newInstance() = PlaylistFragment().apply {
+        fun newInstance() = ListPlaylistFragment().apply {
             arguments = Bundle().apply {
                 // TODO (Реализация будет в будущем)
             }

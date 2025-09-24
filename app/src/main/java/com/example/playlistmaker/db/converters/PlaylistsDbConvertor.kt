@@ -11,7 +11,6 @@ class PlaylistsDbConvertor {
             title = entity.title,
             description = entity.description,
             picturePath = entity.picturePath,
-            tracksId = mapTracksId(entity.tracksId),
             tracksCount = entity.tracksCount
         )
     }
@@ -21,9 +20,7 @@ class PlaylistsDbConvertor {
             id = model.id ?: 0,
             title = model.title,
             description = model.description,
-            picturePath = model.picturePath,
-            tracksId = mapTracksId(model.tracksId),
-            tracksCount = model.tracksId.size
+            picturePath = model.picturePath
         )
     }
 

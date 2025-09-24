@@ -1,6 +1,7 @@
 package com.example.playlistmaker.db.entity
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "playlists_table")
@@ -10,6 +11,5 @@ data class PlaylistEntity(
     val title: String,
     val description: String,
     val picturePath: String,
-    val tracksId: String,
-    val tracksCount: Int
+    var tracksCount: Int = 0
 )

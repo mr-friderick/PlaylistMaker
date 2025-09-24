@@ -50,17 +50,33 @@
     <string name="media_empty">Ваша медиатека пуста</string>
 
     <!--  For layout fragment_newplaylist -->
-    <string name="button_new_playlist">Новый плейлист</string>
     <string name="playlist_empty">Вы не создали \n ни одного плейлиста</string>
+    <string name="button_new_playlist">Новый плейлист</string>
     <string name="newplaylist_toolbar">Новый плейлист</string>
     <string name="newplaylist_title_hint">Название*</string>
     <string name="newplaylist_description_hint">Описание</string>
     <string name="newplaylist_button_create">Создать</string>
     <string name="bottomsheet_title">Добавить в плейлист</string>
-    <string name="playlist_exit_question">Завершить создание плейлиста?</string>
-    <string name="playlist_exit_message">Все несохраненные данные будут потеряны</string>
-    <string name="playlist_exit_negative_button">Отмена</string>
-    <string name="playlist_exit_positive_button">Завершить</string>
+    <string name="newplaylist_exit_question">Завершить создание плейлиста?</string>
+    <string name="newplaylist_exit_message">Все несохраненные данные будут потеряны</string>
+    <string name="newplaylist_exit_negative_button">Отмена</string>
+    <string name="newplaylist_exit_positive_button">Завершить</string>
+    <string name="newplaylist_edit_title">Редактировать</string>
+    <string name="newplaylist_edit_button_text">Сохранить</string>
+
+    <!--  For layout fragment_playlist -->
+    <string name="playlist_longclick_message">Хотите удалить трек?</string>
+    <string name="playlist_longlick_negative_button">НЕТ</string>
+    <string name="playlist_longlick_positive_button">ДА</string>
+    <string name="playlistmenu_button_share">Поделиться</string>
+    <string name="playlistmenu_button_edit">Редактировать информацию</string>
+    <string name="playlistmenu_button_delete">Удалить плейлист</string>
+    <string name="playlist_menu_delete_message">Вы уверены, что хотите удалить этот плейлист?</string>
+    <string name="playlist_empty_tracks">В плейлист не добавлено \n еще ни одного трека</string>
+    <string name="playlist_no_track_message">В плейлист еще не добавлен ни один трек :(</string>
+    <string name="playlist_delete_title">Удалить плейлист</string>
+    <string name="playlist_delete_positive_button">Удалить</string>
+    <string name="playlist_delete_negative_button">Отмена</string>
     <string name="playlist_create_error">Не удалось создать плейлист</string>
     <string name="playlist_create_success">Плейлист \"%1$s\" создан</string>
     <string name="playlist_track_allready_add">Трек уже добавлен в плейлист \"%1$s\"</string>
@@ -72,5 +88,12 @@
         <item quantity="few">%d трека</item>
         <item quantity="many">%d треков</item>
         <item quantity="other">%d треков</item>
+    </plurals>
+
+    <plurals name="playlist_time">
+        <item quantity="one">%s минута</item>
+        <item quantity="few">%s минуты</item>
+        <item quantity="many">%s минут</item>
+        <item quantity="other">%s минут</item>
     </plurals>
 </resources>
