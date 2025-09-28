@@ -66,7 +66,7 @@ class PlayerFragment : Fragment() {
             when (state) {
                 is PlayerViewState.Default -> {
                     binding.buttonPlay.isEnabled = false
-                    binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
+                    binding.buttonPlay.defaultState = true
 
                     binding.trackName.text = state.trackModel.trackName
                     binding.trackArtist.text = state.trackModel.artistName
@@ -86,28 +86,28 @@ class PlayerFragment : Fragment() {
 
                 is PlayerViewState.Prepared -> {
                     binding.buttonPlay.isEnabled = true
-                    binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
+                    binding.buttonPlay.defaultState = true
                     binding.trackTimeLeft.text = state.trackTime;
 
                     setFavoriteIcon(state.trackIsFavorite)
                 }
 
                 is PlayerViewState.Playing -> {
-                    binding.buttonPlay.setImageResource(R.drawable.ic_button_pause)
+                    binding.buttonPlay.defaultState = false
                     binding.trackTimeLeft.text = state.trackTime;
 
                     setFavoriteIcon(state.trackIsFavorite)
                 }
 
                 is PlayerViewState.Paused -> {
-                    binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
+                    binding.buttonPlay.defaultState = true
                     binding.trackTimeLeft.text = state.trackTime;
 
                     setFavoriteIcon(state.trackIsFavorite)
                 }
 
                 is PlayerViewState.Completed -> {
-                    binding.buttonPlay.setImageResource(R.drawable.ic_button_play)
+                    binding.buttonPlay.defaultState = true
                     binding.trackTimeLeft.text = state.trackTime;
 
                     setFavoriteIcon(state.trackIsFavorite)
@@ -143,9 +143,13 @@ class PlayerFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        binding.buttonPlay.setOnClickListener {
+        binding.buttonPlay.clickEvent = {
             viewModel.playerControl()
         }
+
+//        binding.buttonPlay.setOnClickListener {
+//            viewModel.playerControl()
+//        }
 
         binding.buttonAddFavorite.setOnClickListener {
             viewModel.favoriteControl()

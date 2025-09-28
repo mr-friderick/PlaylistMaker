@@ -91,15 +91,27 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/trackArtist" />
 
-            <ImageButton
+<!--            <ImageButton-->
+<!--                android:id="@+id/buttonPlay"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="@dimen/dp38"-->
+<!--                android:background="@drawable/round_button"-->
+<!--                android:contentDescription="@string/description_button_play"-->
+<!--                android:enabled="false"-->
+<!--                android:src="@drawable/ic_button_play"-->
+<!--                app:layout_constraintBottom_toTopOf="@id/trackTimeLeft"-->
+<!--                app:layout_constraintEnd_toStartOf="@id/buttonAddFavorite"-->
+<!--                app:layout_constraintStart_toEndOf="@id/buttonAddPlaylist"-->
+<!--                app:layout_constraintTop_toBottomOf="@id/trackArtist" />-->
+
+            <com.example.playlistmaker.player.ui.custom.PlaybackButtonView
                 android:id="@+id/buttonPlay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="84dp"
+                android:layout_height="84dp"
                 android:layout_marginTop="@dimen/dp38"
-                android:background="@drawable/round_button"
-                android:contentDescription="@string/description_button_play"
-                android:enabled="false"
-                android:src="@drawable/ic_button_play"
+                app:srcPlay="@drawable/ic_button_play"
+                app:srcPause="@drawable/ic_button_pause"
                 app:layout_constraintBottom_toTopOf="@id/trackTimeLeft"
                 app:layout_constraintEnd_toStartOf="@id/buttonAddFavorite"
                 app:layout_constraintStart_toEndOf="@id/buttonAddPlaylist"
@@ -276,6 +288,7 @@
 
     <include layout="@layout/buttomsheet_player"
         android:id="@+id/bottomSheetInclude"
+        android:visibility="gone"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
