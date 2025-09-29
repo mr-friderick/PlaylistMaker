@@ -147,10 +147,6 @@ class PlayerFragment : Fragment() {
             viewModel.playerControl()
         }
 
-//        binding.buttonPlay.setOnClickListener {
-//            viewModel.playerControl()
-//        }
-
         binding.buttonAddFavorite.setOnClickListener {
             viewModel.favoriteControl()
         }
