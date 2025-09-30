@@ -1,15 +1,14 @@
 package com.example.playlistmaker.player.ui.custom
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.graphics.RectF
+import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.AttrRes
 import androidx.annotation.StyleRes
-import androidx.core.graphics.drawable.toBitmap
 import com.example.playlistmaker.R
 
 class PlaybackButtonView @JvmOverloads constructor(
@@ -19,9 +18,9 @@ class PlaybackButtonView @JvmOverloads constructor(
     @StyleRes defStyleRes: Int = 0,
 ) : View(context, attrs, defStyleAttr, defStyleRes) {
 
-    private val imageBitmapPlay: Bitmap?
-    private val imageBitmapPause: Bitmap?
-    private var imageRect = RectF(0f, 0f, 0f, 0f)
+    private val imagePlay: Drawable?
+    private val imagePause: Drawable?
+    private var imageRect = Rect(0, 0, 0, 0)
     var isPlaying = true
         set(value) {
             if (field == value) {
@@ -41,8 +40,8 @@ class PlaybackButtonView @JvmOverloads constructor(
             defStyleRes
         ).apply {
             try {
-                imageBitmapPlay = getDrawable(R.styleable.PlaybackButtonView_srcPlay)?.toBitmap()
-                imageBitmapPause = getDrawable(R.styleable.PlaybackButtonView_srcPause)?.toBitmap()
+                imagePlay = getDrawable(R.styleable.PlaybackButtonView_srcPlay)
+                imagePause = getDrawable(R.styleable.PlaybackButtonView_srcPause)
             } finally {
                 recycle()
             }
@@ -51,18 +50,14 @@ class PlaybackButtonView @JvmOverloads constructor(
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        imageRect = RectF(0f, 0f, measuredWidth.toFloat(), measuredHeight.toFloat())
+        imageRect = Rect(0, 0, measuredWidth, measuredHeight)
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (isPlaying) {
-            imageBitmapPlay?.let {
-                canvas.drawBitmap(imageBitmapPlay, null, imageRect, null)
-            }
-        } else {
-            imageBitmapPause?.let {
-                canvas.drawBitmap(imageBitmapPause, null, imageRect, null)
-            }
+        val drawable = if (isPlaying) imagePlay else imagePause
+        drawable?.let {
+            it.bounds = imageRect
+            it.draw(canvas)
         }
     }
 
