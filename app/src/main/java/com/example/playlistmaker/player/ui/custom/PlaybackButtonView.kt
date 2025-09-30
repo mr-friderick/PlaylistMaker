@@ -22,12 +22,16 @@ class PlaybackButtonView @JvmOverloads constructor(
     private val imageBitmapPlay: Bitmap?
     private val imageBitmapPause: Bitmap?
     private var imageRect = RectF(0f, 0f, 0f, 0f)
-    var defaultState = true
+    var isPlaying = true
         set(value) {
-            field = value
-            invalidate()
+            if (field == value) {
+                return
+            } else {
+                field = value
+                invalidate()
+            }
         }
-    var clickEvent: (() -> Unit)? = null
+    var clickEventListener: (() -> Unit)? = null
 
     init {
         context.theme.obtainStyledAttributes(
@@ -51,7 +55,7 @@ class PlaybackButtonView @JvmOverloads constructor(
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (defaultState) {
+        if (isPlaying) {
             imageBitmapPlay?.let {
                 canvas.drawBitmap(imageBitmapPlay, null, imageRect, null)
             }
@@ -68,7 +72,7 @@ class PlaybackButtonView @JvmOverloads constructor(
                 return true
             }
             MotionEvent.ACTION_UP -> {
-                clickEvent?.invoke()
+                clickEventListener?.invoke()
                 return true
             }
         }
