@@ -29,10 +29,6 @@ val dataModule = module {
         SharedPrefSettingsStorage(get())
     }
 
-//    factory<AudioPlayerClient> {
-//        MediaPlayerController(get())
-//    }
-
     single<HistoryStorage> {
         SharedPrefHistoryStorage(get(), get())
     }

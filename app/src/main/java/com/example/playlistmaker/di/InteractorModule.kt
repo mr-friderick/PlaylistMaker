@@ -6,8 +6,6 @@ import com.example.playlistmaker.newplaylist.domain.impl.ImageStorageInteractorI
 import com.example.playlistmaker.newplaylist.domain.impl.PlaylistInteractorImpl
 import com.example.playlistmaker.newplaylist.domain.interactors.ImageStorageInteractor
 import com.example.playlistmaker.newplaylist.domain.interactors.PlaylistInteractor
-import com.example.playlistmaker.player.domain.impl.AudioPlayerInteractorImpl
-import com.example.playlistmaker.player.domain.interactors.AudioPlayerInteractor
 import com.example.playlistmaker.search.domain.impl.HistoryInteractorImpl
 import com.example.playlistmaker.search.domain.impl.TracksIntreractorImpl
 import com.example.playlistmaker.search.domain.interactors.HistoryInteractor
@@ -21,10 +19,6 @@ val interactorModule = module {
     factory<SettingsInteractor> {
         SettingsInteractorImpl(get())
     }
-
-//    factory<AudioPlayerInteractor> {
-//        AudioPlayerInteractorImpl(get())
-//    }
 
     factory<HistoryInteractor> {
         HistoryInteractorImpl(get())

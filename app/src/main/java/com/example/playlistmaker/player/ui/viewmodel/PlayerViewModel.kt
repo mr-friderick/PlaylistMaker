@@ -8,7 +8,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.domain.interactors.FavoriteTracksInteractor
 import com.example.playlistmaker.newplaylist.domain.interactors.PlaylistInteractor
 import com.example.playlistmaker.newplaylist.domain.models.Playlist
-import com.example.playlistmaker.player.data.AudioPlayerClient
+import com.example.playlistmaker.player.services.MediaServiceClient
 import com.example.playlistmaker.player.services.PlayerState
 import com.example.playlistmaker.search.domain.models.Track
 import com.google.gson.Gson
@@ -28,7 +28,7 @@ class PlayerViewModel(
         Track::class.java
     )
     private var isFavorite = false
-    private var audioPlayerClient: AudioPlayerClient? = null
+    private var mediaServiceClient: MediaServiceClient? = null
     private val _state = MutableLiveData<PlayerViewState>()
     val stateLiveData: LiveData<PlayerViewState> = _state
 
@@ -43,14 +43,14 @@ class PlayerViewModel(
         return SimpleDateFormat(
             "m:ss",
             Locale.getDefault()
-        ).format(audioPlayerClient?.getCurrentPosition())
+        ).format(mediaServiceClient?.getCurrentPosition())
     }
 
-    fun setAudioPlayerClient(audioPlayerClient: AudioPlayerClient) {
-        this.audioPlayerClient = audioPlayerClient
+    fun setAudioPlayerClient(mediaServiceClient: MediaServiceClient) {
+        this.mediaServiceClient = mediaServiceClient
 
         viewModelScope.launch {
-            audioPlayerClient.observePlayerState().collect {
+            mediaServiceClient.observePlayerState().collect {
                 _state.value =
                     when(it) {
                         is PlayerState.Default -> PlayerViewState.Default(isFavorite, trackModel)
@@ -64,19 +64,17 @@ class PlayerViewModel(
     }
 
     fun removeAudioPlayerClient() {
-        audioPlayerClient = null
+        mediaServiceClient = null
     }
 
     fun playerControl() {
         when (_state.value) {
             is PlayerViewState.Playing -> {
-                audioPlayerClient?.pause()
+                mediaServiceClient?.pause()
             }
-
             is PlayerViewState.Default, is PlayerViewState.Prepared, is PlayerViewState.Paused, is PlayerViewState.Completed, null -> {
-                audioPlayerClient?.play()
+                mediaServiceClient?.play()
             }
-
             is PlayerViewState.Playlists, is PlayerViewState.ResultAddTrack -> {}
         }
     }
@@ -137,7 +135,25 @@ class PlayerViewModel(
         }
     }
 
+    fun showNotification() {
+        if (mediaServiceClient?.isPlaying() == true) {
+            mediaServiceClient?.showNotification()
+        }
+    }
+    
+    fun closeNotification() {
+        mediaServiceClient?.closeNotification()
+    }
+
     fun getSongUrl(): String {
         return trackModel.previewUrl
+    }
+
+    fun getArtistName(): String {
+        return trackModel.artistName
+    }
+
+    fun getTrackName(): String {
+        return trackModel.trackName
     }
 }

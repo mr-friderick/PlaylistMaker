@@ -1,13 +1,15 @@
-package com.example.playlistmaker.player.data
+package com.example.playlistmaker.player.services
 
-import com.example.playlistmaker.player.services.PlayerState
 import kotlinx.coroutines.flow.StateFlow
 
-interface AudioPlayerClient {
+interface MediaServiceClient {
     fun prepare(url: String)
     fun play()
     fun pause()
     fun release()
     fun getCurrentPosition(): Int
     fun observePlayerState(): StateFlow<PlayerState>
+    fun isPlaying(): Boolean
+    fun showNotification()
+    fun closeNotification()
 }

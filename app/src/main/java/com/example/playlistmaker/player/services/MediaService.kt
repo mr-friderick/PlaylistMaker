@@ -1,11 +1,19 @@
 package com.example.playlistmaker.player.services
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.media.MediaPlayer
 import android.os.Binder
+import android.os.Build
 import android.os.IBinder
-import com.example.playlistmaker.player.data.AudioPlayerClient
+import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
+import com.example.playlistmaker.R
+import com.example.playlistmaker.player.services.MediaServiceClient
 import com.example.playlistmaker.player.data.MediaPlayerFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,7 +28,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 import kotlin.math.max
 
-class MediaService() : Service(), AudioPlayerClient {
+class MediaService() : Service(), MediaServiceClient {
 
     private val mediaPlayerFactory: MediaPlayerFactory by inject()
     private val binder = MediaServiceBinder()
@@ -28,6 +36,8 @@ class MediaService() : Service(), AudioPlayerClient {
     private val playerState = _playerState.asStateFlow()
     private var mediaPlayer: MediaPlayer? = null
     private var songUrl = ""
+    private var artistName = ""
+    private var trackName = ""
     private var isRelease = false
     private var currentPosition = 0
     private var timerJob: Job? = null
@@ -37,18 +47,31 @@ class MediaService() : Service(), AudioPlayerClient {
     override fun onCreate() {
         super.onCreate()
         mediaPlayer = mediaPlayerFactory.create()
+        createNotificationChannel()
     }
 
     override fun onDestroy() {
         release()
+        closeNotification()
         super.onDestroy()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
-        // TODO Этот код нужен, если сервис запущен как bound-service
-        songUrl = intent?.getStringExtra(INTENT_NAME) ?: ""
+        songUrl = intent?.getStringExtra(INTENT_SONG_NAME) ?: ""
+        artistName = intent?.getStringExtra(INTENT_ARTIST_NAME) ?: ""
+        trackName = intent?.getStringExtra(INTENT_TRACK_NAME) ?: ""
         prepare("")
         return binder
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        release()
+        closeNotification()
+        return super.onUnbind(intent)
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        return START_NOT_STICKY
     }
 
     // ------------ Override методы AudioPlayerClient ------------
@@ -66,6 +89,7 @@ class MediaService() : Service(), AudioPlayerClient {
             timerJob?.cancel()
             currentPosition = 0;
             _playerState.value = PlayerState.Complete()
+            closeNotification()
         }
     }
 
@@ -91,8 +115,9 @@ class MediaService() : Service(), AudioPlayerClient {
         mediaPlayer?.setOnCompletionListener(null)
         mediaPlayer?.release()
         mediaPlayer = null
-
         isRelease = true
+
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
     }
 
     override fun getCurrentPosition(): Int {
@@ -103,6 +128,24 @@ class MediaService() : Service(), AudioPlayerClient {
         return playerState
     }
 
+    override fun isPlaying(): Boolean {
+        return mediaPlayer?.isPlaying == true
+    }
+
+    override fun showNotification() {
+        ServiceCompat.startForeground(
+            this,
+            999,
+            createServiceNotification(),
+            getForegroundServiceTypeConstant()
+        )
+    }
+
+    override fun closeNotification() {
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
+
     // ------------ Приватные методы ------------
     private fun startTimer() {
         timerJob = CoroutineScope(Dispatchers.Default).launch {
@@ -110,6 +153,45 @@ class MediaService() : Service(), AudioPlayerClient {
                 delay(TIME_LEFT_DELAY)
                 _playerState.value = PlayerState.Playing(getFormattedTime())
             }
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            return
+        }
+
+        val channel = NotificationChannel(
+            NOTIFICATION_CHANNEL_ID,
+            "Music service",
+            NotificationManager.IMPORTANCE_DEFAULT
+        ).apply {
+            description = "Service for playing music"
+            setSound(null, null)
+            enableVibration(false)
+            enableLights(false)
+            setShowBadge(false)
+        }
+
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(channel)
+    }
+
+    private fun createServiceNotification(): Notification {
+        return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+            .setContentTitle("Playlist Maker")
+            .setContentText("$artistName - $trackName")
+            .setSmallIcon(R.drawable.ic_button_play)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setCategory(NotificationCompat.CATEGORY_SERVICE)
+            .build()
+    }
+
+    private fun getForegroundServiceTypeConstant(): Int {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+        } else {
+            0
         }
     }
 
@@ -127,15 +209,10 @@ class MediaService() : Service(), AudioPlayerClient {
     }
 
     companion object {
-        const val INTENT_NAME = "song_url"
+        const val INTENT_SONG_NAME = "song_url"
+        const val INTENT_ARTIST_NAME = "artist_name"
+        const val INTENT_TRACK_NAME = "track_name"
+        const val NOTIFICATION_CHANNEL_ID = "music_channel"
         private const val TIME_LEFT_DELAY = 300L
     }
 }
-
-//Но если сервис изначально запущен как foreground,
-//то наверняка понадобится продолжать воспроизведение даже тогда,
-//когда от него отвязались все клиенты.
-//В этом случае releasePlayer() лучше вызывать в методе onDestroy(): здесь мы знаем точно, что система уничтожает сервис.
-//Подробнее о жизненном цикле сервиса мы поговорим в следующем уроке.
-//Если вы хотите, чтобы во время работы привязанного сервиса отображалось уведомление, то это возможно.
-//Для этого действуем, как и в случае с foreground-сервисом, но с двумя отличиями:

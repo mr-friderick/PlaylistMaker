@@ -1,15 +1,19 @@
 package com.example.playlistmaker.player.ui.fragments
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -43,6 +47,16 @@ class PlayerFragment : Fragment() {
             viewModel.removeAudioPlayerClient()
         }
     }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            startMediaServiceForeground()
+        } else {
+            // Иначе просто покажем ошибку
+            Toast.makeText(requireContext(), "Can't start foreground service!", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,15 +78,19 @@ class PlayerFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-//        viewModel.releaseAudioPlayer()
-         unbindMusicService()
+        unbindMusicService()
         super.onDestroyView()
     }
 
-//    override fun onPause() {
-//        super.onPause()
-//        viewModel.pauseAudioPlayer()
-//    }
+    override fun onResume() {
+        viewModel.closeNotification()
+        super.onResume()
+    }
+
+    override fun onStop() {
+        viewModel.showNotification()
+        super.onStop()
+    }
 
     private fun initVariables() {
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetInclude.root)
@@ -161,6 +179,7 @@ class PlayerFragment : Fragment() {
         }
 
         binding.buttonPlay.clickEventListener = {
+            launchPermissionAndStartMediaServiceForeground()
             viewModel.playerControl()
         }
 
@@ -196,13 +215,28 @@ class PlayerFragment : Fragment() {
 
     private fun bindMediaService() {
         val intent = Intent(requireContext(), MediaService::class.java).apply {
-            putExtra(MediaService.INTENT_NAME, viewModel.getSongUrl())
+            putExtra(MediaService.INTENT_SONG_NAME, viewModel.getSongUrl())
+            putExtra(MediaService.INTENT_ARTIST_NAME, viewModel.getArtistName())
+            putExtra(MediaService.INTENT_TRACK_NAME, viewModel.getTrackName())
         }
         requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
     }
 
     private fun unbindMusicService() {
         requireContext().unbindService(serviceConnection)
+    }
+
+    private fun startMediaServiceForeground() {
+        val intent = Intent(requireContext(), MediaService::class.java)
+        ContextCompat.startForegroundService(requireContext(), intent)
+    }
+
+    private fun launchPermissionAndStartMediaServiceForeground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            startMediaServiceForeground()
+        }
     }
 
     private fun setFavoriteIcon(favorite: Boolean) {
