@@ -60,7 +60,7 @@ class MediaService() : Service(), MediaServiceClient {
         songUrl = intent?.getStringExtra(INTENT_SONG_NAME) ?: ""
         artistName = intent?.getStringExtra(INTENT_ARTIST_NAME) ?: ""
         trackName = intent?.getStringExtra(INTENT_TRACK_NAME) ?: ""
-        prepare("")
+        prepare()
         return binder
     }
 
@@ -76,7 +76,7 @@ class MediaService() : Service(), MediaServiceClient {
 
     // ------------ Override методы AudioPlayerClient ------------
 
-    override fun prepare(url: String) {
+    override fun prepare() {
         if (isRelease) {
             mediaPlayer = mediaPlayerFactory.create()
             isRelease = false

@@ -3,7 +3,7 @@ package com.example.playlistmaker.player.services
 import kotlinx.coroutines.flow.StateFlow
 
 interface MediaServiceClient {
-    fun prepare(url: String)
+    fun prepare()
     fun play()
     fun pause()
     fun release()
