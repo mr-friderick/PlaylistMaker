@@ -8,8 +8,6 @@ import com.example.playlistmaker.newplaylist.data.impl.ImageStorageRepositoryImp
 import com.example.playlistmaker.newplaylist.data.impl.PlaylistsRepositoryImpl
 import com.example.playlistmaker.newplaylist.domain.api.ImageStorageRepository
 import com.example.playlistmaker.newplaylist.domain.api.PlaylistsRepository
-import com.example.playlistmaker.player.data.impl.AudioPlayerRepositoryImpl
-import com.example.playlistmaker.player.domain.api.AudioPlayerRepository
 import com.example.playlistmaker.search.data.localstorage.HistoryRepositoryImpl
 import com.example.playlistmaker.search.data.network.TracksRepositoryImpl
 import com.example.playlistmaker.search.domain.api.HistoryRepository
@@ -23,10 +21,6 @@ val repositoryModule = module {
 
     factory<SettingsRepository> {
         SettingsRepositoryImpl(get())
-    }
-
-    factory<AudioPlayerRepository> {
-        AudioPlayerRepositoryImpl(get())
     }
 
     factory<HistoryRepository> {

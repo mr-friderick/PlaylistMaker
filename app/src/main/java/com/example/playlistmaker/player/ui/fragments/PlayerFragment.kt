@@ -1,10 +1,19 @@
 package com.example.playlistmaker.player.ui.fragments
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -13,6 +22,7 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.medialibrary.ui.adapter.PlaylistsAdapter
+import com.example.playlistmaker.player.services.MediaService
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewState
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -27,6 +37,29 @@ class PlayerFragment : Fragment() {
     private lateinit var binding: FragmentPlayerBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var playlistsAdapter: PlaylistsAdapter
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MediaService.MediaServiceBinder
+            viewModel.setAudioPlayerClient(binder.getService())
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            viewModel.removeAudioPlayerClient()
+        }
+    }
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            startMediaServiceForeground()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "Can't start foreground service!",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,18 +76,23 @@ class PlayerFragment : Fragment() {
         initVariables()
         observeLiveData()
         setListeners()
-        preparePlayer()
+        bindMediaService()
         setBottomSheet(BottomSheetBehavior.STATE_HIDDEN)
     }
 
     override fun onDestroyView() {
+        unbindMusicService()
         super.onDestroyView()
-        viewModel.releaseAudioPlayer()
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.pauseAudioPlayer()
+    override fun onResume() {
+        viewModel.closeNotification()
+        super.onResume()
+    }
+
+    override fun onStop() {
+        viewModel.showNotification()
+        super.onStop()
     }
 
     private fun initVariables() {
@@ -144,6 +182,7 @@ class PlayerFragment : Fragment() {
         }
 
         binding.buttonPlay.clickEventListener = {
+            launchPermissionAndStartMediaServiceForeground()
             viewModel.playerControl()
         }
 
@@ -177,8 +216,30 @@ class PlayerFragment : Fragment() {
         })
     }
 
-    private fun preparePlayer() {
-        viewModel.prepareAudioPlayer()
+    private fun bindMediaService() {
+        val intent = Intent(requireContext(), MediaService::class.java).apply {
+            putExtra(MediaService.INTENT_SONG_NAME, viewModel.getSongUrl())
+            putExtra(MediaService.INTENT_ARTIST_NAME, viewModel.getArtistName())
+            putExtra(MediaService.INTENT_TRACK_NAME, viewModel.getTrackName())
+        }
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindMusicService() {
+        requireContext().unbindService(serviceConnection)
+    }
+
+    private fun startMediaServiceForeground() {
+        val intent = Intent(requireContext(), MediaService::class.java)
+        ContextCompat.startForegroundService(requireContext(), intent)
+    }
+
+    private fun launchPermissionAndStartMediaServiceForeground() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            startMediaServiceForeground()
+        }
     }
 
     private fun setFavoriteIcon(favorite: Boolean) {

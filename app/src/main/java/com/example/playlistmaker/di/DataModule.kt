@@ -5,8 +5,6 @@ import androidx.room.Room
 import com.example.playlistmaker.db.AppDatabase
 import com.example.playlistmaker.db.dao.FavoriteTrackDao
 import com.example.playlistmaker.db.dao.PlaylistsDao
-import com.example.playlistmaker.player.data.AudioPlayerClient
-import com.example.playlistmaker.player.data.MediaPlayerController
 import com.example.playlistmaker.player.data.MediaPlayerFactory
 import com.example.playlistmaker.player.data.MediaPlayerFactoryImpl
 import com.example.playlistmaker.search.data.HistoryStorage
@@ -29,10 +27,6 @@ val dataModule = module {
 
     single<SettingsStorage> {
         SharedPrefSettingsStorage(get())
-    }
-
-    factory<AudioPlayerClient> {
-        MediaPlayerController(get())
     }
 
     single<HistoryStorage> {
