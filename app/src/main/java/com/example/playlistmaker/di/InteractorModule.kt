@@ -22,9 +22,9 @@ val interactorModule = module {
         SettingsInteractorImpl(get())
     }
 
-    factory<AudioPlayerInteractor> {
-        AudioPlayerInteractorImpl(get())
-    }
+//    factory<AudioPlayerInteractor> {
+//        AudioPlayerInteractorImpl(get())
+//    }
 
     factory<HistoryInteractor> {
         HistoryInteractorImpl(get())

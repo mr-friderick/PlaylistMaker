@@ -25,9 +25,9 @@ val repositoryModule = module {
         SettingsRepositoryImpl(get())
     }
 
-    factory<AudioPlayerRepository> {
-        AudioPlayerRepositoryImpl(get())
-    }
+//    factory<AudioPlayerRepository> {
+//        AudioPlayerRepositoryImpl(get())
+//    }
 
     factory<HistoryRepository> {
         HistoryRepositoryImpl(get())

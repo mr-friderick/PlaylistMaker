@@ -1,6 +1,11 @@
 package com.example.playlistmaker.player.ui.fragments
 
+import android.content.ComponentName
+import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +18,7 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.medialibrary.ui.adapter.PlaylistsAdapter
+import com.example.playlistmaker.player.services.MediaService
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewModel
 import com.example.playlistmaker.player.ui.viewmodel.PlayerViewState
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -27,6 +33,16 @@ class PlayerFragment : Fragment() {
     private lateinit var binding: FragmentPlayerBinding
     private lateinit var bottomSheetBehavior: BottomSheetBehavior<View>
     private lateinit var playlistsAdapter: PlaylistsAdapter
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MediaService.MediaServiceBinder
+            viewModel.setAudioPlayerClient(binder.getService())
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            viewModel.removeAudioPlayerClient()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,19 +59,20 @@ class PlayerFragment : Fragment() {
         initVariables()
         observeLiveData()
         setListeners()
-        preparePlayer()
+        bindMediaService()
         setBottomSheet(BottomSheetBehavior.STATE_HIDDEN)
     }
 
     override fun onDestroyView() {
+//        viewModel.releaseAudioPlayer()
+         unbindMusicService()
         super.onDestroyView()
-        viewModel.releaseAudioPlayer()
     }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.pauseAudioPlayer()
-    }
+//    override fun onPause() {
+//        super.onPause()
+//        viewModel.pauseAudioPlayer()
+//    }
 
     private fun initVariables() {
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheetInclude.root)
@@ -177,8 +194,15 @@ class PlayerFragment : Fragment() {
         })
     }
 
-    private fun preparePlayer() {
-        viewModel.prepareAudioPlayer()
+    private fun bindMediaService() {
+        val intent = Intent(requireContext(), MediaService::class.java).apply {
+            putExtra(MediaService.INTENT_NAME, viewModel.getSongUrl())
+        }
+        requireContext().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private fun unbindMusicService() {
+        requireContext().unbindService(serviceConnection)
     }
 
     private fun setFavoriteIcon(favorite: Boolean) {

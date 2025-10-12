@@ -26,10 +26,4 @@ class AudioPlayerRepositoryImpl(
     override fun isPlaying() = audioPlayer.isPlaying()
 
     override fun getCurrentPosition() = audioPlayer.getCurrentPosition()
-
-    override fun setOnCompletionListener(listener: () -> Unit) {
-        audioPlayer.setOnCompletionListener { listener() }
-    }
-
-
 }
