@@ -53,8 +53,11 @@ class PlayerFragment : Fragment() {
         if (isGranted) {
             startMediaServiceForeground()
         } else {
-            // Иначе просто покажем ошибку
-            Toast.makeText(requireContext(), "Can't start foreground service!", Toast.LENGTH_LONG).show()
+            Toast.makeText(
+                requireContext(),
+                "Can't start foreground service!",
+                Toast.LENGTH_LONG
+            ).show()
         }
     }
 
