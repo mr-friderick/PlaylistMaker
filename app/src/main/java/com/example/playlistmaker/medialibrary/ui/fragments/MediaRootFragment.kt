@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentMediaRootBinding
 import com.example.playlistmaker.medialibrary.ui.adapter.MediaViewPagerAdapter
 import com.google.android.material.tabs.TabLayoutMediator
+import com.example.playlistmaker.medialibrary.ui.compose.MediaRootScreen
 
 class MediaRootFragment : Fragment() {
 
@@ -22,7 +24,12 @@ class MediaRootFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentMediaRootBinding.inflate(inflater, container, false)
-        return binding.root
+        //return binding.root
+        return ComposeView(requireContext()).apply {
+            setContent {
+                MediaRootScreen()
+            }
+        }
     }
 
     override fun onDestroyView() {
