@@ -15,6 +15,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
@@ -36,12 +37,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
+import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoritesTracksViewModel
+import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-fun MediaRootScreen() {
-
+fun MediaRootScreen(
+    favoritesTracksViewModel: FavoritesTracksViewModel,
+    listPlaylistViewModel: ListPlaylistViewModel
+) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { 2 })
     val selectedTabIndex = remember { derivedStateOf { pagerState.currentPage } }
@@ -59,21 +64,8 @@ fun MediaRootScreen() {
                 selectedTabIndex = selectedTabIndex.value,
                 modifier = Modifier.fillMaxWidth(),
                 containerColor = colorResource(R.color.bg_screen_default),
-                indicator = { positions ->
-                    Box(
-                        Modifier
-                            .tabIndicatorOffset(positions[selectedTabIndex.value])
-                            .fillMaxWidth()
-                            .height(2.dp)
-                    ) {
-                        Box(
-                            Modifier
-                                .align(Alignment.Center)
-                                .width((ScreenWidthInDp() / 2).dp)
-                                .fillMaxHeight()
-                                .background(colorResource(R.color.tab_layout_color))
-                        )
-                    }
+                indicator = {
+                    positions -> TabIndicator(positions[selectedTabIndex.value])
                 }
             ) {
                 MediaTab(
@@ -100,12 +92,18 @@ fun MediaRootScreen() {
                     .weight(1f)
             ) { page ->
                 when(page) {
-                    0 -> Text(text = "Первый экран")
+                    0 -> FavoritesTracksScreen(favoritesTracksViewModel)
                     1 -> Text(text = "Второй экран")
                 }
             }
         }
     }
+}
+
+@Composable
+private fun screenWidthInDp(): Int {
+    val configuration = LocalConfiguration.current
+    return configuration.screenWidthDp
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -152,7 +150,19 @@ private fun MediaTab(scope: CoroutineScope, pagerState: PagerState, tabIndex: In
 }
 
 @Composable
-fun ScreenWidthInDp(): Int {
-    val configuration = LocalConfiguration.current
-    return configuration.screenWidthDp
+private fun TabIndicator(position: TabPosition) {
+    Box(
+        Modifier
+            .tabIndicatorOffset(position)
+            .fillMaxWidth()
+            .height(2.dp)
+    ) {
+        Box(
+            Modifier
+                .align(Alignment.Center)
+                .width((screenWidthInDp() / 2).dp)
+                .fillMaxHeight()
+                .background(colorResource(R.color.tab_layout_color))
+        )
+    }
 }
