@@ -13,6 +13,7 @@ import com.example.playlistmaker.medialibrary.ui.compose.MediaRootScreen
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoritesTracksViewModel
 import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistViewModel
 import com.example.playlistmaker.player.ui.fragments.PlayerFragment
+import com.example.playlistmaker.playlist.ui.fragments.PlaylistFragment
 import com.google.gson.Gson
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -44,6 +45,19 @@ class MediaRootFragment : Fragment() {
                                 PlayerFragment.createArgs(gson.toJson(track))
                             )
                         }
+                    },
+                    openPlaylist = { playlist ->
+                        if (clickDebounce()) {
+                            findNavController().navigate(
+                                R.id.action_mediaRootFragment_to_playlistFragment,
+                                PlaylistFragment.createArgs(playlist.id)
+                            )
+                        }
+                    },
+                    createPlaylist = {
+                        findNavController().navigate(
+                            R.id.action_mediaRootFragment_to_newPlaylistFragment
+                        )
                     }
                 )
             }

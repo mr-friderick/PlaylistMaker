@@ -1,6 +1,5 @@
 package com.example.playlistmaker.medialibrary.ui.compose
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,13 +28,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
@@ -47,8 +43,10 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
-fun FavoritesTracksScreen(viewModel: FavoritesTracksViewModel, openPlayer: (Track) -> Unit) {
-
+fun FavoritesTracksScreen(
+    viewModel: FavoritesTracksViewModel,
+    openPlayer: (Track) -> Unit
+) {
     val tracksViewState by viewModel.stateLiveData.observeAsState()
 
     LaunchedEffect(Unit) {
@@ -58,45 +56,31 @@ fun FavoritesTracksScreen(viewModel: FavoritesTracksViewModel, openPlayer: (Trac
     when (tracksViewState) {
         is FavoriteTracksViewState.Content -> {
             Content(
-                (tracksViewState as FavoriteTracksViewState.Content).favoriteTracks,
-                openPlayer
+                tracks = (tracksViewState as FavoriteTracksViewState.Content).favoriteTracks,
+                onTrackClick = openPlayer
             )
         }
         FavoriteTracksViewState.Empty, null -> {
-            Placeholder()
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(
+                    modifier = Modifier.height(106.dp)
+                )
+                Placeholder(
+                    text = stringResource(R.string.media_empty)
+                )
+            }
         }
     }
 }
 
 @Composable
-private fun Placeholder() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 106.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painter = painterResource(R.drawable.ic_search_not_found),
-            contentDescription = null
-        )
-
-        Text(
-            modifier = Modifier
-                .padding(top = 16.dp),
-            text = stringResource(R.string.media_empty),
-            style = TextStyle(
-                fontSize = 19.sp,
-                fontFamily = FontFamily(Font(R.font.ys_display_medium)),
-                fontWeight = FontWeight.W400,
-                color = colorResource(R.color.txt_default)
-            )
-        )
-    }
-}
-
-@Composable
-private fun Content(tracks: List<Track>, onTrackClick: (Track) -> Unit) {
+private fun Content(
+    tracks: List<Track>,
+    onTrackClick: (Track) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -107,13 +91,19 @@ private fun Content(tracks: List<Track>, onTrackClick: (Track) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(tracks) { track ->
-            ItemContent(track, { onTrackClick(track) })
+            ItemContent(
+                track = track,
+                onClickListener = { onTrackClick(track) }
+            )
         }
     }
 }
 
 @Composable
-private fun ItemContent(track: Track, onClickListener: () -> Unit) {
+private fun ItemContent(
+    track: Track,
+    onClickListener: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

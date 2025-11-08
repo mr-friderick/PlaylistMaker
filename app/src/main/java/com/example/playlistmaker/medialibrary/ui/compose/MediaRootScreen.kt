@@ -27,7 +27,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -39,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoritesTracksViewModel
 import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistViewModel
+import com.example.playlistmaker.newplaylist.domain.models.Playlist
 import com.example.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -47,7 +47,9 @@ import kotlinx.coroutines.launch
 fun MediaRootScreen(
     favoritesTracksViewModel: FavoritesTracksViewModel,
     listPlaylistViewModel: ListPlaylistViewModel,
-    openPlayer: (Track) -> Unit
+    openPlayer: (Track) -> Unit,
+    openPlaylist: (Playlist) -> Unit,
+    createPlaylist: () -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { 2 })
@@ -94,18 +96,19 @@ fun MediaRootScreen(
                     .weight(1f)
             ) { page ->
                 when(page) {
-                    0 -> FavoritesTracksScreen(favoritesTracksViewModel, openPlayer)
-                    1 -> Text(text = "Второй экран")
+                    0 -> FavoritesTracksScreen(
+                        viewModel = favoritesTracksViewModel,
+                        openPlayer = openPlayer
+                    )
+                    1 -> ListPlaylistScreen(
+                        viewModel = listPlaylistViewModel,
+                        openPlaylist = openPlaylist,
+                        createPlaylist = createPlaylist
+                    )
                 }
             }
         }
     }
-}
-
-@Composable
-private fun screenWidthInDp(): Int {
-    val configuration = LocalConfiguration.current
-    return configuration.screenWidthDp
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -129,7 +132,13 @@ private fun Toolbar() {
 }
 
 @Composable
-private fun MediaTab(scope: CoroutineScope, pagerState: PagerState, tabIndex: Int, numberTab: Int, title: String) {
+private fun MediaTab(
+    scope: CoroutineScope,
+    pagerState: PagerState,
+    tabIndex: Int,
+    numberTab: Int,
+    title: String
+) {
     Tab(
         selected = tabIndex == 0,
         selectedContentColor = colorResource(R.color.tab_layout_color),
@@ -152,7 +161,9 @@ private fun MediaTab(scope: CoroutineScope, pagerState: PagerState, tabIndex: In
 }
 
 @Composable
-private fun TabIndicator(position: TabPosition) {
+private fun TabIndicator(
+    position: TabPosition
+) {
     Box(
         Modifier
             .tabIndicatorOffset(position)
@@ -162,7 +173,7 @@ private fun TabIndicator(position: TabPosition) {
         Box(
             Modifier
                 .align(Alignment.Center)
-                .width((screenWidthInDp() / 2).dp)
+                .width(148.dp)
                 .fillMaxHeight()
                 .background(colorResource(R.color.tab_layout_color))
         )
