@@ -39,13 +39,15 @@ import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoritesTracksViewModel
 import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistViewModel
+import com.example.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
 fun MediaRootScreen(
     favoritesTracksViewModel: FavoritesTracksViewModel,
-    listPlaylistViewModel: ListPlaylistViewModel
+    listPlaylistViewModel: ListPlaylistViewModel,
+    openPlayer: (Track) -> Unit
 ) {
     val scope = rememberCoroutineScope()
     val pagerState = rememberPagerState(pageCount = { 2 })
@@ -92,7 +94,7 @@ fun MediaRootScreen(
                     .weight(1f)
             ) { page ->
                 when(page) {
-                    0 -> FavoritesTracksScreen(favoritesTracksViewModel)
+                    0 -> FavoritesTracksScreen(favoritesTracksViewModel, openPlayer)
                     1 -> Text(text = "Второй экран")
                 }
             }
