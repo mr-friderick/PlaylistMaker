@@ -38,6 +38,7 @@ import androidx.core.net.toUri
 import com.example.playlistmaker.R
 import com.example.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import com.example.playlistmaker.util.App
+import com.example.playlistmaker.util.compose.Toolbar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +61,11 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
 
     Scaffold(
         containerColor = colorResource(R.color.bg_screen_default),
-        topBar = { Toolbar() }
+        topBar = {
+            Toolbar(
+                title = stringResource(R.string.main_button_settings)
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -112,26 +117,6 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             )
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun Toolbar() {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.main_button_settings),
-                style = TextStyle(
-                    fontSize = 22.sp,
-                    fontFamily = FontFamily(Font(R.font.ys_display_medium)),
-                    color = colorResource(R.color.txt_default)
-                )
-            )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(R.color.bg_screen_default)
-        )
-    )
 }
 
 @Composable

@@ -39,6 +39,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoriteTracksViewState
 import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoritesTracksViewModel
 import com.example.playlistmaker.search.domain.models.Track
+import com.example.playlistmaker.util.compose.ItemTrackContent
+import com.example.playlistmaker.util.compose.Placeholder
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
@@ -91,104 +93,10 @@ private fun Content(
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
         items(tracks) { track ->
-            ItemContent(
+            ItemTrackContent(
                 track = track,
                 onClickListener = { onTrackClick(track) }
             )
         }
-    }
-}
-
-@Composable
-private fun ItemContent(
-    track: Track,
-    onClickListener: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(
-                onClick = onClickListener,
-                indication = null,
-                interactionSource = null
-            ),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        GlideImage(
-            modifier = Modifier
-                .size(45.dp)
-                .clip(RoundedCornerShape(2.dp)),
-            imageModel = { track.artworkUrl100 },
-            previewPlaceholder = painterResource(R.drawable.ic_track_placeholder),
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.Center
-            )
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(end = 8.dp),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = track.trackName,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    fontFamily = FontFamily(Font(R.font.ys_display_regular)),
-                    fontWeight = FontWeight.W400,
-                    color = colorResource(R.color.txt_default)
-                )
-            )
-
-            Row (
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    modifier = Modifier
-                        .padding(end = 5.dp),
-                    text = track.artistName,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = TextStyle(
-                        fontSize = 11.sp,
-                        fontFamily = FontFamily(Font(R.font.ys_display_regular)),
-                        fontWeight = FontWeight.W400,
-                        color = colorResource(R.color.txt_track_author)
-                    )
-                )
-
-                Icon(
-                    painter = painterResource(R.drawable.ic_ellipse),
-                    contentDescription = null,
-                    tint = Color.Unspecified
-                )
-
-                Text(
-                    modifier = Modifier
-                        .padding(start = 5.dp),
-                    text = track.trackTimeMillis,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = TextStyle(
-                        fontSize = 11.sp,
-                        fontFamily = FontFamily(Font(R.font.ys_display_regular)),
-                        fontWeight = FontWeight.W400,
-                        color = colorResource(R.color.txt_track_author)
-                    )
-                )
-            }
-        }
-
-        Icon(
-            painter = painterResource(R.drawable.ic_arrow_track),
-            contentDescription = null,
-            tint = Color.Unspecified
-        )
     }
 }

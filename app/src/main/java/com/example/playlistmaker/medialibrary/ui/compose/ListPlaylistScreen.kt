@@ -42,6 +42,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistViewModel
 import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistsViewState
 import com.example.playlistmaker.newplaylist.domain.models.Playlist
+import com.example.playlistmaker.util.compose.Placeholder
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import java.io.File
@@ -103,7 +104,7 @@ private fun NewPlaylistButton(
     ) {
         Text(
             text = stringResource(R.string.button_new_playlist),
-            fontFamily = FontFamily(Font(R.font.ys_display_regular)),
+            fontFamily = FontFamily(Font(R.font.ys_display_medium)),
             fontSize = 14.sp,
             fontWeight = FontWeight.W400
         )

@@ -39,6 +39,7 @@ class SearchViewModel(
     }
 
     fun setHistoryState() {
+        cancelSearchJob()
         _state.postValue(SearchViewState.History(historyInteractor.read()))
     }
 
@@ -70,4 +71,7 @@ class SearchViewModel(
         }
     }
 
+    fun cancelSearchJob() {
+        searchJob?.cancel()
+    }
 }

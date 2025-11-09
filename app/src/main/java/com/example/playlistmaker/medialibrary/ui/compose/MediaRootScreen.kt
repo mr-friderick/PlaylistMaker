@@ -40,6 +40,7 @@ import com.example.playlistmaker.medialibrary.ui.viewmodel.FavoritesTracksViewMo
 import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistViewModel
 import com.example.playlistmaker.newplaylist.domain.models.Playlist
 import com.example.playlistmaker.search.domain.models.Track
+import com.example.playlistmaker.util.compose.Toolbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -57,7 +58,11 @@ fun MediaRootScreen(
 
     Scaffold(
         containerColor = colorResource(R.color.bg_screen_default),
-        topBar = { Toolbar() }
+        topBar = {
+            Toolbar(
+                title = stringResource(R.string.media_toolbar)
+            )
+        }
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -109,26 +114,6 @@ fun MediaRootScreen(
             }
         }
     }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun Toolbar() {
-    TopAppBar(
-        title = {
-            Text(
-                text = stringResource(R.string.media_toolbar),
-                style = TextStyle(
-                    fontSize = 22.sp,
-                    fontFamily = FontFamily(Font(R.font.ys_display_medium)),
-                    color = colorResource(R.color.txt_default)
-                )
-            )
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(R.color.bg_screen_default)
-        )
-    )
 }
 
 @Composable
