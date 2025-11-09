@@ -98,5 +98,5 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    implementation("com.github.skydoves:landscapist-glide:2.6.1")
+    implementation(libs.landscapist.coil)
 }

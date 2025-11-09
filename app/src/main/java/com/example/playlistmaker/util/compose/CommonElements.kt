@@ -36,7 +36,7 @@ import androidx.compose.ui.unit.sp
 import com.example.playlistmaker.R
 import com.example.playlistmaker.search.domain.models.Track
 import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.glide.GlideImage
+import com.skydoves.landscapist.coil.CoilImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,6 +86,16 @@ fun Placeholder(text: String) {
 }
 
 @Composable
+fun PlaceholderForMissingImage() {
+    Image(
+        modifier = Modifier
+            .fillMaxSize(),
+        painter = painterResource(R.drawable.ic_track_placeholder),
+        contentDescription = null
+    )
+}
+
+@Composable
 fun ItemTrackContent(
     track: Track,
     onClickListener: () -> Unit
@@ -100,16 +110,12 @@ fun ItemTrackContent(
             ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        GlideImage(
+
+        CoilImagePoster(
             modifier = Modifier
                 .size(45.dp)
                 .clip(RoundedCornerShape(2.dp)),
-            imageModel = { track.artworkUrl100 },
-            previewPlaceholder = painterResource(R.drawable.ic_track_placeholder),
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.Center
-            )
+            imageModel = track.artworkUrl100
         )
 
         Spacer(modifier = Modifier.width(8.dp))
@@ -177,5 +183,20 @@ fun ItemTrackContent(
             tint = Color.Unspecified
         )
     }
+}
+
+@Composable
+fun CoilImagePoster(imageModel: Any, modifier: Modifier = Modifier) {
+    CoilImage(
+        modifier = modifier,
+        imageModel = { imageModel },
+        previewPlaceholder = painterResource(R.drawable.ic_track_placeholder),
+        loading = { PlaceholderForMissingImage() },
+        failure = { PlaceholderForMissingImage() },
+        imageOptions = ImageOptions(
+            contentScale = ContentScale.Crop,
+            alignment = Alignment.Center
+        )
+    )
 }
 

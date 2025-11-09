@@ -126,11 +126,11 @@ fun SearchScreen(
                 }
             )
 
-            when (searchViewState) {
+            when (val uiState = searchViewState) {
                 SearchViewState.Default -> {}
                 is SearchViewState.History -> {
                     History(
-                        tracks = (searchViewState as SearchViewState.History).historyTracks,
+                        tracks = uiState.historyTracks,
                         onTrackClick = onTrackClick,
                         onClearHistoryClick = { viewModel.clearHistory() }
                     )
@@ -140,7 +140,7 @@ fun SearchScreen(
                 }
                 is SearchViewState.Content -> {
                     Content(
-                        tracks = (searchViewState as SearchViewState.Content).contentTracks,
+                        tracks = uiState.contentTracks,
                         onTrackClick = { track ->
                             onTrackClick(track)
                             viewModel.addTrackInHistory(track)

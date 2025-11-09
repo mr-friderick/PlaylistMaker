@@ -14,12 +14,11 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,13 +46,25 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
     val context = LocalContext.current
     val isChecked by viewModel.themeLiveData.observeAsState(false)
 
-    val dataForIntent: MutableMap<String, String> = mutableMapOf()
-    dataForIntent["shareLink"] = stringResource(R.string.settings_share_link)
-    dataForIntent["shareTitle"] = stringResource(R.string.settings_share_title)
-    dataForIntent["supportEmail"] = stringResource(R.string.settings_support_email)
-    dataForIntent["supportSubject"] = stringResource(R.string.settings_support_subject)
-    dataForIntent["supportMessage"] = stringResource(R.string.settings_support_message)
-    dataForIntent["agreementLink"] = stringResource(R.string.settings_agreement_link)
+    val shareLink = stringResource(R.string.settings_share_link)
+    val shareTitle = stringResource(R.string.settings_share_title)
+    val supportEmail = stringResource(R.string.settings_support_email)
+    val supportSubject = stringResource(R.string.settings_support_subject)
+    val supportMessage = stringResource(R.string.settings_support_message)
+    val agreementLink = stringResource(R.string.settings_agreement_link)
+
+    val shareIntent = remember(shareLink, shareTitle) {
+        Intent.createChooser(
+            intentForShare(shareLink),
+            shareTitle
+        )
+    }
+    val suppIntent = remember(supportEmail, supportSubject, supportMessage) {
+        intentForSupp(supportEmail, supportSubject, supportMessage)
+    }
+    val agreementIntent = remember(agreementLink) {
+        intentForAgreement(agreementLink)
+    }
 
     LaunchedEffect(Unit) {
         viewModel.setupThemeSwitcher()
@@ -83,37 +94,19 @@ fun SettingsScreen(viewModel: SettingsViewModel) {
             TextAndImageRow(
                 R.string.settings_option_share,
                 R.drawable.ic_share,
-                {
-                    context.startActivity(Intent.createChooser(
-                        intentForShare(dataForIntent["shareLink"]),
-                        dataForIntent["shareTitle"]
-                        )
-                    )
-                }
+                { context.startActivity(shareIntent) }
             )
 
             TextAndImageRow(
                 R.string.settings_option_support,
                 R.drawable.ic_support,
-                {
-                    context.startActivity(
-                        intentForSupp(
-                            dataForIntent["supportEmail"],
-                            dataForIntent["supportSubject"],
-                            dataForIntent["supportMessage"]
-                        )
-                    )
-                }
+                { context.startActivity(suppIntent) }
             )
 
             TextAndImageRow(
                 R.string.settings_option_agreement,
                 R.drawable.ic_arrow_forward,
-                {
-                    context.startActivity(
-                        intentForAgreement(dataForIntent["agreementLink"])
-                    )
-                }
+                { context.startActivity(agreementIntent) }
             )
         }
     }

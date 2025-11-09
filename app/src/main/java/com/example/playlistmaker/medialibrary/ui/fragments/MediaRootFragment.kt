@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -22,6 +23,7 @@ import kotlin.getValue
 
 class MediaRootFragment : Fragment() {
 
+    private lateinit var composeView: ComposeView
     private val favoritesTracksViewModel by viewModel<FavoritesTracksViewModel>()
     private val listPlaylistViewModel by viewModel<ListPlaylistViewModel>()
     private val gson = Gson()
@@ -33,7 +35,11 @@ class MediaRootFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return ComposeView(requireContext()).apply {
+        composeView = ComposeView(requireContext())
+        composeView.setViewCompositionStrategy(
+            ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
+        )
+        return composeView.apply {
             setContent {
                 MediaRootScreen(
                     favoritesTracksViewModel = favoritesTracksViewModel,

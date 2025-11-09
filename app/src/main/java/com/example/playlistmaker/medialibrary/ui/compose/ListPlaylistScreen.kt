@@ -26,10 +26,9 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -42,9 +41,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistViewModel
 import com.example.playlistmaker.medialibrary.ui.viewmodel.ListPlaylistsViewState
 import com.example.playlistmaker.newplaylist.domain.models.Playlist
+import com.example.playlistmaker.util.compose.CoilImagePoster
 import com.example.playlistmaker.util.compose.Placeholder
-import com.skydoves.landscapist.ImageOptions
-import com.skydoves.landscapist.glide.GlideImage
 import java.io.File
 
 @Composable
@@ -68,10 +66,10 @@ fun ListPlaylistScreen(
             onClick = createPlaylist
         )
 
-        when (playlistsViewState) {
+        when (val uiState = playlistsViewState) {
             is ListPlaylistsViewState.Content -> {
                 Content(
-                    playlists = (playlistsViewState as ListPlaylistsViewState.Content).playlists,
+                    playlists = uiState.playlists,
                     onPlaylistClick = openPlaylist
                 )
             }
@@ -120,9 +118,11 @@ private fun Content(
     LazyVerticalGrid(
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 20.dp)
-            .padding(start = 13.dp)
-            .padding(end = 20.dp),
+            .padding(
+                bottom = 20.dp,
+                start = 13.dp,
+                end = 20.dp
+            ),
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -143,10 +143,9 @@ private fun ItemContent(
     playlist: Playlist,
     onClickListener: () -> Unit
 ) {
-
     val context = LocalContext.current
     val posterFile = File(context.filesDir, playlist.picturePath)
-    val tracksCount = context.resources.getQuantityString(
+    val tracksCount = pluralStringResource(
         R.plurals.tracks_count,
         playlist.tracksCount,
         playlist.tracksCount
@@ -161,16 +160,12 @@ private fun ItemContent(
                 interactionSource = null
             )
     ) {
-        GlideImage(
-            modifier = Modifier
+
+        CoilImagePoster(
+            modifier =  Modifier
                 .size(160.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            imageModel = { posterFile },
-            previewPlaceholder = painterResource(R.drawable.ic_track_placeholder),
-            imageOptions = ImageOptions(
-                contentScale = ContentScale.Crop,
-                alignment = Alignment.Center
-            )
+            imageModel = posterFile
         )
 
         Spacer(
