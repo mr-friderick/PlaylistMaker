@@ -12,7 +12,7 @@ class SharedPrefHistoryStorage(
     private val gson: Gson
 ): HistoryStorage {
 
-    override fun save(tracksDto: ArrayList<TrackDto>) {
+    override fun save(tracksDto: List<TrackDto>) {
         sharedPrefs.edit {
             putString(
                 KEY_HISTORY,
@@ -21,11 +21,11 @@ class SharedPrefHistoryStorage(
         }
     }
 
-    override fun read(): ArrayList<TrackDto> {
+    override fun read(): List<TrackDto> {
         return gson.fromJson(
             sharedPrefs.getString(KEY_HISTORY, ""),
             object : TypeToken<List<TrackDto>>() {}.type
-        ) ?: arrayListOf()
+        ) ?: listOf()
     }
 
     override fun clear() {

@@ -9,17 +9,17 @@ class HistoryInteractorImpl(
 ): HistoryInteractor {
 
     override fun add(track: Track) {
-        val currentHistory = repository.read()
+        val currentHistory = repository.read().toMutableList()
         currentHistory.removeIf { it.trackId == track.trackId }
         if (currentHistory.size == MAX_HISTORY_SIZE) {
             currentHistory.removeAt(currentHistory.size - 1)
         }
         currentHistory.add(0, track)
 
-        repository.save(currentHistory)
+        repository.save(currentHistory.toList())
     }
 
-    override fun read(): ArrayList<Track> {
+    override fun read(): List<Track> {
         return repository.read()
     }
 

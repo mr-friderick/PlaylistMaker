@@ -9,7 +9,7 @@ class HistoryRepositoryImpl(
     private val historyStorage: HistoryStorage
 ): HistoryRepository {
 
-    override fun save(tracks: ArrayList<Track>) {
+    override fun save(tracks: List<Track>) {
         historyStorage.save(
             tracks.map {
                 TrackDto(
@@ -24,11 +24,11 @@ class HistoryRepositoryImpl(
                     country = it.country,
                     previewUrl = it.previewUrl
                 )
-            }.toCollection(ArrayList())
+            }
         )
     }
 
-    override fun read(): ArrayList<Track> {
+    override fun read(): List<Track> {
         return historyStorage.read()
             .map {
                 Track(
@@ -43,7 +43,7 @@ class HistoryRepositoryImpl(
                     country = it.country,
                     previewUrl = it.previewUrl
                 )
-            }.toCollection(ArrayList())
+            }
     }
 
     override fun clear() {
